@@ -1,0 +1,37 @@
+---
+name: GoogleMap
+---
+
+import { Playground, PropsTable } from 'docz'
+import { GoogleMap } from '../GoogleMap.tsx'
+
+# GoogleMap
+
+Draws `google.maps.Map`.
+
+<Playground>
+  <GoogleMap
+    zoom={9}
+    maps={google.maps}
+    mapTypeId="ROADMAP"
+    style={{ height: '320px' }}
+    clickableIcons={true}
+    disableDoubleClickZoom={false}
+    center={{ lat: 36.964, lng: -122.015 }}
+    onClick={event => {
+      console.log('onClick', event)
+    }}
+    onDoubleClick={event => {
+      console.log('onDoubleClick', event)
+    }}
+    onRightClick={event => {
+      console.log('onDoubleClick', event)
+    }}
+  />
+</Playground>
+
+**Google Maps Docs:**
+* [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
+* [google.maps.MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)
+
+<PropsTable of={GoogleMap} />

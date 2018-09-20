@@ -1,0 +1,30 @@
+{
+  // Setup source directory.
+  "include": ["src/**/*.ts"],
+  "compilerOptions": {
+    // Transpile jsx.
+    "jsx": "react",
+    // Use dom and latest ES typings.
+    "lib": ["dom", "es2018"],
+    // Use for debugging and error tracking.
+    "sourceMap": true,
+    // Use commonjs modules.
+    "module": "commonjs",
+    // Transpile to ES2015.
+    "target": "es2015",
+    // Allow to use node modules.
+    "moduleResolution": "node",
+    // Minimize amount of generated code by importing helpers from `tslib`.
+    "importHelpers": true,
+    // Strict type checks.
+    "strict": true,
+
+    // Dead code checks.
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    // Possible bug checks.
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

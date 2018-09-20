@@ -1,3 +1,10 @@
+# Docs
+/.docz
+
+# Distributive
+/es
+/lib
+
 # Logs
 logs
 *.log
