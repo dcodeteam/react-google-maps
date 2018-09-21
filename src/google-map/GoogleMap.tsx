@@ -291,14 +291,14 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
     const options = pickChangedProps(prevOptions, nextOptions);
 
     if (options) {
-      ctx!.map.setValues(options);
+      ctx!.map!.setValues(options);
     }
   }
 
   public componentWillUnmount() {
     const { ctx } = this.state;
 
-    ctx!.maps.event.clearInstanceListeners(this.mapRef.current!);
+    ctx!.maps!.event.clearInstanceListeners(this.mapRef.current!);
   }
 
   public render() {

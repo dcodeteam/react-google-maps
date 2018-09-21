@@ -4,6 +4,158 @@ exports[`GoogleMap #componentDidMount should add all event listeners 1`] = `
 Object {
   "isThrow": false,
   "value": Map {
+    "addListener": [MockFunction] {
+      "calls": Array [
+        Array [
+          "click",
+          [Function],
+        ],
+        Array [
+          "dblclick",
+          [Function],
+        ],
+        Array [
+          "rightclick",
+          [Function],
+        ],
+        Array [
+          "mouseout",
+          [Function],
+        ],
+        Array [
+          "mouseover",
+          [Function],
+        ],
+        Array [
+          "mousemove",
+          [Function],
+        ],
+        Array [
+          "drag",
+          [Function],
+        ],
+        Array [
+          "dragstart",
+          [Function],
+        ],
+        Array [
+          "dragend",
+          [Function],
+        ],
+        Array [
+          "idle",
+          [Function],
+        ],
+        Array [
+          "tilesloaded",
+          [Function],
+        ],
+        Array [
+          "tilt_changed",
+          [Function],
+        ],
+        Array [
+          "zoom_changed",
+          [Function],
+        ],
+        Array [
+          "bounds_changed",
+          [Function],
+        ],
+        Array [
+          "center_changed",
+          [Function],
+        ],
+        Array [
+          "heading_changed",
+          [Function],
+        ],
+        Array [
+          "maptypeid_changed",
+          [Function],
+        ],
+        Array [
+          "projection_changed",
+          [Function],
+        ],
+      ],
+      "results": Array [
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+        Object {
+          "isThrow": false,
+          "value": undefined,
+        },
+      ],
+    },
+    "emit": [MockFunction],
+    "get": [MockFunction],
     "listeners": Object {
       "bounds_changed": Array [
         [Function],
@@ -63,7 +215,9 @@ Object {
     "node": <div
       style="height: 100%;"
     />,
-    "options": Object {
+    "set": [MockFunction],
+    "setValues": [MockFunction],
+    "values": Object {
       "backgroundColor": undefined,
       "bounds": Array [],
       "center": Object {

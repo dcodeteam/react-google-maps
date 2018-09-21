@@ -130,3 +130,17 @@ export function pickChangedProps<T extends object>(
 
   return hasChanged ? diff : null;
 }
+
+type EventHandler<T> = (event: T) => void;
+
+export function createHandlerProxy<T>(
+  handlerSelector: () => undefined | EventHandler<T>
+): EventHandler<T> {
+  return (event: T) => {
+    const handler = handlerSelector();
+
+    if (handler) {
+      handler(event);
+    }
+  };
+}
