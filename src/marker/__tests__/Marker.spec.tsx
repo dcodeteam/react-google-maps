@@ -19,7 +19,7 @@ function MockMarker(props: MarkerProps) {
 
 describe("Marker", () => {
   beforeEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should create marker and attach it to map on mount", () => {

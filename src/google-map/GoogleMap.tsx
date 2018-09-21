@@ -4,7 +4,12 @@ import {
   GoogleMapContext,
   GoogleMapContextProvider
 } from "../google-map-context/GoogleMapContext";
-import { pickChangedProps } from "../internal/PropsUtils";
+import {
+  createHandlerProxy,
+  forEachEvent,
+  pickChangedProps
+} from "../internal/PropsUtils";
+import { GoogleMapEvent } from "./GoogleMapEvent";
 
 const styles = { map: { height: "100%" } };
 
@@ -85,12 +90,14 @@ interface EventProps {
   /**
    * This event is fired when the map `zoom` property changes.
    */
-  onZoomChanged?: (event?: { zoom: number }) => void;
+  onZoomChanged?: (event: { zoom: number }) => void;
 
   /**
    * This handler is called when the viewport bounds have changed.
    */
-  onBoundsChanged?: (event?: { bounds: google.maps.LatLngBounds }) => void;
+  onBoundsChanged?: (
+    event: { bounds: null | undefined | google.maps.LatLngBounds }
+  ) => void;
 
   /**
    * This handler is called when the map `center` property changes.
@@ -178,31 +185,6 @@ interface State {
   ctx?: GoogleMapContext;
 }
 
-const eventHandlerPairs: Array<[keyof EventProps, string]> = [
-  ["onClick", "click"],
-  ["onDoubleClick", "dblclick"],
-  ["onRightClick", "rightclick"],
-
-  ["onMouseOut", "mouseout"],
-  ["onMouseOver", "mouseover"],
-
-  ["onMouseMove", "mousemove"],
-
-  ["onDrag", "drag"],
-  ["onDragStart", "dragstart"],
-  ["onDragEnd", "dragend"],
-
-  ["onIdle", "idle"],
-  ["onTilesLoaded", "tilesloaded"],
-  ["onTiltChanged", "tilt_changed"],
-  ["onZoomChanged", "zoom_changed"],
-  ["onBoundsChanged", "bounds_changed"],
-  ["onCenterChanged", "center_changed"],
-  ["onHeadingChanged", "heading_changed"],
-  ["onMapTypeIdChanged", "maptypeid_changed"],
-  ["onProjectionChanged", "projection_changed"]
-];
-
 function createMapOptions({
   maps,
 
@@ -214,6 +196,8 @@ function createMapOptions({
   disableDoubleClickZoom
 }: GoogleMapProps): google.maps.MapOptions {
   return {
+    disableDefaultUI: true,
+
     zoom,
     center,
     clickableIcons,
@@ -228,59 +212,35 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
 
   private mapRef = React.createRef<HTMLDivElement>();
 
-  private createPropProxy<T>(
-    name: keyof EventProps,
-    eventModifier?: (event: T) => T
-  ) {
-    return (event: T) => {
-      // eslint-disable-next-line react/destructuring-assignment,typescript/no-explicit-any
-      const handler = this.props[name] as any;
-
-      if (handler) {
-        handler(!eventModifier ? event : eventModifier(event));
-      }
-    };
-  }
-
   public componentDidMount() {
     const { maps } = this.props;
+    const map = new maps.Map(this.mapRef.current);
 
-    const options = createMapOptions(this.props);
-    const googleMap = new maps.Map(this.mapRef.current, {
-      ...options,
-      disableDefaultUI: true
-    });
+    map.setOptions(createMapOptions(this.props));
 
-    eventHandlerPairs.forEach(([prop, event]) => {
-      switch (prop) {
-        case "onBoundsChanged":
-          googleMap.addListener(
-            event,
-            this.createPropProxy(prop, () => ({
-              bounds: googleMap.getBounds()
-            }))
-          );
+    forEachEvent<EventProps>(GoogleMapEvent, (key, event) => {
+      /* eslint-disable react/destructuring-assignment */
+      if (event === GoogleMapEvent.onBoundsChanged) {
+        const handler = createHandlerProxy(() => this.props.onBoundsChanged);
 
-          break;
+        map.addListener(event, () => {
+          handler({ bounds: map.getBounds() });
+        });
+      } else if (event === GoogleMapEvent.onZoomChanged) {
+        const handler = createHandlerProxy(() => this.props.onZoomChanged);
 
-        case "onZoomChanged":
-          googleMap.addListener(
-            event,
-            this.createPropProxy(prop, () => ({
-              zoom: googleMap.getZoom()
-            }))
-          );
+        map.addListener(event, () => {
+          handler({ zoom: map.getZoom() });
+        });
+      } else {
+        const handler = createHandlerProxy<any>(() => this.props[key]);
 
-          break;
-
-        default:
-          googleMap.addListener(event, this.createPropProxy(prop));
+        map.addListener(event, handler);
       }
+      /* eslint-enable react/destructuring-assignment */
     });
 
-    this.setState({ ctx: { maps, map: googleMap } });
-
-    this.forceUpdate();
+    this.setState({ ctx: { map, maps } });
   }
 
   public componentDidUpdate(prevProps: Readonly<GoogleMapProps>): void {
@@ -291,7 +251,7 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
     const options = pickChangedProps(prevOptions, nextOptions);
 
     if (options) {
-      ctx!.map!.setValues(options);
+      ctx!.map!.setOptions(options);
     }
   }
 

@@ -50,6 +50,85 @@ class MVCObject {
   }
 }
 
+class GoogleMap extends MVCObject {
+  constructor(node, options) {
+    super({ ...options, bounds: [] });
+
+    this.node = node;
+
+    this.setOptions = this.setValues;
+    this.getZoom = jest.fn(() => this.get("zoom"));
+    this.getBounds = jest.fn(() => this.get("bounds"));
+  }
+
+  // this.fitBounds = noop;
+  // this.panBy = noop;
+  // this.panTo = noop;
+  // this.panToBounds = noop;
+  //
+  // this.controls = controlTypes.reduce((acc, control) => {
+  //   const items = [];
+  //
+  //   acc[control] = {
+  //     items,
+  //     push: jest.fn((...args) => {
+  //       items.push(...args);
+  //     }),
+  //     indexOf: jest.fn(x => items.indexOf(x)),
+  //     removeAt: jest.fn(index => {
+  //       items.splice(index, 1);
+  //     })
+  //   };
+  //
+  //   return acc;
+  // }, {});
+  //
+  // this.data = {
+  //   items: [],
+  //   add(item) {
+  //     this.items.push(item);
+  //   },
+  //
+  //   remove(item) {
+  //     const index = this.items.indexOf(item);
+  //
+  //     if (index !== -1) {
+  //       this.items.splice(index, 1);
+  //     }
+  //   },
+  //
+  //   overrideStyle: noop,
+  //
+  //   listeners: {},
+  //
+  //   emit(event, x) {
+  //     const events = this.listeners[event];
+  //
+  //     if (event) {
+  //       events.forEach(fn => {
+  //         fn(x);
+  //       });
+  //     }
+  //   },
+  //
+  //   addListener(event, fn) {
+  //     this.listeners[event] = this.listeners[event] || [];
+  //
+  //     this.listeners[event].push(fn);
+  //
+  //     return {
+  //       remove: () => {
+  //         const index = this.listeners[event].indexOf(fn);
+  //
+  //         if (index !== -1) {
+  //           this.listeners[event].splice(index, 1);
+  //         }
+  //       }
+  //     };
+  //   }
+  // };
+}
+
 module.exports = {
   Animation: {
     BOUNCE: "BOUNCE",
@@ -93,82 +172,9 @@ module.exports = {
     }
   },
 
-  Map: class extends MVCObject {
-    constructor(node, options) {
-      super({ ...options, bounds: [] });
-
-      this.node = node;
-      this.getZoom = jest.fn(() => this.get("zoom"));
-      this.getBounds = jest.fn(() => this.get("bounds"));
-    }
-
-    // this.fitBounds = noop;
-    // this.panBy = noop;
-    // this.panTo = noop;
-    // this.panToBounds = noop;
-    //
-    // this.controls = controlTypes.reduce((acc, control) => {
-    //   const items = [];
-    //
-    //   acc[control] = {
-    //     items,
-    //     push: jest.fn((...args) => {
-    //       items.push(...args);
-    //     }),
-    //     indexOf: jest.fn(x => items.indexOf(x)),
-    //     removeAt: jest.fn(index => {
-    //       items.splice(index, 1);
-    //     })
-    //   };
-    //
-    //   return acc;
-    // }, {});
-    //
-    // this.data = {
-    //   items: [],
-    //   add(item) {
-    //     this.items.push(item);
-    //   },
-    //
-    //   remove(item) {
-    //     const index = this.items.indexOf(item);
-    //
-    //     if (index !== -1) {
-    //       this.items.splice(index, 1);
-    //     }
-    //   },
-    //
-    //   overrideStyle: noop,
-    //
-    //   listeners: {},
-    //
-    //   emit(event, x) {
-    //     const events = this.listeners[event];
-    //
-    //     if (event) {
-    //       events.forEach(fn => {
-    //         fn(x);
-    //       });
-    //     }
-    //   },
-    //
-    //   addListener(event, fn) {
-    //     this.listeners[event] = this.listeners[event] || [];
-    //
-    //     this.listeners[event].push(fn);
-    //
-    //     return {
-    //       remove: () => {
-    //         const index = this.listeners[event].indexOf(fn);
-    //
-    //         if (index !== -1) {
-    //           this.listeners[event].splice(index, 1);
-    //         }
-    //       }
-    //     };
-    //   }
-    // };
-  },
+  Map: jest
+    .fn(GoogleMap)
+    .mockImplementation((node, options) => new GoogleMap(node, options)),
 
   Marker: class extends MVCObject {
     constructor(values) {

@@ -20,7 +20,7 @@ describe("MarkerIcon", () => {
   }
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it("should set default marker icon options on mount", () => {

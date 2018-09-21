@@ -133,7 +133,7 @@ export function pickChangedProps<T extends object>(
 
 type EventHandler<T> = (event: T) => void;
 
-export function createHandlerProxy<T>(
+export function createHandlerProxy<T = any>(
   handlerSelector: () => undefined | EventHandler<T>
 ): EventHandler<T> {
   return (event: T) => {
@@ -143,4 +143,16 @@ export function createHandlerProxy<T>(
       handler(event);
     }
   };
+}
+
+export function forEachEvent<P>(
+  events: unknown,
+  fn: (key: keyof P, event: string) => void
+) {
+  const eventsObject = events as { [key: string]: string };
+  const keys = Object.keys(eventsObject) as Array<keyof P>;
+
+  keys.forEach(key => {
+    fn(key, eventsObject[String(key)]);
+  });
 }
