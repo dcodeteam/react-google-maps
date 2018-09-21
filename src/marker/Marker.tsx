@@ -1,7 +1,11 @@
 import * as React from "react";
 
 import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
-import { createHandlerProxy, pickChangedProps } from "../internal/PropsUtils";
+import {
+  createHandlerProxy,
+  forEachEvent,
+  pickChangedProps
+} from "../internal/PropsUtils";
 import { MarkerContext, MarkerContextProvider } from "./MarkerContext";
 import { MarkerEvent } from "./MarkerEvent";
 
@@ -190,24 +194,19 @@ class MarkerElement extends React.Component<MarkerElementProps> {
 
     this.ctx = { marker };
 
-    const handlerProps = Object.keys(MarkerEvent) as Array<keyof MarkerEvent>;
-
-    // Reset position on drag end.
     marker.addListener(MarkerEvent.onDragEnd, () => {
       const { position } = this.props;
 
       marker.setPosition(position);
     });
 
-    handlerProps.forEach(prop => {
-      const event = MarkerEvent[prop];
-
+    forEachEvent<EventProps>(MarkerEvent, (key, event) => {
       marker.addListener(
         event,
         createHandlerProxy(
           () =>
             // eslint-disable-next-line react/destructuring-assignment
-            this.props[prop]
+            this.props[key]
         )
       );
     });

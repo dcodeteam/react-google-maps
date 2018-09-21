@@ -129,6 +129,17 @@ class GoogleMap extends MVCObject {
   // };
 }
 
+class Marker extends MVCObject {
+  constructor(values) {
+    super(values);
+
+    this.setOptions = this.setValues;
+    this.setMap = jest.fn(map => this.set("map", map));
+    this.setIcon = jest.fn(icon => this.set("icon", icon));
+    this.setPosition = jest.fn(position => this.set("position", position));
+  }
+}
+
 module.exports = {
   Animation: {
     BOUNCE: "BOUNCE",
@@ -176,16 +187,7 @@ module.exports = {
     .fn(GoogleMap)
     .mockImplementation((node, options) => new GoogleMap(node, options)),
 
-  Marker: class extends MVCObject {
-    constructor(values) {
-      super(values);
-
-      this.setOptions = this.setValues;
-      this.setMap = jest.fn(map => this.set("map", map));
-      this.setIcon = jest.fn(icon => this.set("icon", icon));
-      this.setPosition = jest.fn(position => this.set("position", position));
-    }
-  }
+  Marker: jest.fn(Marker).mockImplementation(options => new Marker(options))
 
   // LatLng: function GoogleMapsLatLng(latLng) {
   //   this.lat = latLng.lat;

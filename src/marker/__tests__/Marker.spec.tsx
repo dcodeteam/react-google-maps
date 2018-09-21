@@ -1,8 +1,12 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { mockMarker } from "../../__tests__/testUtils";
+import {
+  createMockHandlers,
+  getMockMarkerInstance
+} from "../../__tests__/testUtils";
 import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
+import { forEachEvent } from "../../internal/PropsUtils";
 import { Marker, MarkerProps } from "../Marker";
 import { MarkerContextConsumer } from "../MarkerContext";
 import { MarkerEvent } from "../MarkerEvent";
@@ -23,31 +27,38 @@ describe("Marker", () => {
   });
 
   it("should create marker and attach it to map on mount", () => {
-    const markerSpy = mockMarker();
-
     mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
-    expect(markerSpy).toBeCalledTimes(1);
-
-    const [{ value: marker }] = markerSpy.mock.results;
+    const marker = getMockMarkerInstance();
 
     expect(marker.setMap).toBeCalledTimes(1);
     expect(marker.setMap).toHaveBeenLastCalledWith(map);
   });
 
   it("should set default options on mount", () => {
-    const markerSpy = mockMarker();
-
     mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
-    const [{ value: marker }] = markerSpy.mock.results;
+    const marker = getMockMarkerInstance();
 
-    expect(marker.setOptions.mock.calls).toMatchSnapshot();
+    expect(marker.setOptions).toBeCalledTimes(1);
+    expect(marker.setOptions).lastCalledWith({
+      animation: undefined,
+      clickable: undefined,
+      cursor: undefined,
+      draggable: undefined,
+      icon: undefined,
+      label: undefined,
+      opacity: undefined,
+      optimized: undefined,
+      position: { lat: 0, lng: 1 },
+      shape: undefined,
+      title: undefined,
+      visible: undefined,
+      zIndex: undefined
+    });
   });
 
   it("should set custom options on mount", () => {
-    const markerSpy = mockMarker();
-
     mount(
       <MockMarker
         animation="BOUNCE"
@@ -58,55 +69,60 @@ describe("Marker", () => {
         label="A"
         opacity={0.5}
         optimized={false}
-        position={{
-          lat: 0,
-          lng: 1
-        }}
-        shape={{
-          type: "foo"
-        }}
+        position={{ lat: 0, lng: 1 }}
+        shape={{ type: "foo" }}
         title="Foo"
-        zIndex={1000}
         visible={false}
+        zIndex={1000}
       />
     );
 
-    const [{ value: marker }] = markerSpy.mock.results;
+    const marker = getMockMarkerInstance();
 
-    expect(marker.setOptions.mock.calls).toMatchSnapshot();
+    expect(marker.setOptions).toBeCalledTimes(1);
+    expect(marker.setOptions).lastCalledWith({
+      animation: "BOUNCE",
+      clickable: true,
+      cursor: "pointer",
+      draggable: true,
+      icon: "https://url.to/icon.png",
+      label: "A",
+      opacity: 0.5,
+      optimized: false,
+      position: { lat: 0, lng: 1 },
+      shape: { type: "foo" },
+      title: "Foo",
+      visible: false,
+      zIndex: 1000
+    });
   });
 
   it("should add listeners without handlers", () => {
-    const markerSpy = mockMarker();
-
     mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
-    const [{ value: marker }] = markerSpy.mock.results;
+    const marker = getMockMarkerInstance();
+    const eventsLength = Object.keys(MarkerEvent).length;
 
-    expect(marker.addListener.mock.calls).toMatchSnapshot();
+    expect(marker.addListener).toBeCalledTimes(
+      eventsLength + 1 /* One extra handler for `onDragEnd` event. */
+    );
   });
 
   it("should add listeners with handlers", () => {
-    const markerSpy = mockMarker();
-    const props: MarkerProps = { position: { lat: 0, lng: 1 } };
-    const keys = Object.keys(MarkerEvent) as Array<keyof MarkerProps>;
+    const handlers = createMockHandlers(MarkerEvent);
 
-    keys.forEach(key => {
-      props[key] = jest.fn();
-    });
+    mount(<MockMarker position={{ lat: 0, lng: 1 }} {...handlers} />);
 
-    mount(<MockMarker {...props} />);
+    const marker = getMockMarkerInstance();
 
-    const [{ value: marker }] = markerSpy.mock.results;
-
-    keys.forEach(key => {
-      const event = MarkerEvent[key as keyof typeof MarkerEvent];
-      const handler = props[key];
+    forEachEvent(MarkerEvent, (key, event) => {
+      const handler = handlers[key];
       const payload = { key, event };
 
       expect(handler).toBeCalledTimes(0);
 
-      marker.emit(event, payload);
+      // eslint-disable-next-line typescript/no-explicit-any
+      (marker as any).emit(event, payload);
 
       expect(handler).toBeCalledTimes(1);
       expect(handler).lastCalledWith(payload);
@@ -126,7 +142,6 @@ describe("Marker", () => {
 
   it("should pass `MarkerContext` to children", () => {
     const consumer = jest.fn();
-    const markerSpy = mockMarker();
 
     mount(
       <MockMarker
@@ -135,7 +150,7 @@ describe("Marker", () => {
       />
     );
 
-    const [{ value: marker }] = markerSpy.mock.results;
+    const marker = getMockMarkerInstance();
 
     expect(consumer).toBeCalledTimes(1);
     expect(consumer).lastCalledWith({ marker });
@@ -143,17 +158,17 @@ describe("Marker", () => {
 
   it("should reset position on drag end", () => {
     const onDragEnd = jest.fn();
-    const markerSpy = mockMarker();
     const position = { lat: 0, lng: 1 };
 
     mount(<MockMarker position={position} onDragEnd={onDragEnd} />);
 
-    const [{ value: marker }] = markerSpy.mock.results;
+    const marker = getMockMarkerInstance();
 
     expect(onDragEnd).toHaveBeenCalledTimes(0);
     expect(marker.setPosition).toHaveBeenCalledTimes(0);
 
-    marker.emit(MarkerEvent.onDragEnd);
+    // eslint-disable-next-line typescript/no-explicit-any
+    (marker as any).emit(MarkerEvent.onDragEnd);
 
     expect(onDragEnd).toHaveBeenCalledTimes(1);
     expect(marker.setPosition).toHaveBeenCalledTimes(1);
@@ -161,10 +176,8 @@ describe("Marker", () => {
   });
 
   it("should update only changed options on props update", () => {
-    const markerSpy = mockMarker();
     const wrapper = mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
-
-    const [{ value: marker }] = markerSpy.mock.results;
+    const marker = getMockMarkerInstance();
 
     expect(marker.setOptions).toBeCalledTimes(1);
 
@@ -184,10 +197,9 @@ describe("Marker", () => {
   });
 
   it("should remove from map on unmount", () => {
-    const markerSpy = mockMarker();
     const wrapper = mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
-    const [{ value: marker }] = markerSpy.mock.results;
+    const marker = getMockMarkerInstance();
 
     expect(marker.setMap).toBeCalledTimes(1);
 
