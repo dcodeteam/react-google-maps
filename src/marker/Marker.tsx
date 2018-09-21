@@ -243,28 +243,6 @@ class MarkerElement extends React.Component<MarkerElementProps> {
   }
 }
 
-/**
- * Draws `google.maps.Marker`.
- *
- * **Usage:**
- *
- * ```javascript
- * import React from "react";
- * import { GoogleMap, Marker } from "react-google-map-components"
- *
- * export default function GoogleMapWrapper(props) {
- *   return (
- *     <GoogleMap {...props} maps={google.maps}>
- *       <Marker position={props.center} />
- *     </GoogleMap>
- *   );
- * }
- * ```
- *
- * **Google Maps Docs:**
- * * [google.maps.Marker](https://developers.google.com/maps/documentation/javascript/reference#Marker)
- * * [google.maps.MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions)
- */
 export function Marker(props: MarkerProps) {
   return (
     <GoogleMapContextConsumer>
