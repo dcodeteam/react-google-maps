@@ -3,7 +3,7 @@ import * as React from "react";
 
 import {
   createMockHandlers,
-  getClassMockInstance
+  getClassMockInstance,
 } from "../../__tests__/testUtils";
 import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
 import { forEachEvent } from "../../internal/PropsUtils";
@@ -58,7 +58,7 @@ describe("Marker", () => {
       shape: undefined,
       title: undefined,
       visible: undefined,
-      zIndex: undefined
+      zIndex: undefined,
     });
   });
 
@@ -78,7 +78,7 @@ describe("Marker", () => {
         title="Foo"
         visible={false}
         zIndex={1000}
-      />
+      />,
     );
 
     const marker = getMarkerMockInstance();
@@ -97,7 +97,7 @@ describe("Marker", () => {
       shape: { type: "foo" },
       title: "Foo",
       visible: false,
-      zIndex: 1000
+      zIndex: 1000,
     });
   });
 
@@ -108,7 +108,7 @@ describe("Marker", () => {
     const eventsLength = Object.keys(MarkerEvent).length;
 
     expect(marker.addListener).toBeCalledTimes(
-      eventsLength + 1 /* One extra handler for `onDragEnd` event. */
+      eventsLength + 1 /* One extra handler for `onDragEnd` event. */,
     );
   });
 
@@ -135,7 +135,7 @@ describe("Marker", () => {
 
   it("should render icon if its valid react element", () => {
     const wrapper = mount(
-      <MockMarker position={{ lat: 0, lng: 1 }} icon={<div>Foo</div>} />
+      <MockMarker position={{ lat: 0, lng: 1 }} icon={<div>Foo</div>} />,
     );
 
     const divWrapper = wrapper.find("div");
@@ -151,7 +151,7 @@ describe("Marker", () => {
       <MockMarker
         position={{ lat: 0, lng: 1 }}
         icon={<MarkerContextConsumer>{consumer}</MarkerContextConsumer>}
-      />
+      />,
     );
 
     const marker = getMarkerMockInstance();

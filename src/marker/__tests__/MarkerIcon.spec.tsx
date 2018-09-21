@@ -33,7 +33,7 @@ describe("MarkerIcon", () => {
       origin: { x: 0, y: 0 },
       scaledSize: undefined,
       size: undefined,
-      url: "https://url.to/icon.png"
+      url: "https://url.to/icon.png",
     });
   });
 
@@ -46,7 +46,7 @@ describe("MarkerIcon", () => {
         labelOrigin={{ x: 5, y: 6 }}
         size={{ width: 7, height: 8 }}
         scaledSize={{ width: 9, height: 10 }}
-      />
+      />,
     );
 
     expect(marker.setIcon).toBeCalledTimes(1);
@@ -56,7 +56,7 @@ describe("MarkerIcon", () => {
       origin: { x: 3, y: 4 },
       scaledSize: { height: 10, width: 9 },
       size: { height: 8, width: 7 },
-      url: "https://url.to/icon.png"
+      url: "https://url.to/icon.png",
     });
   });
 
@@ -74,7 +74,7 @@ describe("MarkerIcon", () => {
       origin: { x: 0, y: 0 },
       scaledSize: undefined,
       size: undefined,
-      url: "https://url.to/another-icon.png"
+      url: "https://url.to/another-icon.png",
     });
 
     wrapper.setProps({ origin: { x: 0, y: 0 } });
@@ -91,7 +91,7 @@ describe("MarkerIcon", () => {
       origin: { x: 1, y: 2 },
       scaledSize: undefined,
       size: undefined,
-      url: "https://url.to/another-icon.png"
+      url: "https://url.to/another-icon.png",
     });
   });
 });

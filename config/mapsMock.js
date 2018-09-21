@@ -143,18 +143,18 @@ class Marker extends MVCObject {
 module.exports = {
   Animation: {
     BOUNCE: "BOUNCE",
-    DROP: "DROP"
+    DROP: "DROP",
   },
 
   MapTypeId: {
     HYBRID: "HYBRID",
     ROADMAP: "ROADMAP",
     SATELLITE: "SATELLITE",
-    TERRAIN: "TERRAIN"
+    TERRAIN: "TERRAIN",
   },
 
   event: {
-    clearInstanceListeners: jest.fn()
+    clearInstanceListeners: jest.fn(),
   },
 
   Size: class extends Comparable {
@@ -187,7 +187,7 @@ module.exports = {
     .fn(GoogleMap)
     .mockImplementation((node, options) => new GoogleMap(node, options)),
 
-  Marker: jest.fn(Marker).mockImplementation(options => new Marker(options))
+  Marker: jest.fn(Marker).mockImplementation(options => new Marker(options)),
 
   // LatLng: function GoogleMapsLatLng(latLng) {
   //   this.lat = latLng.lat;

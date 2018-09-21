@@ -17,7 +17,7 @@ export function isStrictEqual<T>(a: T, b: T): boolean {
 function isShallowEqualWith<T>(
   a: T,
   b: T,
-  comparator: <K extends keyof T>(a: T[K], b: T[K]) => boolean
+  comparator: <K extends keyof T>(a: T[K], b: T[K]) => boolean,
 ): boolean {
   if (isStrictEqual(a, b)) {
     return true;
@@ -112,7 +112,7 @@ export function isShallowEqualProps<P>(prevProps: P, nextProps: P): boolean {
 
 export function pickChangedProps<T extends object>(
   prevProps: T,
-  nextProps: T
+  nextProps: T,
 ): null | Partial<T> {
   const keys = Object.keys(nextProps) as Array<keyof T>;
   const diff: Partial<T> = {};
@@ -134,7 +134,7 @@ export function pickChangedProps<T extends object>(
 type EventHandler<T> = (event: T) => void;
 
 export function createHandlerProxy<T = any>(
-  handlerSelector: () => undefined | EventHandler<T>
+  handlerSelector: () => undefined | EventHandler<T>,
 ): EventHandler<T> {
   return (event: T) => {
     const handler = handlerSelector();
@@ -147,7 +147,7 @@ export function createHandlerProxy<T = any>(
 
 export function forEachEvent<P>(
   events: unknown,
-  fn: (key: keyof P, event: string) => void
+  fn: (key: keyof P, event: string) => void,
 ) {
   const eventsObject = events as { [key: string]: string };
   const keys = Object.keys(eventsObject) as Array<keyof P>;

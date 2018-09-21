@@ -5,5 +5,5 @@ module.exports = {
   testEnvironment: "jsdom",
   setupFiles: ["<rootDir>/config/setupTests.js"],
   snapshotSerializers: ["enzyme-to-json/serializer"],
-  testMatch: ["**/__tests__/**/*.spec.ts?(x)"]
+  testMatch: ["**/__tests__/**/*.spec.ts?(x)"],
 };

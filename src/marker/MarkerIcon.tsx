@@ -5,7 +5,7 @@ import {
   PointLiteral,
   SizeLiteral,
   createPoint,
-  createSize
+  createSize,
 } from "../internal/MapsUtils";
 import { isShallowEqualProps } from "../internal/PropsUtils";
 import { MarkerContextConsumer } from "./MarkerContext";
@@ -66,7 +66,7 @@ function createIcon({
   labelOrigin,
 
   size,
-  scaledSize
+  scaledSize,
 }: MarkerIconElementProps): google.maps.Icon {
   return {
     url,
@@ -76,7 +76,7 @@ function createIcon({
     labelOrigin: labelOrigin && createPoint(maps, labelOrigin),
 
     size: size && createSize(maps, size),
-    scaledSize: scaledSize && createSize(maps, scaledSize)
+    scaledSize: scaledSize && createSize(maps, scaledSize),
   };
 }
 

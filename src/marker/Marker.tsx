@@ -4,7 +4,7 @@ import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext
 import {
   createHandlerProxy,
   forEachEvent,
-  pickChangedProps
+  pickChangedProps,
 } from "../internal/PropsUtils";
 import { MarkerContext, MarkerContextProvider } from "./MarkerContext";
 import { MarkerEvent } from "./MarkerEvent";
@@ -160,7 +160,7 @@ function createOptions({
   zIndex,
 
   icon,
-  animation
+  animation,
 }: MarkerElementProps): google.maps.MarkerOptions {
   return {
     position,
@@ -176,7 +176,7 @@ function createOptions({
     zIndex,
 
     icon: typeof icon === "string" ? icon : undefined,
-    animation: animation && google.maps.Animation[animation]
+    animation: animation && google.maps.Animation[animation],
   };
 }
 
@@ -206,8 +206,8 @@ class MarkerElement extends React.Component<MarkerElementProps> {
         createHandlerProxy(
           () =>
             // eslint-disable-next-line react/destructuring-assignment
-            this.props[key]
-        )
+            this.props[key],
+        ),
       );
     });
   }
