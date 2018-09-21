@@ -3,12 +3,16 @@ import * as React from "react";
 
 import {
   createMockHandlers,
-  getMockMapInstance
+  getClassMockInstance
 } from "../../__tests__/testUtils";
 import { GoogleMapContextConsumer } from "../../google-map-context/GoogleMapContext";
 import { forEachEvent } from "../../internal/PropsUtils";
 import { GoogleMap, GoogleMapProps } from "../GoogleMap";
 import { GoogleMapEvent } from "../GoogleMapEvent";
+
+export function getMapMockInstance(): google.maps.Map {
+  return getClassMockInstance(google.maps.Map);
+}
 
 describe("GoogleMap", () => {
   afterEach(() => {
@@ -31,7 +35,7 @@ describe("GoogleMap", () => {
         <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
       );
 
-      const map = getMockMapInstance();
+      const map = getMapMockInstance();
 
       expect(map.setValues).toBeCalledTimes(1);
       expect(map.setValues).lastCalledWith({
@@ -57,7 +61,7 @@ describe("GoogleMap", () => {
         />
       );
 
-      const map = getMockMapInstance();
+      const map = getMapMockInstance();
 
       expect(map.setValues).toBeCalledTimes(1);
       expect(map.setValues).lastCalledWith({
@@ -76,7 +80,7 @@ describe("GoogleMap", () => {
         <GoogleMap zoom={0} maps={google.maps} center={{ lat: 0, lng: 1 }} />
       );
 
-      const map = getMockMapInstance();
+      const map = getMapMockInstance();
 
       expect(map.addListener).toBeCalledTimes(
         Object.keys(GoogleMapEvent).length
@@ -96,7 +100,7 @@ describe("GoogleMap", () => {
         />
       );
 
-      const map = getMockMapInstance();
+      const map = getMapMockInstance();
 
       forEachEvent<GoogleMapProps>(GoogleMapEvent, (key, event) => {
         const handler = handlers[key];
@@ -126,7 +130,7 @@ describe("GoogleMap", () => {
         <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
       );
 
-      const map = getMockMapInstance();
+      const map = getMapMockInstance();
 
       expect(map.setOptions).toBeCalledTimes(1);
 
@@ -176,7 +180,7 @@ describe("GoogleMap", () => {
         </GoogleMap>
       );
 
-      const map = getMockMapInstance();
+      const map = getMapMockInstance();
 
       expect(consumer).toBeCalledTimes(1);
       expect(consumer).toBeCalledWith({ maps: google.maps, map });

@@ -1,15 +1,7 @@
 import { forEachEvent } from "../internal/PropsUtils";
 
-function getClassInstance(value: unknown) {
+export function getClassMockInstance(value: unknown) {
   return (value as jest.Mock).mock.results[0].value;
-}
-
-export function getMockMapInstance(): google.maps.Map {
-  return getClassInstance(google.maps.Map);
-}
-
-export function getMockMarkerInstance(): google.maps.Marker {
-  return getClassInstance(google.maps.Marker);
 }
 
 export function createMockHandlers<P>(events: unknown): Partial<P> {

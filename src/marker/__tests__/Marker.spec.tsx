@@ -3,7 +3,7 @@ import * as React from "react";
 
 import {
   createMockHandlers,
-  getMockMarkerInstance
+  getClassMockInstance
 } from "../../__tests__/testUtils";
 import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
 import { forEachEvent } from "../../internal/PropsUtils";
@@ -12,6 +12,10 @@ import { MarkerContextConsumer } from "../MarkerContext";
 import { MarkerEvent } from "../MarkerEvent";
 
 const map = new google.maps.Map(null);
+
+export function getMarkerMockInstance(): google.maps.Marker {
+  return getClassMockInstance(google.maps.Marker);
+}
 
 function MockMarker(props: MarkerProps) {
   return (
@@ -29,7 +33,7 @@ describe("Marker", () => {
   it("should create marker and attach it to map on mount", () => {
     mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
 
     expect(marker.setMap).toBeCalledTimes(1);
     expect(marker.setMap).toHaveBeenLastCalledWith(map);
@@ -38,7 +42,7 @@ describe("Marker", () => {
   it("should set default options on mount", () => {
     mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
 
     expect(marker.setOptions).toBeCalledTimes(1);
     expect(marker.setOptions).lastCalledWith({
@@ -77,7 +81,7 @@ describe("Marker", () => {
       />
     );
 
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
 
     expect(marker.setOptions).toBeCalledTimes(1);
     expect(marker.setOptions).lastCalledWith({
@@ -100,7 +104,7 @@ describe("Marker", () => {
   it("should add listeners without handlers", () => {
     mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
     const eventsLength = Object.keys(MarkerEvent).length;
 
     expect(marker.addListener).toBeCalledTimes(
@@ -113,7 +117,7 @@ describe("Marker", () => {
 
     mount(<MockMarker position={{ lat: 0, lng: 1 }} {...handlers} />);
 
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
 
     forEachEvent(MarkerEvent, (key, event) => {
       const handler = handlers[key];
@@ -150,7 +154,7 @@ describe("Marker", () => {
       />
     );
 
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
 
     expect(consumer).toBeCalledTimes(1);
     expect(consumer).lastCalledWith({ marker });
@@ -162,7 +166,7 @@ describe("Marker", () => {
 
     mount(<MockMarker position={position} onDragEnd={onDragEnd} />);
 
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
 
     expect(onDragEnd).toHaveBeenCalledTimes(0);
     expect(marker.setPosition).toHaveBeenCalledTimes(0);
@@ -177,7 +181,7 @@ describe("Marker", () => {
 
   it("should update only changed options on props update", () => {
     const wrapper = mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
 
     expect(marker.setOptions).toBeCalledTimes(1);
 
@@ -199,7 +203,7 @@ describe("Marker", () => {
   it("should remove from map on unmount", () => {
     const wrapper = mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
-    const marker = getMockMarkerInstance();
+    const marker = getMarkerMockInstance();
 
     expect(marker.setMap).toBeCalledTimes(1);
 
