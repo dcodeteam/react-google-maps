@@ -1,0 +1,44 @@
+---
+name: MarkerIcon
+---
+
+import { Playground, PropsTable } from 'docz'
+
+import { Marker } from '../Marker'
+import { MarkerIcon } from '../MarkerIcon'
+import { GoogleMap } from '../../google-map/GoogleMap'
+import Icon from './marker-icon.svg'
+
+
+# MarkerIcon
+
+Defines icon options of `Marker` component.
+
+**Google Maps Docs:**
+* [google.maps.Icon](https://developers.google.com/maps/documentation/javascript/reference#Icon)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <Marker
+      label="Label"
+      position={{ lat: 36.964, lng: -122.015 }}
+      icon={
+        <MarkerIcon
+          url={Icon}
+          anchor={{ x: 0, y: 0 }}
+          origin={{ x: 0, y: 0 }}
+          labelOrigin={{ x: 50, y: 50 }}
+          size={{ width: 100, height: 100 }}
+          scaledSize={{ width: 100, height: 100 }}
+        />
+      }
+    />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={MarkerIcon} />

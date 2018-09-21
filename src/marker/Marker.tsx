@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
-import { createHandlerProxy, pickChangedProps } from "../internal/Utils";
+import { createHandlerProxy, pickChangedProps } from "../internal/PropsUtils";
 import { MarkerContext, MarkerContextProvider } from "./MarkerContext";
 import { MarkerEvent } from "./MarkerEvent";
 

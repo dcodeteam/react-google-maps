@@ -15,6 +15,12 @@
 //   "TOP_RIGHT"
 // ];
 
+class Comparable {
+  equals(other) {
+    return this === other;
+  }
+}
+
 class MVCObject {
   constructor(values) {
     this.listeners = {};
@@ -61,44 +67,41 @@ module.exports = {
     clearInstanceListeners: jest.fn()
   },
 
+  Size: class extends Comparable {
+    constructor(width, height) {
+      super();
+
+      this.width = width;
+      this.height = height;
+    }
+
+    equals(other) {
+      return this.width === other.width && this.height === other.height;
+    }
+  },
+
+  Point: class extends Comparable {
+    constructor(x, y) {
+      super();
+
+      this.x = x;
+      this.y = y;
+    }
+
+    equals(other) {
+      return this.x === other.x && this.y === other.y;
+    }
+  },
+
   Map: class extends MVCObject {
     constructor(node, options) {
       super({ ...options, bounds: [] });
 
       this.node = node;
+      this.getZoom = jest.fn(() => this.get("zoom"));
+      this.getBounds = jest.fn(() => this.get("bounds"));
     }
 
-    getZoom() {
-      return this.get("zoom");
-    }
-
-    getBounds() {
-      return this.get("bounds");
-    }
-
-    // this.setValues = noop;
-    //
-    // this.getBounds = noop;
-    //
-    // this.getZoom = noop;
-    //
-    //
-    //
-    // this.emit = (event, x) => {
-    //   const eventListeners = this.listeners[event];
-    //
-    //   if (eventListeners) {
-    //     eventListeners.forEach(fn => {
-    //       fn(x);
-    //     });
-    //   }
-    // };
-    //
-    // this.addListener = (event, listener) => {
-    //   this.listeners[event] = this.listeners[event] || [];
-    //   this.listeners[event].push(listener);
-    // };
-    //
     // this.fitBounds = noop;
     // this.panBy = noop;
     // this.panTo = noop;
@@ -178,16 +181,6 @@ module.exports = {
     }
   }
 
-  // Size: function GoogleMapsSize(width, height) {
-  //   this.width = width;
-  //   this.height = height;
-  // },
-  //
-  // Point: function GoogleMapsPoint(x, y) {
-  //   this.x = x;
-  //   this.y = y;
-  // },
-  //
   // LatLng: function GoogleMapsLatLng(latLng) {
   //   this.lat = latLng.lat;
   //   this.lng = latLng.lng;

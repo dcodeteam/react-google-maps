@@ -156,6 +156,8 @@ Object {
     },
     "emit": [MockFunction],
     "get": [MockFunction],
+    "getBounds": [MockFunction],
+    "getZoom": [MockFunction],
     "listeners": Object {
       "bounds_changed": Array [
         [Function],

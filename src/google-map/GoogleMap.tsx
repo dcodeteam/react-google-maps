@@ -4,7 +4,7 @@ import {
   GoogleMapContext,
   GoogleMapContextProvider
 } from "../google-map-context/GoogleMapContext";
-import { pickChangedProps } from "../internal/Utils";
+import { pickChangedProps } from "../internal/PropsUtils";
 
 const styles = { map: { height: "100%" } };
 
