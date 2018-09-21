@@ -2,12 +2,12 @@ import * as React from "react";
 
 import {
   GoogleMapContext,
-  GoogleMapContextProvider
+  GoogleMapContextProvider,
 } from "../google-map-context/GoogleMapContext";
 import {
   createHandlerProxy,
   forEachEvent,
-  pickChangedProps
+  pickChangedProps,
 } from "../internal/PropsUtils";
 import { GoogleMapEvent } from "./GoogleMapEvent";
 
@@ -20,7 +20,7 @@ interface EventProps {
    * An `MouseEvent` with properties for the clicked location is returned unless a place icon was clicked, in which case an `IconMouseEvent` with a `placeid` is returned.
    */
   onClick?: (
-    event: google.maps.MouseEvent | google.maps.IconMouseEvent
+    event: google.maps.MouseEvent | google.maps.IconMouseEvent,
   ) => void;
 
   /**
@@ -30,7 +30,7 @@ interface EventProps {
    * right before this one.
    */
   onDoubleClick?: (
-    event: google.maps.MouseEvent | google.maps.IconMouseEvent
+    event: google.maps.MouseEvent | google.maps.IconMouseEvent,
   ) => void;
 
   /**
@@ -38,7 +38,7 @@ interface EventProps {
    * fired on the map container.
    */
   onRightClick?: (
-    event: google.maps.MouseEvent | google.maps.IconMouseEvent
+    event: google.maps.MouseEvent | google.maps.IconMouseEvent,
   ) => void;
 
   /**
@@ -96,7 +96,7 @@ interface EventProps {
    * This handler is called when the viewport bounds have changed.
    */
   onBoundsChanged?: (
-    event: { bounds: null | undefined | google.maps.LatLngBounds }
+    event: { bounds: null | undefined | google.maps.LatLngBounds },
   ) => void;
 
   /**
@@ -190,10 +190,11 @@ function createMapOptions({
 
   zoom,
   center,
-  mapTypeId,
-  clickableIcons,
   backgroundColor,
-  disableDoubleClickZoom
+
+  mapTypeId = "ROADMAP",
+  clickableIcons = true,
+  disableDoubleClickZoom = false,
 }: GoogleMapProps): google.maps.MapOptions {
   return {
     disableDefaultUI: true,
@@ -203,7 +204,7 @@ function createMapOptions({
     clickableIcons,
     backgroundColor,
     disableDoubleClickZoom,
-    mapTypeId: mapTypeId && maps.MapTypeId[mapTypeId]
+    mapTypeId: mapTypeId && maps.MapTypeId[mapTypeId],
   };
 }
 

@@ -3,7 +3,7 @@ import * as React from "react";
 
 import {
   createMockHandlers,
-  getClassMockInstance
+  getClassMockInstance,
 } from "../../__tests__/testUtils";
 import { GoogleMapContextConsumer } from "../../google-map-context/GoogleMapContext";
 import { forEachEvent } from "../../internal/PropsUtils";
@@ -22,7 +22,7 @@ describe("GoogleMap", () => {
   describe("#componentDidMount", () => {
     it("should attach map to child div", () => {
       const wrapper = mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
+        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
       );
 
       const mapDiv = wrapper.find("div > div");
@@ -32,7 +32,7 @@ describe("GoogleMap", () => {
 
     it("should pass default options to map", () => {
       mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
+        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
       );
 
       const map = getMapMockInstance();
@@ -41,11 +41,11 @@ describe("GoogleMap", () => {
       expect(map.setValues).lastCalledWith({
         backgroundColor: undefined,
         center: { lat: 0, lng: 1 },
-        clickableIcons: undefined,
+        clickableIcons: true,
         disableDefaultUI: true,
-        disableDoubleClickZoom: undefined,
-        mapTypeId: undefined,
-        zoom: 0
+        disableDoubleClickZoom: false,
+        mapTypeId: "ROADMAP",
+        zoom: 0,
       });
     });
 
@@ -58,7 +58,7 @@ describe("GoogleMap", () => {
           mapTypeId="HYBRID"
           clickableIcons={false}
           disableDoubleClickZoom={true}
-        />
+        />,
       );
 
       const map = getMapMockInstance();
@@ -71,19 +71,19 @@ describe("GoogleMap", () => {
         disableDefaultUI: true,
         disableDoubleClickZoom: true,
         mapTypeId: "HYBRID",
-        zoom: 0
+        zoom: 0,
       });
     });
 
     it("should add all event listeners", () => {
       mount(
-        <GoogleMap zoom={0} maps={google.maps} center={{ lat: 0, lng: 1 }} />
+        <GoogleMap zoom={0} maps={google.maps} center={{ lat: 0, lng: 1 }} />,
       );
 
       const map = getMapMockInstance();
 
       expect(map.addListener).toBeCalledTimes(
-        Object.keys(GoogleMapEvent).length
+        Object.keys(GoogleMapEvent).length,
       );
     });
 
@@ -97,7 +97,7 @@ describe("GoogleMap", () => {
           zoom={zoom}
           maps={google.maps}
           center={{ lat: 0, lng: 1 }}
-        />
+        />,
       );
 
       const map = getMapMockInstance();
@@ -127,7 +127,7 @@ describe("GoogleMap", () => {
   describe("#componentDidUpdate", () => {
     it("pass only changed options to map", () => {
       const wrapper = mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
+        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
       );
 
       const map = getMapMockInstance();
@@ -154,7 +154,7 @@ describe("GoogleMap", () => {
   describe("#componentWillUnmount", () => {
     it("should remove all listeners on unmount", () => {
       const wrapper = mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
+        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
       );
 
       const mapDiv = wrapper.find("div > div");
@@ -165,7 +165,7 @@ describe("GoogleMap", () => {
 
       expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
       expect(google.maps.event.clearInstanceListeners).lastCalledWith(
-        mapDiv.getDOMNode()
+        mapDiv.getDOMNode(),
       );
     });
   });
@@ -177,7 +177,7 @@ describe("GoogleMap", () => {
       mount(
         <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }}>
           <GoogleMapContextConsumer>{consumer}</GoogleMapContextConsumer>
-        </GoogleMap>
+        </GoogleMap>,
       );
 
       const map = getMapMockInstance();
