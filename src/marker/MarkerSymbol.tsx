@@ -3,6 +3,7 @@ import * as React from "react";
 import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
 import { PointLiteral, createPoint } from "../internal/MapsUtils";
 import { isShallowEqualProps } from "../internal/PropsUtils";
+import { ValueSpy } from "../internal/ValueSpy";
 import { MarkerContextConsumer } from "./MarkerContext";
 
 export interface MarkerSymbolProps {
@@ -59,26 +60,22 @@ export interface MarkerSymbolProps {
   strokeWeight?: number;
 }
 
-interface Props extends MarkerSymbolProps {
-  maps: typeof google.maps;
-  marker: google.maps.Marker;
-}
+function createSymbol(
+  maps: typeof google.maps,
+  {
+    path,
 
-function createSymbol({
-  maps,
+    rotation = 0,
+    scale = 1,
+    fillColor = "black",
+    fillOpacity = 0,
+    strokeColor = "black",
+    strokeOpacity = 1,
+    strokeWeight = 1,
 
-  path,
-
-  rotation = 0,
-  scale = 1,
-  fillColor = "black",
-  fillOpacity = 0,
-  strokeColor = "black",
-  strokeOpacity = 1,
-  strokeWeight = 1,
-
-  anchor = { x: 0, y: 0 },
-}: Props): google.maps.Symbol {
+    anchor = { x: 0, y: 0 },
+  }: MarkerSymbolProps,
+): google.maps.Symbol {
   return {
     path,
     rotation,
@@ -93,39 +90,33 @@ function createSymbol({
   };
 }
 
-class MarkerSymbolElement extends React.Component<Props> {
-  public componentDidMount(): void {
-    const { marker } = this.props;
-
-    marker.setIcon(createSymbol(this.props));
-  }
-
-  public componentDidUpdate(prevProps: Readonly<Props>): void {
-    const { marker } = this.props;
-    const prevSymbol = createSymbol(prevProps);
-    const nextSymbol = createSymbol(this.props);
-
-    if (!isShallowEqualProps(prevSymbol, nextSymbol)) {
-      marker.setIcon(nextSymbol);
-    }
-  }
-
-  public render() {
-    return null;
-  }
-}
-
 export function MarkerSymbol(props: MarkerSymbolProps) {
   return (
     <GoogleMapContextConsumer>
       {({ maps }) => (
         <MarkerContextConsumer>
-          {({ marker }) =>
-            maps != null &&
-            marker != null && (
-              <MarkerSymbolElement {...props} maps={maps} marker={marker} />
-            )
-          }
+          {({ marker }) => {
+            if (!maps || !marker) {
+              return null;
+            }
+
+            const symbol = createSymbol(maps, props);
+            const setIcon = () => {
+              marker.setIcon(symbol);
+            };
+
+            return (
+              <ValueSpy
+                value={symbol}
+                didMount={setIcon}
+                didUpdate={prevValue => {
+                  if (!isShallowEqualProps(symbol, prevValue)) {
+                    setIcon();
+                  }
+                }}
+              />
+            );
+          }}
         </MarkerContextConsumer>
       )}
     </GoogleMapContextConsumer>
