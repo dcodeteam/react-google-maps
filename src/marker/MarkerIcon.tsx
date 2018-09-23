@@ -8,6 +8,7 @@ import {
   createSize,
 } from "../internal/MapsUtils";
 import { isShallowEqualProps } from "../internal/PropsUtils";
+import { ValueSpy } from "../internal/ValueSpy";
 import { MarkerContextConsumer } from "./MarkerContext";
 
 export interface MarkerIconProps {
@@ -52,22 +53,20 @@ export interface MarkerIconProps {
   scaledSize?: SizeLiteral;
 }
 
-interface MarkerIconElementProps extends MarkerIconProps {
-  maps: typeof google.maps;
-  marker: google.maps.Marker;
-}
+function createIcon(
+  maps: typeof google.maps,
+  {
+    url,
 
-function createIcon({
-  maps,
-  url,
+    anchor,
+    labelOrigin,
 
-  anchor,
-  origin,
-  labelOrigin,
+    size,
+    scaledSize,
 
-  size,
-  scaledSize,
-}: MarkerIconElementProps): google.maps.Icon {
+    origin = { x: 0, y: 0 },
+  }: MarkerIconProps,
+): google.maps.Icon {
   return {
     url,
 
@@ -80,50 +79,33 @@ function createIcon({
   };
 }
 
-class MarkerIconElement extends React.Component<MarkerIconElementProps> {
-  public componentDidMount(): void {
-    const { marker } = this.props;
-    const icon = createIcon(this.props);
-
-    marker.setIcon(icon);
-  }
-
-  public componentDidUpdate(prevProps: Readonly<MarkerIconElementProps>): void {
-    const { marker } = this.props;
-    const prevIcon = createIcon(prevProps);
-    const nextIcon = createIcon(this.props);
-
-    if (!isShallowEqualProps(prevIcon, nextIcon)) {
-      marker.setIcon(nextIcon);
-    }
-  }
-
-  public render() {
-    return null;
-  }
-}
-
-export function MarkerIcon({
-  origin = { x: 0, y: 0 },
-
-  ...props
-}: MarkerIconProps) {
+export function MarkerIcon(props: MarkerIconProps) {
   return (
     <GoogleMapContextConsumer>
-      {({ map, maps }) => (
+      {({ maps }) => (
         <MarkerContextConsumer>
-          {({ marker }) =>
-            map != null &&
-            maps != null &&
-            marker != null && (
-              <MarkerIconElement
-                {...props}
-                maps={maps}
-                marker={marker}
-                origin={origin}
+          {({ marker }) => {
+            if (!maps || !marker) {
+              return null;
+            }
+
+            const icon = createIcon(maps, props);
+            const setIcon = () => {
+              marker.setIcon(icon);
+            };
+
+            return (
+              <ValueSpy
+                value={icon}
+                didMount={setIcon}
+                didUpdate={prevValue => {
+                  if (!isShallowEqualProps(icon, prevValue)) {
+                    setIcon();
+                  }
+                }}
               />
-            )
-          }
+            );
+          }}
         </MarkerContextConsumer>
       )}
     </GoogleMapContextConsumer>
