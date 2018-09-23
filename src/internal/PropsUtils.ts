@@ -77,39 +77,6 @@ export function isShallowEqualProps<P>(prevProps: P, nextProps: P): boolean {
   return isShallowEqualWith(prevProps, nextProps, isEqualProp);
 }
 
-// const isEqualPropsCustomizer = (a, b) => {
-//   // Do not compare react nodes
-//   if (React.isValidElement(a) || React.isValidElement(b)) {
-//     return a === b;
-//   }
-//
-//   if (a && b && _.isFunction(a.equals)) {
-//     return a.equals(b);
-//   }
-// };
-
-// export function isEqualProps<T extends object>(a: T, b: T): boolean {
-//
-// }
-
-// export const getChangedProps = (prev, next) => {
-//   const prevKeys = _.keys(prev);
-//   const nextKeys = _.keys(next);
-//   const allKeys = _.union(prevKeys, nextKeys);
-//   let hasDiff = false;
-//   const diff = {};
-//
-//   allKeys.forEach(key => {
-//     if (!isEqualProps(prev[key], next[key])) {
-//       hasDiff = true;
-//
-//       diff[key] = next[key];
-//     }
-//   }, {});
-//
-//   return hasDiff ? diff : null;
-// };
-
 export function pickChangedProps<T extends object>(
   prevProps: T,
   nextProps: T,

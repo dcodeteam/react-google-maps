@@ -59,13 +59,13 @@ class GoogleMap extends MVCObject {
     this.setOptions = this.setValues;
     this.getZoom = jest.fn(() => this.get("zoom"));
     this.getBounds = jest.fn(() => this.get("bounds"));
+
+    this.fitBounds = jest.fn();
+    this.panBy = jest.fn();
+    this.panTo = jest.fn();
+    this.panToBounds = jest.fn();
   }
 
-  // this.fitBounds = noop;
-  // this.panBy = noop;
-  // this.panTo = noop;
-  // this.panToBounds = noop;
-  //
   // this.controls = controlTypes.reduce((acc, control) => {
   //   const items = [];
   //
@@ -82,7 +82,7 @@ class GoogleMap extends MVCObject {
   //
   //   return acc;
   // }, {});
-  //
+
   // this.data = {
   //   items: [],
   //   add(item) {
