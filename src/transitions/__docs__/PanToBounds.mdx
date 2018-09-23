@@ -1,0 +1,41 @@
+---
+menu: Transitions
+name: Pan To Bounds
+---
+
+import { Playground, PropsTable } from 'docz'
+import { PanToBounds } from '../PanToBounds'
+import { Marker } from '../../marker/Marker'
+import { GoogleMap } from '../../google-map/GoogleMap'
+
+# Pan To Bounds
+
+Pans the map by the minimum amount necessary to contain the given `LatLngBounds`.
+It makes no guarantee where on the map the bounds will be, except that as much of the bounds as possible will be visible.
+
+The bounds will be positioned inside the area bounded by the map type and navigation (pan, zoom, and Street View) controls, if they are present on the map.
+
+If the bounds is larger than the map, the map will be shifted to include the northwest corner of the bounds.
+
+If the change in the map's position is less than both the width and height of the map, the transition will be smoothly animated.
+
+**Google Maps Docs:**
+* [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
+* [google.maps.LatLngBounds](https://developers.google.com/maps/documentation/javascript/3.exp/reference#LatLngBounds)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <Marker position={{ lat: 36, lng: -122 }} />
+    <Marker position={{ lat: 34, lng: -120 }} />
+    <Marker position={{ lat: 33, lng: -124 }} />
+
+    <PanToBounds latLngBounds={{south: 33, west: -124, north: 36, east: -120}} />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={PanToBounds} />

@@ -14,29 +14,6 @@ export interface PanByProps {
   y: number;
 }
 
-/**
- * Changes the center of the map by the given distance in pixels.
- *
- * If the distance is less than both the width and height of the map, the transition will be smoothly animated.
- *
- * **Usage:**
- *
- * ```javascript
- * import React from "react";
- * import { GoogleMap, PanBy } from "react-google-map-components"
- *
- * export default function GoogleMapWrapper(props) {
- *   return (
- *     <GoogleMap {...props} maps={google.maps}>
- *       <PanBy x={props.panX} y={props.panY} />
- *     </GoogleMap>
- *   );
- * }
- * ```
- *
- * **Google Maps Docs:**
- * * [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
- */
 export function PanBy(props: PanByProps) {
   return (
     <GoogleMapContextConsumer>

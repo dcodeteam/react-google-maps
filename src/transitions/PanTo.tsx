@@ -11,30 +11,6 @@ export interface PanToProps {
   latLng: google.maps.LatLngLiteral;
 }
 
-/**
- * Changes the center of the map to the given `latLng`.
- *
- * If the change is less than both the width and height of the map,
- * the transition will be smoothly animated.
- *
- * **Usage:**
- *
- * ```javascript
- * import React from "react";
- * import { GoogleMap, PanTo } from "react-google-map-components"
- *
- * export default function GoogleMapWrapper(props) {
- *   return (
- *     <GoogleMap {...props} maps={google.maps}>
- *       <PanTo latLng={props.panPosition} />
- *     </GoogleMap>
- *   );
- * }
- * ```
- *
- * **Google Maps Docs:**
- * * [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
- */
 export function PanTo({ latLng }: PanToProps) {
   return (
     <GoogleMapContextConsumer>
