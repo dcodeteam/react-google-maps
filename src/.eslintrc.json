@@ -1,3 +1,6 @@
 {
-  "extends": "@dc0de/eslint-config-react"
+  "extends": "@dc0de/eslint-config-react",
+  "rules": {
+    "react/style-prop-object": "off"
+  }
 }

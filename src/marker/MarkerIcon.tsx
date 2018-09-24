@@ -1,13 +1,13 @@
 import * as React from "react";
 
 import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
+import { isShallowEqual } from "../internal/DataUtils";
 import {
   PointLiteral,
   SizeLiteral,
   createPoint,
   createSize,
 } from "../internal/MapsUtils";
-import { isShallowEqualProps } from "../internal/PropsUtils";
 import { ValueSpy } from "../internal/ValueSpy";
 import { MarkerContextConsumer } from "./MarkerContext";
 
@@ -99,7 +99,7 @@ export function MarkerIcon(props: MarkerIconProps) {
                 value={icon}
                 didMount={setIcon}
                 didUpdate={prevValue => {
-                  if (!isShallowEqualProps(icon, prevValue)) {
+                  if (!isShallowEqual(icon, prevValue)) {
                     setIcon();
                   }
                 }}

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
-import { isShallowEqual } from "../internal/PropsUtils";
+import { isShallowEqual } from "../internal/DataUtils";
 import { ValueSpy } from "../internal/ValueSpy";
 
 export interface PanToProps {

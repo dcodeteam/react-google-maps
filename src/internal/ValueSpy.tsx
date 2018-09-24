@@ -5,6 +5,7 @@ interface Props<V> {
 
   didMount?: () => void;
   didUpdate?: (prevValue: V) => void;
+  willUnmount?: () => void;
 }
 
 export class ValueSpy<V> extends React.Component<Props<V>> {
@@ -21,6 +22,14 @@ export class ValueSpy<V> extends React.Component<Props<V>> {
 
     if (didUpdate) {
       didUpdate(prevProps.value);
+    }
+  }
+
+  public componentWillUnmount(): void {
+    const { willUnmount } = this.props;
+
+    if (willUnmount) {
+      willUnmount();
     }
   }
 

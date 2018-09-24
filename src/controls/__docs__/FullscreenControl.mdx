@@ -1,0 +1,30 @@
+---
+menu: Map Controls
+name: Fullscreen Control
+route: /controls/fullscreen
+---
+
+import { Playground, PropsTable } from 'docz'
+import { GoogleMap } from '../../google-map/GoogleMap'
+import { FullscreenControl } from '../FullscreenControl'
+
+# Fullscreen Control
+
+Controls display options of fullscreen control.
+
+**Google Maps Docs:**
+* [google.maps.ControlPosition](https://developers.google.com/maps/documentation/javascript/reference#ControlPosition)
+* [google.maps.FullscreenControlOptions](https://developers.google.com/maps/documentation/javascript/reference#FullscreenControlOptions)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <FullscreenControl position="BOTTOM_CENTER" />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={FullscreenControl} />

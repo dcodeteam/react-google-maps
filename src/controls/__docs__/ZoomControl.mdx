@@ -1,0 +1,30 @@
+---
+menu: Map Controls
+name: Zoom Control
+route: /controls/zoom
+---
+
+import { Playground, PropsTable } from 'docz'
+import { GoogleMap } from '../../google-map/GoogleMap'
+import { ZoomControl } from '../ZoomControl'
+
+# Zoom Control
+
+Controls display options of zoom control.
+
+**Google Maps Docs:**
+* [google.maps.ControlPosition](https://developers.google.com/maps/documentation/javascript/reference#ControlPosition)
+* [google.maps.ZoomControlOptions](https://developers.google.com/maps/documentation/javascript/reference#ZoomControlOptions)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <ZoomControl position="BOTTOM_CENTER" />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={ZoomControl} />

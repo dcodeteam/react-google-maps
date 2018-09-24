@@ -3228,9 +3228,9 @@ eslint-config-airbnb@^17.1.0:
     object.assign "^4.1.0"
     object.entries "^1.0.4"
 
-eslint-config-prettier@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-3.0.1.tgz#479214f64c1a4b344040924bfb97543db334b7b1"
+eslint-config-prettier@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-3.1.0.tgz#2c26d2cdcfa3a05f0642cd7e6e4ef3316cdabfa2"
   dependencies:
     get-stdin "^6.0.0"
 
@@ -8626,9 +8626,9 @@ trough@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/trough/-/trough-1.0.3.tgz#e29bd1614c6458d44869fc28b255ab7857ef7c24"
 
-ts-jest@^23.10.0:
-  version "23.10.0"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-23.10.0.tgz#1b1ce1d795791dedf0229b7577b35eaed8565bbd"
+ts-jest@^23.10.1:
+  version "23.10.1"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-23.10.1.tgz#ad0196f7b81f08888897004d9ed870c1a901511a"
   dependencies:
     bs-logger "0.x"
     buffer-from "1.x"

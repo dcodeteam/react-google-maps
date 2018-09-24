@@ -140,18 +140,13 @@ class Marker extends MVCObject {
   }
 }
 
-module.exports = {
-  Animation: {
-    BOUNCE: "BOUNCE",
-    DROP: "DROP",
-  },
+const keyProxy = new Proxy({}, { get: (x, key) => key });
 
-  MapTypeId: {
-    HYBRID: "HYBRID",
-    ROADMAP: "ROADMAP",
-    SATELLITE: "SATELLITE",
-    TERRAIN: "TERRAIN",
-  },
+module.exports = {
+  Animation: keyProxy,
+  MapTypeId: keyProxy,
+  ControlPosition: keyProxy,
+  MapTypeControlStyle: keyProxy,
 
   event: {
     clearInstanceListeners: jest.fn(),
