@@ -25,6 +25,7 @@ export interface GoogleMapComponentProps<I, O> {
     nextArgs: GoogleMapComponentArgs<I, O>,
   ) => void;
   willUnmount?: (args: GoogleMapComponentArgs<I, O>) => void;
+  render?: (args: GoogleMapComponentArgs<I, O>) => React.ReactNode;
 }
 
 interface Props<I, O> extends GoogleMapComponentProps<I, O> {
@@ -110,7 +111,9 @@ class GoogleMapComponentElement<
   }
 
   public render() {
-    return null;
+    const { render } = this.props;
+
+    return !render ? null : render(this.createArgs(this.props, this.state));
   }
 }
 

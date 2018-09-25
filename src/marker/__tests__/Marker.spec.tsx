@@ -105,9 +105,11 @@ describe("Marker", () => {
     mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
 
     const marker = getMarkerMockInstance();
-    const eventsLength = Object.keys(MarkerEvent).length;
 
-    expect(marker.addListener).toBeCalledTimes(eventsLength);
+    const customEvents = 2;
+    const instanceEvents = Object.keys(MarkerEvent).length;
+
+    expect(marker.addListener).toBeCalledTimes(customEvents + instanceEvents);
   });
 
   it("should add listeners with handlers", () => {

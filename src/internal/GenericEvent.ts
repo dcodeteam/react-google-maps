@@ -1,23 +1,23 @@
-export class GenericEvent {
-  public static readonly onClick = "click";
+export enum GenericEvent {
+  onClick = "click",
 
-  public static readonly onDoubleClick = "dblclick";
+  onDoubleClick = "dblclick",
 
-  public static readonly onRightClick = "rightclick";
+  onRightClick = "rightclick",
 
-  public static readonly onMouseOut = "mouseout";
+  onMouseOut = "mouseout",
 
-  public static readonly onMouseOver = "mouseover";
+  onMouseOver = "mouseover",
 
-  public static readonly onMouseMove = "mousemove";
+  onMouseMove = "mousemove",
 
-  public static readonly onMouseDown = "mousedown";
+  onMouseDown = "mousedown",
 
-  public static readonly onMouseUp = "mouseup";
+  onMouseUp = "mouseup",
 
-  public static readonly onDrag = "drag";
+  onDrag = "drag",
 
-  public static readonly onDragStart = "dragstart";
+  onDragStart = "dragstart",
 
-  public static readonly onDragEnd = "dragend";
+  onDragEnd = "dragend",
 }

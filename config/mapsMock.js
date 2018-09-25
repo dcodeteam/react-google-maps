@@ -108,6 +108,8 @@ class Marker extends MVCObject {
     this.setOptions = this.setValues;
     this.setMap = jest.fn(map => this.set("map", map));
     this.setIcon = jest.fn(icon => this.set("icon", icon));
+
+    this.getPosition = jest.fn(() => this.get("position"));
     this.setPosition = jest.fn(position => this.set("position", position));
   }
 }

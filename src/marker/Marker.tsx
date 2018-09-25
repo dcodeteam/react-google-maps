@@ -1,13 +1,9 @@
 import * as React from "react";
 
-import { ComponentComponent } from "../google-map-component/ComponentComponent";
+import { GoogleMapComponent } from "../google-map-component/GoogleMapComponent";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
-import {
-  createHandlerProxy,
-  forEachEvent,
-  pickChangedProps,
-} from "../internal/PropsUtils";
-import { MarkerContext, MarkerContextProvider } from "./MarkerContext";
+import { pickChangedProps } from "../internal/PropsUtils";
+import { MarkerContextProvider } from "./MarkerContext";
 import { MarkerEvent } from "./MarkerEvent";
 
 interface EventProps {
@@ -179,67 +175,78 @@ function createOptions(
   };
 }
 
-interface State {
-  ctx: MarkerContext;
-  // eslint-disable-next-line typescript/no-use-before-define
-  marker: google.maps.Marker;
+function createHandlers({
+  onClick,
+  onDoubleClick,
+  onRightClick,
+  onMouseOut,
+  onMouseOver,
+  onMouseDown,
+  onMouseUp,
+  onDrag,
+  onDragStart,
+  onDragEnd,
+  onPositionChanged,
+}: MarkerProps) {
+  return {
+    [MarkerEvent.onClick]: onClick,
+    [MarkerEvent.onDoubleClick]: onDoubleClick,
+    [MarkerEvent.onRightClick]: onRightClick,
+    [MarkerEvent.onMouseOut]: onMouseOut,
+    [MarkerEvent.onMouseOver]: onMouseOver,
+    [MarkerEvent.onMouseDown]: onMouseDown,
+    [MarkerEvent.onMouseUp]: onMouseUp,
+    [MarkerEvent.onDrag]: onDrag,
+    [MarkerEvent.onDragStart]: onDragStart,
+    [MarkerEvent.onDragEnd]: onDragEnd,
+    [MarkerEvent.onPositionChanged]: onPositionChanged,
+  };
 }
 
-export class Marker extends React.Component<MarkerProps> {
-  public render() {
-    const { icon } = this.props;
+export function Marker(props: MarkerProps) {
+  const { icon } = props;
 
-    return (
-      <ComponentComponent
-        createInitialState={({ maps }: GoogleMapContext): State => {
-          const marker = new maps.Marker();
+  return (
+    <GoogleMapComponent
+      handlers={createHandlers(props)}
+      createOptions={({ maps }: GoogleMapContext): google.maps.MarkerOptions =>
+        createOptions(maps, props)
+      }
+      createInstance={({ maps }: GoogleMapContext) => new maps.Marker()}
+      didMount={({ ctx, instance, options }) => {
+        instance.setMap(ctx.map);
+        instance.setOptions(options);
 
-          return { marker, ctx: { marker } };
-        }}
-        createOptions={({
-          maps,
-        }: GoogleMapContext): google.maps.MarkerOptions =>
-          createOptions(maps, this.props)
+        let lastPosition = instance.getPosition();
+
+        instance.addListener(MarkerEvent.onDragStart, () => {
+          lastPosition = instance.getPosition();
+        });
+
+        instance.addListener(MarkerEvent.onDragEnd, () => {
+          instance.setPosition(lastPosition);
+        });
+      }}
+      didUpdate={(
+        { options: prevOptions },
+        { options: nextOptions, instance },
+      ) => {
+        const options = pickChangedProps(prevOptions, nextOptions);
+
+        if (options) {
+          instance.setOptions(options as google.maps.MarkerOptions);
         }
-        didMount={({ map, options, state: { marker } }) => {
-          marker.setMap(map);
-          marker.setOptions(options);
-
-          forEachEvent(MarkerEvent, (key, event) => {
-            // eslint-disable-next-line react/destructuring-assignment
-            const handler = createHandlerProxy(() => this.props[key]);
-
-            if (event === MarkerEvent.onDragEnd) {
-              marker.addListener(event, e => {
-                marker.setPosition(options.position);
-
-                handler(e);
-              });
-            } else {
-              marker.addListener(event, handler);
-            }
-          });
-        }}
-        didUpdate={(
-          { options: prevOptions },
-          { options: nextOptions, state: { marker } },
-        ) => {
-          const options = pickChangedProps(prevOptions, nextOptions);
-
-          if (options) {
-            marker.setOptions(options as google.maps.MarkerOptions);
-          }
-        }}
-        willUnmount={({ maps, state: { marker } }) => {
-          marker.setMap(null);
-          maps.event.clearInstanceListeners(marker);
-        }}
-        render={({ state: { ctx } }) =>
-          typeof icon === "string" ? null : (
-            <MarkerContextProvider value={ctx}>{icon}</MarkerContextProvider>
-          )
-        }
-      />
-    );
-  }
+      }}
+      willUnmount={({ instance }) => {
+        instance.setMap(null);
+      }}
+      render={({ instance }) =>
+        typeof icon === "string" ? null : (
+          <MarkerContextProvider value={{ marker: instance }}>
+            {icon}
+          </MarkerContextProvider>
+        )
+      }
+    />
+  );
 }
