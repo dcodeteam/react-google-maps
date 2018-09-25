@@ -97,35 +97,7 @@ class GoogleMap extends MVCObject {
   //     }
   //   },
   //
-  //   overrideStyle: noop,
-  //
-  //   listeners: {},
-  //
-  //   emit(event, x) {
-  //     const events = this.listeners[event];
-  //
-  //     if (event) {
-  //       events.forEach(fn => {
-  //         fn(x);
-  //       });
-  //     }
-  //   },
-  //
-  //   addListener(event, fn) {
-  //     this.listeners[event] = this.listeners[event] || [];
-  //
-  //     this.listeners[event].push(fn);
-  //
-  //     return {
-  //       remove: () => {
-  //         const index = this.listeners[event].indexOf(fn);
-  //
-  //         if (index !== -1) {
-  //           this.listeners[event].splice(index, 1);
-  //         }
-  //       }
-  //     };
-  //   }
+  //   overrideStyle: noop,}
   // };
 }
 
@@ -147,6 +119,18 @@ class InfoWindow extends MVCObject {
     this.close = jest.fn();
     this.setContent = jest.fn();
     this.setOptions = jest.fn();
+  }
+}
+
+class Polyline extends MVCObject {
+  constructor(values) {
+    super(values);
+
+    this.setOptions = this.setValues;
+    this.setMap = jest.fn();
+
+    this.setPath = jest.fn(path => this.set("path", path));
+    this.getPath = jest.fn(() => ({ getArray: () => this.get("path") }));
   }
 }
 
@@ -198,6 +182,10 @@ module.exports = {
     .fn(InfoWindow)
     .mockImplementation(options => new InfoWindow(options)),
 
+  Polyline: jest
+    .fn(Polyline)
+    .mockImplementation(options => new Polyline(options)),
+
   // LatLng: function GoogleMapsLatLng(latLng) {
   //   this.lat = latLng.lat;
   //   this.lng = latLng.lng;
@@ -211,52 +199,6 @@ module.exports = {
   //
   //     return this;
   //   });
-  // },
-  //
-  //
-  // Polyline: function GoogleMapsPolyline() {
-  //   this.setMap = noop;
-  //   this.setValues = noop;
-  //
-  //   this.path = null;
-  //
-  //   this.getPath = jest.fn(() => this.path);
-  //   this.setPath = jest.fn(path => {
-  //     this.path = path;
-  //   });
-  //
-  //   this.listeners = {};
-  //
-  //   this.emit = (event, x) => {
-  //     const fns = this.listeners[event];
-  //
-  //     if (fns) {
-  //       fns.forEach(fn => {
-  //         fn(x);
-  //       });
-  //     }
-  //   };
-  //
-  //   this.addListener = jest.fn((event, fn) => {
-  //     this.listeners[event] = this.listeners[event] || [];
-  //
-  //     this.listeners[event].push(fn);
-  //   });
-  // },
-  //
-  // ControlPosition: {
-  //   BOTTOM_CENTER: "BOTTOM_CENTER",
-  //   BOTTOM_LEFT: "BOTTOM_LEFT",
-  //   BOTTOM_RIGHT: "BOTTOM_RIGHT",
-  //   LEFT_BOTTOM: "LEFT_BOTTOM",
-  //   LEFT_CENTER: "LEFT_CENTER",
-  //   LEFT_TOP: "LEFT_TOP",
-  //   RIGHT_BOTTOM: "RIGHT_BOTTOM",
-  //   RIGHT_CENTER: "RIGHT_CENTER",
-  //   RIGHT_TOP: "RIGHT_TOP",
-  //   TOP_CENTER: "TOP_CENTER",
-  //   TOP_LEFT: "TOP_LEFT",
-  //   TOP_RIGHT: "TOP_RIGHT"
   // },
   //
   // Data: {
