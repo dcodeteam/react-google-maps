@@ -1,6 +1,7 @@
 {
   "extends": "@dc0de/eslint-config-react",
   "rules": {
+    "no-use-before-define": "off",
     "react/style-prop-object": "off"
   }
 }

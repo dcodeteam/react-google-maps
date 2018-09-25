@@ -10,7 +10,7 @@ interface State<O, S> {
   options: O;
 }
 
-type SetState<S> = (updater: (state: S) => null | Pick<S, keyof S>) => void;
+type SetState<S> = (updater: (state: S) => null | S) => void;
 
 export interface GoogleMapComponentArgs<O, S>
   extends State<O, S>,
