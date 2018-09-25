@@ -20,8 +20,9 @@ If the bounds is larger than the map, the map will be shifted to include the nor
 If the change in the map's position is less than both the width and height of the map, the transition will be smoothly animated.
 
 **Google Maps Docs:**
-* [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
-* [google.maps.LatLngBounds](https://developers.google.com/maps/documentation/javascript/3.exp/reference#LatLngBounds)
+
+- [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
+- [google.maps.LatLngBounds](https://developers.google.com/maps/documentation/javascript/3.exp/reference#LatLngBounds)
 
 <Playground>
   <GoogleMap
@@ -35,6 +36,7 @@ If the change in the map's position is less than both the width and height of th
     <Marker position={{ lat: 33, lng: -124 }} />
 
     <PanToBounds latLngBounds={{south: 33, west: -124, north: 36, east: -120}} />
+
   </GoogleMap>
 </Playground>
 

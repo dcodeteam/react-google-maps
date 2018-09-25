@@ -14,3 +14,11 @@ export function createMockHandlers<P>(events: unknown): Partial<P> {
 
   return props;
 }
+
+export function emitEvent(
+  instance: unknown,
+  event: string,
+  ...args: unknown[]
+): void {
+  (instance as NodeJS.EventEmitter).emit(event, ...args);
+}

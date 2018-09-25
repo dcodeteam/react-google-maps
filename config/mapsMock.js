@@ -140,6 +140,16 @@ class Marker extends MVCObject {
   }
 }
 
+class InfoWindow extends MVCObject {
+  constructor(values) {
+    super(values);
+    this.open = jest.fn();
+    this.close = jest.fn();
+    this.setContent = jest.fn();
+    this.setOptions = jest.fn();
+  }
+}
+
 const keyProxy = new Proxy({}, { get: (x, key) => key });
 
 module.exports = {
@@ -184,6 +194,10 @@ module.exports = {
 
   Marker: jest.fn(Marker).mockImplementation(options => new Marker(options)),
 
+  InfoWindow: jest
+    .fn(InfoWindow)
+    .mockImplementation(options => new InfoWindow(options)),
+
   // LatLng: function GoogleMapsLatLng(latLng) {
   //   this.lat = latLng.lat;
   //   this.lng = latLng.lng;
@@ -199,31 +213,6 @@ module.exports = {
   //   });
   // },
   //
-  // InfoWindow: function GoogleMapsInfoWindow() {
-  //   this.open = noop;
-  //   this.close = noop;
-  //
-  //   this.setValues = noop;
-  //   this.setContent = noop;
-  //
-  //   this.listeners = {};
-  //
-  //   this.emit = (event, x) => {
-  //     const fns = this.listeners[event];
-  //
-  //     if (fns) {
-  //       fns.forEach(fn => {
-  //         fn(x);
-  //       });
-  //     }
-  //   };
-  //
-  //   this.addListener = jest.fn((event, fn) => {
-  //     this.listeners[event] = this.listeners[event] || [];
-  //
-  //     this.listeners[event].push(fn);
-  //   });
-  // },
   //
   // Polyline: function GoogleMapsPolyline() {
   //   this.setMap = noop;
