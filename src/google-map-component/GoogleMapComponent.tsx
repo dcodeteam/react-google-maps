@@ -5,14 +5,21 @@ import {
   GoogleMapContextConsumer,
 } from "../google-map-context/GoogleMapContext";
 
-export interface GoogleMapComponentArgs<O, S> extends GoogleMapContext {
+interface State<O, S> {
   state: S;
   options: O;
-  setState: (updater: (state: S) => null | Partial<S>) => void;
+}
+
+type SetState<S> = (updater: (state: S) => null | Pick<S, keyof S>) => void;
+
+export interface GoogleMapComponentArgs<O, S>
+  extends State<O, S>,
+    GoogleMapContext {
+  setState: SetState<S>;
 }
 
 export interface GoogleMapComponentProps<O, S> {
-  options: O;
+  createOptions: (ctx: GoogleMapContext) => O;
   createInitialState?: (ctx: GoogleMapContext) => S;
 
   didMount?: (args: GoogleMapComponentArgs<O, S>) => void;
@@ -30,20 +37,34 @@ interface Props<O, S> extends GoogleMapComponentProps<O, S> {
   ctx: GoogleMapContext;
 }
 
-function createState<O, S>({ ctx, createInitialState }: Props<O, S>): S {
-  return !createInitialState ? ({} as S) : createInitialState(ctx);
+function createState<O, S>({
+  ctx,
+  createOptions,
+  createInitialState,
+}: Props<O, S>): State<O, S> {
+  return {
+    options: createOptions(ctx),
+    state: !createInitialState ? ({} as S) : createInitialState(ctx),
+  };
 }
 
-class GoogleMapComponentElement<O, S> extends React.Component<Props<O, S>> {
+class GoogleMapComponentElement<O, S> extends React.Component<
+  Props<O, S>,
+  State<O, S>
+> {
   public state = createState(this.props);
 
-  private updateState = (updater: (state: S) => null | Partial<S>) => {
-    this.setState(updater);
+  private updateState: SetState<S> = updater => {
+    this.setState(({ state }) => {
+      const nextState = updater(state);
+
+      return !nextState ? null : { state: nextState };
+    });
   };
 
   private createArgs(
-    { ctx, options }: Props<O, S>,
-    state: S,
+    { ctx }: Props<O, S>,
+    { state, options }: State<O, S>,
   ): GoogleMapComponentArgs<O, S> {
     return {
       ...ctx,
@@ -51,6 +72,10 @@ class GoogleMapComponentElement<O, S> extends React.Component<Props<O, S>> {
       options,
       setState: this.updateState,
     };
+  }
+
+  public componentWillReceiveProps(nextProps: Readonly<Props<O, S>>): void {
+    this.setState({ options: nextProps.createOptions(nextProps.ctx) });
   }
 
   public componentDidMount(): void {
@@ -63,7 +88,7 @@ class GoogleMapComponentElement<O, S> extends React.Component<Props<O, S>> {
 
   public componentDidUpdate(
     prevProps: Readonly<Props<O, S>>,
-    prevState: Readonly<S>,
+    prevState: Readonly<State<O, S>>,
   ): void {
     const { didUpdate } = this.props;
 

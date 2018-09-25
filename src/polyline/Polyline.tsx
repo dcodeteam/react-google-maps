@@ -157,15 +157,13 @@ interface State {
   polyline: google.maps.Polyline;
 }
 
-function createInitialState({ maps }: GoogleMapContext): State {
-  return { polyline: new maps.Polyline() };
-}
-
 export function Polyline(props: PolylineProps) {
   return (
     <GoogleMapComponent
-      options={createOptions(props)}
-      createInitialState={createInitialState}
+      createOptions={() => createOptions(props)}
+      createInitialState={({ maps }: GoogleMapContext): State => ({
+        polyline: new maps.Polyline(),
+      })}
       didMount={({ map, options, state: { polyline } }) => {
         polyline.setOptions(options);
         polyline.setMap(map);

@@ -184,20 +184,20 @@ interface State {
   marker: google.maps.Marker;
 }
 
-function createInitialState({ maps }: GoogleMapContext): State {
-  const marker = new maps.Marker();
-
-  return { marker, ctx: { marker } };
-}
-
 export function Marker(props: MarkerProps) {
   return (
     <GoogleMapComponent
-      options={props}
-      createInitialState={createInitialState}
-      didMount={({ map, maps, options, state: { marker } }) => {
-        marker.setOptions(createOptions(maps, options));
+      createInitialState={({ maps }: GoogleMapContext): State => {
+        const marker = new maps.Marker();
+
+        return { marker, ctx: { marker } };
+      }}
+      createOptions={({ maps }: GoogleMapContext): google.maps.MarkerOptions =>
+        createOptions(maps, props)
+      }
+      didMount={({ map, options, state: { marker } }) => {
         marker.setMap(map);
+        marker.setOptions(options);
 
         forEachEvent(MarkerEvent, (key, event) => {
           const handler = createHandlerProxy(() => props[key]);
@@ -214,11 +214,9 @@ export function Marker(props: MarkerProps) {
         });
       }}
       didUpdate={(
-        { options: prevProps },
-        { maps, options: nextProps, state: { marker } },
+        { options: prevOptions },
+        { options: nextOptions, state: { marker } },
       ) => {
-        const prevOptions = createOptions(maps, prevProps);
-        const nextOptions = createOptions(maps, nextProps);
         const options = pickChangedProps(prevOptions, nextOptions);
 
         if (options) {
@@ -229,11 +227,13 @@ export function Marker(props: MarkerProps) {
         marker.setMap(null);
         maps.event.clearInstanceListeners(marker);
       }}
-      render={({ state: { ctx }, options: { icon } }) =>
-        typeof icon === "string" ? null : (
+      render={({ state: { ctx } }) => {
+        const { icon } = props;
+
+        return typeof icon === "string" ? null : (
           <MarkerContextProvider value={ctx}>{icon}</MarkerContextProvider>
-        )
-      }
+        );
+      }}
     />
   );
 }
