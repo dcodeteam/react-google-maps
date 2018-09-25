@@ -107,9 +107,7 @@ describe("Marker", () => {
     const marker = getMarkerMockInstance();
     const eventsLength = Object.keys(MarkerEvent).length;
 
-    expect(marker.addListener).toBeCalledTimes(
-      eventsLength + 1 /* One extra handler for `onDragEnd` event. */,
-    );
+    expect(marker.addListener).toBeCalledTimes(eventsLength);
   });
 
   it("should add listeners with handlers", () => {
