@@ -96,10 +96,6 @@ export function MarkerSymbol(props: MarkerSymbolProps) {
       {({ maps }) => (
         <MarkerContextConsumer>
           {({ marker }) => {
-            if (!maps || !marker) {
-              return null;
-            }
-
             const symbol = createSymbol(maps, props);
             const setIcon = () => {
               marker.setIcon(symbol);

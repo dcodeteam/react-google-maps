@@ -85,10 +85,6 @@ export function MarkerIcon(props: MarkerIconProps) {
       {({ maps }) => (
         <MarkerContextConsumer>
           {({ marker }) => {
-            if (!maps || !marker) {
-              return null;
-            }
-
             const icon = createIcon(maps, props);
             const setIcon = () => {
               marker.setIcon(icon);
