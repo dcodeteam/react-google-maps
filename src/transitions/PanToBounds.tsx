@@ -15,10 +15,6 @@ export function PanToBounds({ latLngBounds }: PanToBoundsProps) {
   return (
     <GoogleMapContextConsumer>
       {({ map }) => {
-        if (!map) {
-          return null;
-        }
-
         const panToBounds = () => {
           map.panToBounds(latLngBounds);
         };

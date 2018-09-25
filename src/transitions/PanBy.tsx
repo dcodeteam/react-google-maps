@@ -18,10 +18,6 @@ export function PanBy(props: PanByProps) {
   return (
     <GoogleMapContextConsumer>
       {({ map }) => {
-        if (!map) {
-          return null;
-        }
-
         const panBy = () => {
           map.panBy(props.x, props.y);
         };

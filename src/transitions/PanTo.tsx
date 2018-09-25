@@ -15,10 +15,6 @@ export function PanTo({ latLng }: PanToProps) {
   return (
     <GoogleMapContextConsumer>
       {({ map }) => {
-        if (!map) {
-          return null;
-        }
-
         const panTo = () => {
           map.panTo(latLng);
         };

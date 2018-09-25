@@ -15,10 +15,6 @@ export function FitBounds({ latLngBounds }: FitBoundsProps) {
   return (
     <GoogleMapContextConsumer>
       {({ map }) => {
-        if (!map) {
-          return null;
-        }
-
         const fitBounds = () => {
           map.fitBounds(latLngBounds);
         };
