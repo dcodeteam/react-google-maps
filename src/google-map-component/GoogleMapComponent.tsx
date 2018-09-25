@@ -5,90 +5,89 @@ import {
   GoogleMapContextConsumer,
 } from "../google-map-context/GoogleMapContext";
 
-interface State<O, S> {
-  state: S;
+export interface GoogleMapComponentArgs<I, O> {
+  ctx: GoogleMapContext;
+
   options: O;
+  instance: I;
 }
 
-type SetState<S> = (updater: (state: S) => null | S) => void;
+export interface GoogleMapComponentProps<I, O> {
+  // eslint-disable-next-line typescript/no-explicit-any
+  handlers: { [key: string]: undefined | ((...args: any[]) => void) };
 
-export interface GoogleMapComponentArgs<O, S>
-  extends State<O, S>,
-    GoogleMapContext {
-  setState: SetState<S>;
-}
-
-export interface GoogleMapComponentProps<O, S> {
   createOptions: (ctx: GoogleMapContext) => O;
-  createInitialState?: (ctx: GoogleMapContext) => S;
+  createInstance: (ctx: GoogleMapContext) => I;
 
-  didMount?: (args: GoogleMapComponentArgs<O, S>) => void;
+  didMount?: (args: GoogleMapComponentArgs<I, O>) => void;
   didUpdate?: (
-    prevArgs: GoogleMapComponentArgs<O, S>,
-    nextArgs: GoogleMapComponentArgs<O, S>,
+    prevArgs: GoogleMapComponentArgs<I, O>,
+    nextArgs: GoogleMapComponentArgs<I, O>,
   ) => void;
-
-  willUnmount?: (args: GoogleMapComponentArgs<O, S>) => void;
-
-  render?: (args: GoogleMapComponentArgs<O, S>) => React.ReactNode;
+  willUnmount?: (args: GoogleMapComponentArgs<I, O>) => void;
 }
 
-interface Props<O, S> extends GoogleMapComponentProps<O, S> {
+interface Props<I, O> extends GoogleMapComponentProps<I, O> {
   ctx: GoogleMapContext;
 }
 
-function createState<O, S>({
-  ctx,
-  createOptions,
-  createInitialState,
-}: Props<O, S>): State<O, S> {
-  return {
-    options: createOptions(ctx),
-    state: !createInitialState ? ({} as S) : createInitialState(ctx),
-  };
+interface State<O> {
+  options: O;
 }
 
-class GoogleMapComponentElement<O, S> extends React.Component<
-  Props<O, S>,
-  State<O, S>
-> {
+function createState<I, O>({ ctx, createOptions }: Props<I, O>): State<O> {
+  return { options: createOptions(ctx) };
+}
+
+class GoogleMapComponentElement<
+  I extends google.maps.MVCObject,
+  O
+> extends React.Component<Props<I, O>, State<O>> {
   public state = createState(this.props);
 
-  private updateState: SetState<S> = updater => {
-    this.setState(({ state }) => {
-      const nextState = updater(state);
+  private readonly instance: I;
 
-      return !nextState ? null : { state: nextState };
-    });
-  };
+  public constructor(props: Props<I, O>, context: object) {
+    super(props, context);
 
-  private createArgs(
-    { ctx }: Props<O, S>,
-    { state, options }: State<O, S>,
-  ): GoogleMapComponentArgs<O, S> {
-    return {
-      ...ctx,
-      state,
-      options,
-      setState: this.updateState,
-    };
+    const { ctx, createInstance } = props;
+
+    this.instance = createInstance(ctx);
   }
 
-  public componentWillReceiveProps(nextProps: Readonly<Props<O, S>>): void {
-    this.setState({ options: nextProps.createOptions(nextProps.ctx) });
+  private createArgs(
+    { ctx }: Props<I, O>,
+    { options }: State<O>,
+  ): GoogleMapComponentArgs<I, O> {
+    return { ctx, options, instance: this.instance };
   }
 
   public componentDidMount(): void {
-    const { didMount } = this.props;
+    const { handlers, didMount } = this.props;
 
     if (didMount) {
       didMount(this.createArgs(this.props, this.state));
     }
+
+    Object.keys(handlers).forEach(event => {
+      this.instance.addListener(event, e => {
+        // eslint-disable-next-line react/destructuring-assignment
+        const handler = this.props.handlers[event];
+
+        if (handler) {
+          handler(e);
+        }
+      });
+    });
+  }
+
+  public componentWillReceiveProps(nextProps: Readonly<Props<I, O>>): void {
+    this.setState(createState(nextProps));
   }
 
   public componentDidUpdate(
-    prevProps: Readonly<Props<O, S>>,
-    prevState: Readonly<State<O, S>>,
+    prevProps: Readonly<Props<I, O>>,
+    prevState: Readonly<State<O>>,
   ): void {
     const { didUpdate } = this.props;
 
@@ -101,21 +100,23 @@ class GoogleMapComponentElement<O, S> extends React.Component<
   }
 
   public componentWillUnmount(): void {
-    const { willUnmount } = this.props;
+    const { ctx, willUnmount } = this.props;
 
     if (willUnmount) {
       willUnmount(this.createArgs(this.props, this.state));
     }
+
+    ctx.maps.event.clearInstanceListeners(this.instance);
   }
 
   public render() {
-    const { render } = this.props;
-
-    return !render ? null : render(this.createArgs(this.props, this.state));
+    return null;
   }
 }
 
-export function GoogleMapComponent<P, S>(props: GoogleMapComponentProps<P, S>) {
+export function GoogleMapComponent<I extends google.maps.MVCObject, O>(
+  props: GoogleMapComponentProps<I, O>,
+) {
   return (
     <GoogleMapContextConsumer>
       {ctx => <GoogleMapComponentElement {...props} ctx={ctx} />}

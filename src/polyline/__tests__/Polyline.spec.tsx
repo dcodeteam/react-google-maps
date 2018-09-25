@@ -93,9 +93,10 @@ describe("Polyline", () => {
 
     const polyline = getPolylineMockInstance();
 
-    expect(polyline.addListener).toBeCalledTimes(
-      Object.keys(PolylineEvent).length,
-    );
+    const customEvents = 1;
+    const propEvents = Object.keys(PolylineEvent).length;
+
+    expect(polyline.addListener).toBeCalledTimes(customEvents + propEvents);
   });
 
   it("should add listeners with handlers", () => {

@@ -2,14 +2,67 @@ import * as React from "react";
 
 import { GoogleMapComponent } from "../google-map-component/GoogleMapComponent";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
-import {
-  createHandlerProxy,
-  forEachEvent,
-  pickChangedProps,
-} from "../internal/PropsUtils";
+import { pickChangedProps } from "../internal/PropsUtils";
 import { PolylineEvent } from "./PolylineEvent";
 
-interface EventProps {
+export interface PolylineProps {
+  /**
+   * If set to true, the user can drag this shape over the map.
+   *
+   * The `geodesic` property defines the mode of dragging.
+   */
+  draggable?: boolean;
+
+  /**
+   * Indicates whether this `Polyline` handles mouse events.
+   */
+  clickable?: boolean;
+
+  /**
+   * When `true`, edges of the polygon are interpreted as geodesic and will follow the curvature of the Earth.
+   * When `false`, edges of the polygon are rendered as straight lines in screen space.
+   *
+   * Note that the shape of a geodesic polygon may appear to change when dragged,
+   * as the dimensions are maintained relative to the surface of the earth.
+   */
+  geodesic?: boolean;
+
+  /**
+   * Whether this `Polyline` is visible on the map.
+   */
+  visible?: boolean;
+
+  /**
+   * The ordered sequence of coordinates of the `Polyline`.
+   */
+  path: google.maps.LatLngLiteral[];
+
+  //
+  // Style
+  //
+
+  /**
+   * The stroke color.
+   *
+   * All CSS3 colors are supported except for extended named colors.
+   */
+  strokeColor?: string;
+
+  /**
+   * The stroke opacity between 0.0 and 1.0.
+   */
+  strokeOpacity?: number;
+
+  /**
+   * The stroke width in pixels.
+   */
+  strokeWeight?: number;
+
+  /**
+   * The zIndex compared to other polys.
+   */
+  zIndex?: number;
+
   /**
    * This handler is fired when the DOM `click` handlers is fired on the `Polyline`.
    */
@@ -69,65 +122,6 @@ interface EventProps {
   onDragEnd?: (event?: { path: google.maps.LatLng[] }) => void;
 }
 
-export interface PolylineProps extends EventProps {
-  /**
-   * If set to true, the user can drag this shape over the map.
-   *
-   * The `geodesic` property defines the mode of dragging.
-   */
-  draggable?: boolean;
-
-  /**
-   * Indicates whether this `Polyline` handles mouse events.
-   */
-  clickable?: boolean;
-
-  /**
-   * When `true`, edges of the polygon are interpreted as geodesic and will follow the curvature of the Earth.
-   * When `false`, edges of the polygon are rendered as straight lines in screen space.
-   *
-   * Note that the shape of a geodesic polygon may appear to change when dragged,
-   * as the dimensions are maintained relative to the surface of the earth.
-   */
-  geodesic?: boolean;
-
-  /**
-   * Whether this `Polyline` is visible on the map.
-   */
-  visible?: boolean;
-
-  /**
-   * The ordered sequence of coordinates of the `Polyline`.
-   */
-  path: google.maps.LatLngLiteral[];
-
-  //
-  // Style
-  //
-
-  /**
-   * The stroke color.
-   *
-   * All CSS3 colors are supported except for extended named colors.
-   */
-  strokeColor?: string;
-
-  /**
-   * The stroke opacity between 0.0 and 1.0.
-   */
-  strokeOpacity?: number;
-
-  /**
-   * The stroke width in pixels.
-   */
-  strokeWeight?: number;
-
-  /**
-   * The zIndex compared to other polys.
-   */
-  zIndex?: number;
-}
-
 function createOptions({
   path,
   zIndex,
@@ -153,50 +147,61 @@ function createOptions({
   };
 }
 
-interface State {
-  polyline: google.maps.Polyline;
+function createHandlers({
+  onClick,
+  onDoubleClick,
+  onRightClick,
+  onMouseOut,
+  onMouseOver,
+  onMouseMove,
+  onMouseDown,
+  onMouseUp,
+  onDrag,
+  onDragStart,
+  onDragEnd,
+}: PolylineProps) {
+  return {
+    [PolylineEvent.onClick]: onClick,
+    [PolylineEvent.onDoubleClick]: onDoubleClick,
+    [PolylineEvent.onRightClick]: onRightClick,
+    [PolylineEvent.onMouseOut]: onMouseOut,
+    [PolylineEvent.onMouseOver]: onMouseOver,
+    [PolylineEvent.onMouseMove]: onMouseMove,
+    [PolylineEvent.onMouseDown]: onMouseDown,
+    [PolylineEvent.onMouseUp]: onMouseUp,
+    [PolylineEvent.onDrag]: onDrag,
+    [PolylineEvent.onDragStart]: onDragStart,
+    [PolylineEvent.onDragEnd]: onDragEnd,
+  };
 }
 
 export function Polyline(props: PolylineProps) {
   return (
     <GoogleMapComponent
+      handlers={createHandlers(props)}
       createOptions={() => createOptions(props)}
-      createInitialState={({ maps }: GoogleMapContext): State => ({
-        polyline: new maps.Polyline(),
-      })}
-      didMount={({ map, options, state: { polyline } }) => {
-        polyline.setOptions(options);
-        polyline.setMap(map);
+      createInstance={({ maps }: GoogleMapContext) => new maps.Polyline()}
+      didMount={({ ctx, options, instance }) => {
+        instance.setMap(ctx.map);
+        instance.setOptions(options);
+        instance.addListener(PolylineEvent.onDragEnd, e => {
+          Object.assign(e, { path: instance.getPath().getArray() });
 
-        forEachEvent<EventProps>(PolylineEvent, (key, event) => {
-          const handler = createHandlerProxy(() => props[key]);
-
-          if (event === PolylineEvent.onDragEnd) {
-            polyline.addListener(event, e => {
-              Object.assign(e, { path: polyline.getPath().getArray() });
-
-              polyline.setPath(options.path!);
-
-              handler(e);
-            });
-          } else {
-            polyline.addListener(event, handler);
-          }
+          instance.setPath(options.path!);
         });
       }}
       didUpdate={(
         { options: prevOptions },
-        { options: nextOptions, state: { polyline } },
+        { options: nextOptions, instance },
       ) => {
         const options = pickChangedProps(prevOptions, nextOptions);
 
         if (options) {
-          polyline.setOptions(options);
+          instance.setOptions(options);
         }
       }}
-      willUnmount={({ maps, state: { polyline } }) => {
-        polyline.setMap(null);
-        maps.event.clearInstanceListeners(polyline);
+      willUnmount={({ instance }) => {
+        instance.setMap(null);
       }}
     />
   );

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { GoogleMapComponent } from "../google-map-component/GoogleMapComponent";
+import { ComponentComponent } from "../google-map-component/ComponentComponent";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import {
   createHandlerProxy,
@@ -190,7 +190,7 @@ export class Marker extends React.Component<MarkerProps> {
     const { icon } = this.props;
 
     return (
-      <GoogleMapComponent
+      <ComponentComponent
         createInitialState={({ maps }: GoogleMapContext): State => {
           const marker = new maps.Marker();
 
