@@ -311,7 +311,6 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
             </GoogleMapContextProvider>
 
             <MapComponentHandlers
-              maps={ctx.maps}
               instance={ctx.map}
               handlers={createHandlers(this.props)}
             />

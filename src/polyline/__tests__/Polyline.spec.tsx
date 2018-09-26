@@ -3,46 +3,40 @@ import * as React from "react";
 
 import {
   createMockHandlers,
+  createMockMapComponent,
   emitEvent,
   forEachEvent,
   getClassMockInstance,
 } from "../../__tests__/testUtils";
-import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
-import { Polyline, PolylineProps } from "../Polyline";
+import { Polyline } from "../Polyline";
 import { PolylineEvent } from "../PolylineEvent";
 
-function getPolylineMockInstance(): google.maps.Polyline {
+function getMockInstance(): google.maps.Polyline {
   return getClassMockInstance(google.maps.Polyline);
 }
 
 describe("Polyline", () => {
-  const map = new google.maps.Map(null);
-
-  function MockPolyline(props: PolylineProps) {
-    return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
-        <Polyline {...props} />
-      </GoogleMapContextProvider>
-    );
-  }
+  const { map, Mock } = createMockMapComponent(Polyline);
+  const customEvents = 2;
+  const instanceEvents = Object.keys(PolylineEvent).length;
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should create polyline and attach it to map on mount", () => {
-    mount(<MockPolyline path={[]} />);
+    mount(<Mock path={[]} />);
 
-    const polyline = getPolylineMockInstance();
+    const polyline = getMockInstance();
 
     expect(polyline.setMap).toBeCalledTimes(1);
     expect(polyline.setMap).lastCalledWith(map);
   });
 
   it("should set default options on mount", () => {
-    mount(<MockPolyline path={[]} />);
+    mount(<Mock path={[]} />);
 
-    const polyline = getPolylineMockInstance();
+    const polyline = getMockInstance();
 
     expect(polyline.setOptions).toBeCalledTimes(1);
     expect(polyline.setOptions).lastCalledWith({
@@ -60,7 +54,7 @@ describe("Polyline", () => {
 
   it("should set custom options on mount", () => {
     mount(
-      <MockPolyline
+      <Mock
         path={[]}
         visible={false}
         clickable={false}
@@ -71,7 +65,7 @@ describe("Polyline", () => {
       />,
     );
 
-    const polyline = getPolylineMockInstance();
+    const polyline = getMockInstance();
 
     expect(polyline.setOptions).toBeCalledTimes(1);
     expect(polyline.setOptions).lastCalledWith({
@@ -88,22 +82,19 @@ describe("Polyline", () => {
   });
 
   it("should add listeners without handlers", () => {
-    mount(<MockPolyline path={[]} />);
+    mount(<Mock path={[]} />);
 
-    const polyline = getPolylineMockInstance();
+    const polyline = getMockInstance();
 
-    const customEvents = 2;
-    const propEvents = Object.keys(PolylineEvent).length;
-
-    expect(polyline.addListener).toBeCalledTimes(customEvents + propEvents);
+    expect(polyline.addListener).toBeCalledTimes(customEvents + instanceEvents);
   });
 
   it("should add listeners with handlers", () => {
     const handlers = createMockHandlers(PolylineEvent);
 
-    mount(<MockPolyline {...handlers} path={[]} />);
+    mount(<Mock {...handlers} path={[]} />);
 
-    const polyline = getPolylineMockInstance();
+    const polyline = getMockInstance();
 
     forEachEvent(PolylineEvent, (key, event) => {
       const handler = handlers[key];
@@ -121,9 +112,9 @@ describe("Polyline", () => {
   it("should extend event with new 'path' on drag end", () => {
     const onDragEnd = jest.fn();
 
-    mount(<MockPolyline path={[{ lat: 0, lng: 1 }]} onDragEnd={onDragEnd} />);
+    mount(<Mock path={[{ lat: 0, lng: 1 }]} onDragEnd={onDragEnd} />);
 
-    const polyline = getPolylineMockInstance();
+    const polyline = getMockInstance();
 
     expect(onDragEnd).toBeCalledTimes(0);
     expect(polyline.setPath).toBeCalledTimes(0);
@@ -138,8 +129,8 @@ describe("Polyline", () => {
   });
 
   it("should update only changed options on props update", () => {
-    const wrapper = mount(<MockPolyline path={[]} />);
-    const polyline = getPolylineMockInstance();
+    const wrapper = mount(<Mock path={[]} />);
+    const polyline = getMockInstance();
 
     expect(polyline.setOptions).toBeCalledTimes(1);
 
@@ -159,19 +150,28 @@ describe("Polyline", () => {
   });
 
   it("should remove from map on unmount", () => {
-    const wrapper = mount(<MockPolyline path={[]} />);
-    const polyline = getPolylineMockInstance();
+    const wrapper = mount(<Mock path={[]} />);
+    const polyline = getMockInstance();
 
     expect(polyline.setMap).toBeCalledTimes(1);
     expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
 
+    const {
+      mock: { results },
+    } = polyline.addListener as jest.Mock;
+
     wrapper.unmount();
+
+    expect(results.length).toBe(customEvents + instanceEvents);
+
+    results.forEach(({ value }) => {
+      expect(value.remove).toBeCalled();
+    });
 
     expect(polyline.setMap).toBeCalledTimes(2);
     expect(polyline.setMap).lastCalledWith(null);
 
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(2);
-    expect(google.maps.event.clearInstanceListeners).nthCalledWith(1, polyline);
-    expect(google.maps.event.clearInstanceListeners).nthCalledWith(2, polyline);
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
+    expect(google.maps.event.clearInstanceListeners).lastCalledWith(polyline);
   });
 });

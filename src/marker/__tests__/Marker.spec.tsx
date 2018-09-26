@@ -3,46 +3,42 @@ import * as React from "react";
 
 import {
   createMockHandlers,
+  createMockMapComponent,
+  emitEvent,
   forEachEvent,
   getClassMockInstance,
 } from "../../__tests__/testUtils";
-import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
-import { Marker, MarkerProps } from "../Marker";
+import { Marker } from "../Marker";
 import { MarkerContextConsumer } from "../MarkerContext";
 import { MarkerEvent } from "../MarkerEvent";
 
-const map = new google.maps.Map(null);
-
-export function getMarkerMockInstance(): google.maps.Marker {
+export function getMockInstance(): google.maps.Marker {
   return getClassMockInstance(google.maps.Marker);
 }
 
-function MockMarker(props: MarkerProps) {
-  return (
-    <GoogleMapContextProvider value={{ map, maps: google.maps }}>
-      <Marker {...props} />
-    </GoogleMapContextProvider>
-  );
-}
-
 describe("Marker", () => {
+  const { map, Mock } = createMockMapComponent(Marker);
+
+  const customEvents = 2;
+  const instanceEvents = Object.keys(MarkerEvent).length;
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should create marker and attach it to map on mount", () => {
-    mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
+    mount(<Mock position={{ lat: 0, lng: 1 }} />);
 
-    const marker = getMarkerMockInstance();
+    const marker = getMockInstance();
 
     expect(marker.setMap).toBeCalledTimes(1);
     expect(marker.setMap).toHaveBeenLastCalledWith(map);
   });
 
   it("should set default options on mount", () => {
-    mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
+    mount(<Mock position={{ lat: 0, lng: 1 }} />);
 
-    const marker = getMarkerMockInstance();
+    const marker = getMockInstance();
 
     expect(marker.setOptions).toBeCalledTimes(1);
     expect(marker.setOptions).lastCalledWith({
@@ -64,7 +60,7 @@ describe("Marker", () => {
 
   it("should set custom options on mount", () => {
     mount(
-      <MockMarker
+      <Mock
         animation="BOUNCE"
         clickable={true}
         cursor="pointer"
@@ -81,7 +77,7 @@ describe("Marker", () => {
       />,
     );
 
-    const marker = getMarkerMockInstance();
+    const marker = getMockInstance();
 
     expect(marker.setOptions).toBeCalledTimes(1);
     expect(marker.setOptions).lastCalledWith({
@@ -102,12 +98,9 @@ describe("Marker", () => {
   });
 
   it("should add listeners without handlers", () => {
-    mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
+    mount(<Mock position={{ lat: 0, lng: 1 }} />);
 
-    const marker = getMarkerMockInstance();
-
-    const customEvents = 2;
-    const instanceEvents = Object.keys(MarkerEvent).length;
+    const marker = getMockInstance();
 
     expect(marker.addListener).toBeCalledTimes(customEvents + instanceEvents);
   });
@@ -115,9 +108,9 @@ describe("Marker", () => {
   it("should add listeners with handlers", () => {
     const handlers = createMockHandlers(MarkerEvent);
 
-    mount(<MockMarker position={{ lat: 0, lng: 1 }} {...handlers} />);
+    mount(<Mock position={{ lat: 0, lng: 1 }} {...handlers} />);
 
-    const marker = getMarkerMockInstance();
+    const marker = getMockInstance();
 
     forEachEvent(MarkerEvent, (key, event) => {
       const handler = handlers[key];
@@ -125,8 +118,7 @@ describe("Marker", () => {
 
       expect(handler).toBeCalledTimes(0);
 
-      // eslint-disable-next-line typescript/no-explicit-any
-      (marker as any).emit(event, payload);
+      emitEvent(marker, event, payload);
 
       expect(handler).toBeCalledTimes(1);
       expect(handler).lastCalledWith(payload);
@@ -135,7 +127,7 @@ describe("Marker", () => {
 
   it("should render icon if its valid react element", () => {
     const wrapper = mount(
-      <MockMarker position={{ lat: 0, lng: 1 }} icon={<div>Foo</div>} />,
+      <Mock position={{ lat: 0, lng: 1 }} icon={<div>Foo</div>} />,
     );
 
     const divWrapper = wrapper.find("div");
@@ -148,13 +140,13 @@ describe("Marker", () => {
     const consumer = jest.fn();
 
     mount(
-      <MockMarker
+      <Mock
         position={{ lat: 0, lng: 1 }}
         icon={<MarkerContextConsumer>{consumer}</MarkerContextConsumer>}
       />,
     );
 
-    const marker = getMarkerMockInstance();
+    const marker = getMockInstance();
 
     expect(consumer).toBeCalledTimes(1);
     expect(consumer).lastCalledWith({ marker });
@@ -164,15 +156,14 @@ describe("Marker", () => {
     const onDragEnd = jest.fn();
     const position = { lat: 0, lng: 1 };
 
-    mount(<MockMarker position={position} onDragEnd={onDragEnd} />);
+    mount(<Mock position={position} onDragEnd={onDragEnd} />);
 
-    const marker = getMarkerMockInstance();
+    const marker = getMockInstance();
 
     expect(onDragEnd).toHaveBeenCalledTimes(0);
     expect(marker.setPosition).toHaveBeenCalledTimes(0);
 
-    // eslint-disable-next-line typescript/no-explicit-any
-    (marker as any).emit(MarkerEvent.onDragEnd);
+    emitEvent(marker, MarkerEvent.onDragEnd);
 
     expect(onDragEnd).toHaveBeenCalledTimes(1);
     expect(marker.setPosition).toHaveBeenCalledTimes(1);
@@ -180,8 +171,8 @@ describe("Marker", () => {
   });
 
   it("should update only changed options on props update", () => {
-    const wrapper = mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
-    const marker = getMarkerMockInstance();
+    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }} />);
+    const marker = getMockInstance();
 
     expect(marker.setOptions).toBeCalledTimes(1);
 
@@ -201,20 +192,29 @@ describe("Marker", () => {
   });
 
   it("should remove from map on unmount", () => {
-    const wrapper = mount(<MockMarker position={{ lat: 0, lng: 1 }} />);
+    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }} />);
 
-    const marker = getMarkerMockInstance();
+    const marker = getMockInstance();
 
     expect(marker.setMap).toBeCalledTimes(1);
     expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
 
     wrapper.unmount();
 
+    const {
+      mock: { results },
+    } = marker.addListener as jest.Mock;
+
+    expect(results.length).toBe(customEvents + instanceEvents);
+
+    results.forEach(({ value }) => {
+      expect(value.remove).toBeCalled();
+    });
+
     expect(marker.setMap).toBeCalledTimes(2);
     expect(marker.setMap).lastCalledWith(null);
 
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(2);
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
     expect(google.maps.event.clearInstanceListeners).nthCalledWith(1, marker);
-    expect(google.maps.event.clearInstanceListeners).nthCalledWith(2, marker);
   });
 });

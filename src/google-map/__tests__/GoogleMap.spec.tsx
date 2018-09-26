@@ -11,11 +11,13 @@ import { GoogleMap, GoogleMapProps } from "../GoogleMap";
 import { GoogleMapContextConsumer } from "../GoogleMapContext";
 import { GoogleMapEvent } from "../GoogleMapEvent";
 
-export function getMapMockInstance(): google.maps.Map {
+export function getMockInstance(): google.maps.Map {
   return getClassMockInstance(google.maps.Map);
 }
 
 describe("GoogleMap", () => {
+  const instanceEvents = Object.keys(GoogleMapEvent).length;
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -35,7 +37,7 @@ describe("GoogleMap", () => {
       <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 
-    const map = getMapMockInstance();
+    const map = getMockInstance();
 
     expect(map.setValues).toBeCalledTimes(1);
     expect(map.setValues).lastCalledWith({
@@ -61,7 +63,7 @@ describe("GoogleMap", () => {
       />,
     );
 
-    const map = getMapMockInstance();
+    const map = getMockInstance();
 
     expect(map.setValues).toBeCalledTimes(1);
     expect(map.setValues).lastCalledWith({
@@ -80,8 +82,7 @@ describe("GoogleMap", () => {
       <GoogleMap zoom={0} maps={google.maps} center={{ lat: 0, lng: 1 }} />,
     );
 
-    const map = getMapMockInstance();
-    const instanceEvents = Object.keys(GoogleMapEvent).length;
+    const map = getMockInstance();
 
     expect(map.addListener).toBeCalledTimes(instanceEvents);
   });
@@ -99,7 +100,7 @@ describe("GoogleMap", () => {
       />,
     );
 
-    const map = getMapMockInstance();
+    const map = getMockInstance();
 
     forEachEvent<GoogleMapProps>(GoogleMapEvent, (key, event) => {
       const handler = handlers[key];
@@ -126,7 +127,7 @@ describe("GoogleMap", () => {
       <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 
-    const map = getMapMockInstance();
+    const map = getMockInstance();
 
     expect(map.setOptions).toBeCalledTimes(1);
 
@@ -151,21 +152,27 @@ describe("GoogleMap", () => {
       <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 
-    const map = getMapMockInstance();
-
+    const map = getMockInstance();
     const mapDiv = wrapper.find("div");
+    const {
+      mock: { results },
+    } = map.addListener as jest.Mock;
 
+    expect(results.length).toBe(instanceEvents);
     expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
 
     wrapper.unmount();
 
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(3);
+    results.forEach(({ value }) => {
+      expect(value.remove).toBeCalled();
+    });
+
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(2);
     expect(google.maps.event.clearInstanceListeners).nthCalledWith(1, map);
     expect(google.maps.event.clearInstanceListeners).nthCalledWith(
       2,
       mapDiv.getDOMNode(),
     );
-    expect(google.maps.event.clearInstanceListeners).nthCalledWith(3, map);
   });
 
   it("should pass context", () => {
@@ -177,7 +184,7 @@ describe("GoogleMap", () => {
       </GoogleMap>,
     );
 
-    const map = getMapMockInstance();
+    const map = getMockInstance();
 
     expect(consumer).toBeCalledTimes(1);
     expect(consumer).toBeCalledWith({ maps: google.maps, map });

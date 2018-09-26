@@ -160,18 +160,13 @@ export function InfoWindow(props: InfoWindowProps) {
         infoWindow.close();
         maps.event.clearInstanceListeners(infoWindow);
       }}
-      render={({
-        maps,
-        state: { div, infoWindow },
-        options: { open, children },
-      }) => (
+      render={({ state: { div, infoWindow }, options: { open, children } }) => (
         <>
           {!open || typeof children === "string"
             ? null
             : ReactDOM.createPortal(children, div)}
 
           <MapComponentHandlers
-            maps={maps}
             instance={infoWindow}
             handlers={createHandlers(props)}
           />

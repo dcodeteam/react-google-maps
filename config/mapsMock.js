@@ -1,5 +1,7 @@
 "use strict";
 
+const EnumMirror = new Proxy({}, { get: (x, key) => key });
+
 class Comparable {
   equals(other) {
     return this === other;
@@ -21,16 +23,33 @@ class MVCObject {
     });
 
     this.emit = jest.fn((event, ...args) => {
-      if (this.listeners[event]) {
-        this.listeners[event].forEach(listener => {
-          listener(...args);
+      const listeners = this.listeners[event];
+
+      if (listeners) {
+        listeners.forEach(({ fn }) => {
+          fn(...args);
         });
       }
     });
 
-    this.addListener = jest.fn((event, listener) => {
-      this.listeners[event] = this.listeners[event] || [];
-      this.listeners[event].push(listener);
+    this.addListener = jest.fn((event, fn) => {
+      const listeners = this.listeners[event] || [];
+      const listener = {
+        fn,
+        remove: jest.fn(() => {
+          const idx = listeners.indexOf(listener);
+
+          if (idx !== -1) {
+            listeners.splice(idx, 1);
+          }
+        }),
+      };
+
+      listeners.push(listener);
+
+      this.listeners[event] = listeners;
+
+      return listener;
     });
   }
 }
@@ -130,16 +149,33 @@ class Polyline extends MVCObject {
   }
 }
 
-const keyProxy = new Proxy({}, { get: (x, key) => key });
+class DrawingManager extends MVCObject {
+  constructor(values) {
+    super(values);
+
+    this.setOptions = this.setValues;
+    this.setMap = jest.fn(map => this.set("map", map));
+  }
+}
 
 module.exports = {
-  Animation: keyProxy,
-  MapTypeId: keyProxy,
-  ControlPosition: keyProxy,
-  MapTypeControlStyle: keyProxy,
+  Animation: EnumMirror,
+  MapTypeId: EnumMirror,
+  ControlPosition: EnumMirror,
+  MapTypeControlStyle: EnumMirror,
 
   event: {
-    clearInstanceListeners: jest.fn(),
+    clearInstanceListeners: jest.fn(instance => {
+      if (instance.listeners) {
+        Object.keys(instance.listeners).forEach(event => {
+          const listeners = instance.listeners[event];
+
+          while (listeners.length > 0) {
+            listeners[0].remove();
+          }
+        });
+      }
+    }),
   },
 
   Size: class extends Comparable {
@@ -182,11 +218,19 @@ module.exports = {
     .fn(Polyline)
     .mockImplementation(options => new Polyline(options)),
 
+  drawing: {
+    OverlayType: EnumMirror,
+
+    DrawingManager: jest
+      .fn(DrawingManager)
+      .mockImplementation(options => new DrawingManager(options)),
+  },
+
   // LatLng: function GoogleMapsLatLng(latLng) {
   //   this.lat = latLng.lat;
   //   this.lng = latLng.lng;
   // },
-  //
+
   // LatLngBounds: function GoogleMapsLatLngBounds() {
   //   this.extends = [];
   //
@@ -196,7 +240,7 @@ module.exports = {
   //     return this;
   //   });
   // },
-  //
+
   // Data: {
   //   Polygon: noop,
   //
@@ -204,39 +248,4 @@ module.exports = {
   //     this.setGeometry = noop;
   //   }
   // },
-  //
-  // drawing: {
-  //   DrawingManager: class {
-  //     constructor() {
-  //       this.map = null;
-  //       this.values = null;
-  //
-  //       this.listeners = {};
-  //     }
-  //
-  //     setMap(map) {
-  //       this.map = map;
-  //     }
-  //
-  //     setValues(values) {
-  //       this.values = values;
-  //     }
-  //
-  //     emit(event, x) {
-  //       const fns = this.listeners[event];
-  //
-  //       if (fns) {
-  //         fns.forEach(fn => {
-  //           fn(x);
-  //         });
-  //       }
-  //     }
-  //
-  //     addListener(event, fn) {
-  //       this.listeners[event] = this.listeners[event] || [];
-  //
-  //       this.listeners[event].push(fn);
-  //     }
-  //   }
-  // }
 };

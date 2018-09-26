@@ -217,9 +217,8 @@ export function Polyline(props: PolylineProps) {
         polyline.setMap(null);
         maps.event.clearInstanceListeners(polyline);
       }}
-      render={({ maps, state: { polyline } }) => (
+      render={({ state: { polyline } }) => (
         <MapComponentHandlers
-          maps={maps}
           instance={polyline}
           handlers={createHandlers(props)}
         />

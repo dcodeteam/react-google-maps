@@ -1,36 +1,32 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { emitEvent, getClassMockInstance } from "../../__tests__/testUtils";
-import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
-import { InfoWindow, InfoWindowProps } from "../InfoWindow";
+import {
+  createMockMapComponent,
+  emitEvent,
+  getClassMockInstance,
+} from "../../__tests__/testUtils";
+import { InfoWindow } from "../InfoWindow";
 import { InfoWindowEvent } from "../InfoWindowEvent";
 
-function getMockInfoWindowInstance(): google.maps.InfoWindow {
+function getMockInstance(): google.maps.InfoWindow {
   return getClassMockInstance(google.maps.InfoWindow);
 }
 
 describe("InfoWindow", () => {
-  const map = new google.maps.Map(null);
+  const { map, Mock } = createMockMapComponent(InfoWindow);
 
-  function MockInfoWindow(props: InfoWindowProps) {
-    return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
-        <InfoWindow {...props} />
-      </GoogleMapContextProvider>
-    );
-  }
+  const customEvents = 1;
+  const instanceEvents = Object.keys(InfoWindowEvent).length;
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should set default options on mount", () => {
-    mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.setOptions).toBeCalledTimes(1);
     expect(infoWindow.setOptions).lastCalledWith({
@@ -54,11 +50,9 @@ describe("InfoWindow", () => {
   });
 
   it("should open info window by default on mount", () => {
-    mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.close).toBeCalledTimes(0);
     expect(infoWindow.open).toBeCalledTimes(1);
@@ -67,12 +61,12 @@ describe("InfoWindow", () => {
 
   it("should NOT open info window on mount if open is 'false'", () => {
     mount(
-      <MockInfoWindow open={false} position={{ lat: 0, lng: 1 }}>
+      <Mock open={false} position={{ lat: 0, lng: 1 }}>
         Content
-      </MockInfoWindow>,
+      </Mock>,
     );
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.open).toBeCalledTimes(0);
     expect(infoWindow.close).toBeCalledTimes(0);
@@ -80,7 +74,7 @@ describe("InfoWindow", () => {
 
   it("should set custom options on mount", () => {
     mount(
-      <MockInfoWindow
+      <Mock
         open={false}
         maxWidth={120}
         zIndex={10}
@@ -89,10 +83,10 @@ describe("InfoWindow", () => {
         pixelOffset={{ width: 0, height: 1 }}
       >
         Content
-      </MockInfoWindow>,
+      </Mock>,
     );
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.setOptions).toBeCalledTimes(1);
     expect(infoWindow.setOptions).lastCalledWith({
@@ -105,11 +99,9 @@ describe("InfoWindow", () => {
   });
 
   it("should change options on update", () => {
-    const wrapper = mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.setOptions).toBeCalledTimes(1);
     expect(infoWindow.setOptions).lastCalledWith({
@@ -132,11 +124,9 @@ describe("InfoWindow", () => {
   });
 
   it("should change visibility on update", () => {
-    const wrapper = mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.open).toBeCalledTimes(1);
     expect(infoWindow.close).toBeCalledTimes(0);
@@ -160,11 +150,9 @@ describe("InfoWindow", () => {
   });
 
   it("should reopen window when it's opened and 'maxWidth' has changed", () => {
-    const wrapper = mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.open).toBeCalledTimes(1);
     expect(infoWindow.open).lastCalledWith(map);
@@ -187,11 +175,9 @@ describe("InfoWindow", () => {
   });
 
   it("should NOT reopen window when it's closed and 'maxWidth' has changed", () => {
-    const wrapper = mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.open).toBeCalledTimes(1);
     expect(infoWindow.open).lastCalledWith(map);
@@ -212,14 +198,9 @@ describe("InfoWindow", () => {
   });
 
   it("should attach listeners without handlers", () => {
-    mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
-
-    const customEvents = 1;
-    const instanceEvents = Object.keys(InfoWindowEvent).length;
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.addListener).toBeCalledTimes(
       customEvents + instanceEvents,
@@ -230,12 +211,12 @@ describe("InfoWindow", () => {
     const onCloseClick = jest.fn();
 
     mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }} onCloseClick={onCloseClick}>
+      <Mock position={{ lat: 0, lng: 1 }} onCloseClick={onCloseClick}>
         Content
-      </MockInfoWindow>,
+      </Mock>,
     );
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(onCloseClick).toBeCalledTimes(0);
 
@@ -245,11 +226,9 @@ describe("InfoWindow", () => {
   });
 
   it("should reopen info window on close when it should be open", () => {
-    mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.open).toBeCalledTimes(1);
     expect(infoWindow.open).lastCalledWith(map);
@@ -261,11 +240,9 @@ describe("InfoWindow", () => {
   });
 
   it("should render string content", () => {
-    const wrapper = mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.setContent).toBeCalledTimes(1);
     expect(infoWindow.setContent).lastCalledWith("Content");
@@ -289,12 +266,12 @@ describe("InfoWindow", () => {
     const ref = React.createRef<HTMLDivElement>();
 
     const wrapper = mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>
+      <Mock position={{ lat: 0, lng: 1 }}>
         <div ref={ref}>React Element</div>
-      </MockInfoWindow>,
+      </Mock>,
     );
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.setContent).toBeCalledTimes(1);
     expect(infoWindow.setContent).lastCalledWith(ref.current!.parentElement);
@@ -306,27 +283,27 @@ describe("InfoWindow", () => {
   });
 
   it("should unmount portal on close", () => {
-    const wrapper = mount(
-      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
-    );
+    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    const infoWindow = getMockInfoWindowInstance();
+    const infoWindow = getMockInstance();
 
     expect(infoWindow.close).toBeCalledTimes(0);
     expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
 
+    const {
+      mock: { results },
+    } = infoWindow.addListener as jest.Mock;
+
+    expect(results.length).toBe(customEvents + instanceEvents);
+
     wrapper.unmount();
 
-    expect(infoWindow.close).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(2);
+    results.forEach(({ value }) => {
+      expect(value.remove).toBeCalled();
+    });
 
-    expect(google.maps.event.clearInstanceListeners).nthCalledWith(
-      1,
-      infoWindow,
-    );
-    expect(google.maps.event.clearInstanceListeners).nthCalledWith(
-      2,
-      infoWindow,
-    );
+    expect(infoWindow.close).toBeCalledTimes(1);
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
+    expect(google.maps.event.clearInstanceListeners).lastCalledWith(infoWindow);
   });
 });
