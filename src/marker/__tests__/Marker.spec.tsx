@@ -206,13 +206,15 @@ describe("Marker", () => {
     const marker = getMarkerMockInstance();
 
     expect(marker.setMap).toBeCalledTimes(1);
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
 
     wrapper.unmount();
 
     expect(marker.setMap).toBeCalledTimes(2);
     expect(marker.setMap).lastCalledWith(null);
 
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).lastCalledWith(marker);
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(2);
+    expect(google.maps.event.clearInstanceListeners).nthCalledWith(1, marker);
+    expect(google.maps.event.clearInstanceListeners).nthCalledWith(2, marker);
   });
 });

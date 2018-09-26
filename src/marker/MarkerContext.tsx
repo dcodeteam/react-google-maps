@@ -11,12 +11,8 @@ interface MarkerContextProviderProps {
   children: React.ReactNode;
 }
 
-export class MarkerContextProvider extends React.PureComponent<
-  MarkerContextProviderProps
-> {
-  public render() {
-    return <Provider {...this.props} />;
-  }
+export function MarkerContextProvider(props: MarkerContextProviderProps) {
+  return <Provider {...props} />;
 }
 
 export interface MarkerContextConsumerProps {

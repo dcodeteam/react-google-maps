@@ -115,7 +115,7 @@ class GoogleMapComponentElement<O, S> extends React.Component<
   }
 }
 
-export function ComponentComponent<P, S>(props: GoogleMapComponentProps<P, S>) {
+export function MapComponent<P, S>(props: GoogleMapComponentProps<P, S>) {
   return (
     <GoogleMapContextConsumer>
       {ctx => <GoogleMapComponentElement {...props} ctx={ctx} />}
