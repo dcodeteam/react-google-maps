@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { MapComponent } from "../google-map-component/MapComponent";
-import { RegisterEventHandlers } from "../google-map-component/RegisterEventHandlers";
+import { MapComponentHandlers } from "../google-map-component/MapComponentHandlers";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MarkerContext, MarkerContextProvider } from "./MarkerContext";
@@ -254,7 +254,7 @@ export function Marker(props: MarkerProps) {
         <MarkerContextProvider value={ctx}>
           {typeof icon !== "string" && icon}
 
-          <RegisterEventHandlers
+          <MapComponentHandlers
             maps={maps}
             instance={marker}
             handlers={createHandlers(props)}

@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { MapComponent } from "../google-map-component/MapComponent";
-import { RegisterEventHandlers } from "../google-map-component/RegisterEventHandlers";
+import { MapComponentHandlers } from "../google-map-component/MapComponentHandlers";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { PolylineEvent } from "./PolylineEvent";
@@ -218,7 +218,7 @@ export function Polyline(props: PolylineProps) {
         maps.event.clearInstanceListeners(polyline);
       }}
       render={({ maps, state: { polyline } }) => (
-        <RegisterEventHandlers
+        <MapComponentHandlers
           maps={maps}
           instance={polyline}
           handlers={createHandlers(props)}

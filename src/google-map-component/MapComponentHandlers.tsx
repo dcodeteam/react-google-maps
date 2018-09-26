@@ -7,7 +7,7 @@ export interface RegisterEventHandlersProps {
   handlers: { [key: string]: undefined | ((event: any) => void) };
 }
 
-export class RegisterEventHandlers extends React.Component<
+export class MapComponentHandlers extends React.Component<
   RegisterEventHandlersProps
 > {
   public componentDidMount(): void {

@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { MapComponent } from "../google-map-component/MapComponent";
-import { RegisterEventHandlers } from "../google-map-component/RegisterEventHandlers";
+import { MapComponentHandlers } from "../google-map-component/MapComponentHandlers";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { SizeLiteral, createSize } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
@@ -170,7 +170,7 @@ export function InfoWindow(props: InfoWindowProps) {
             ? null
             : ReactDOM.createPortal(children, div)}
 
-          <RegisterEventHandlers
+          <MapComponentHandlers
             maps={maps}
             instance={infoWindow}
             handlers={createHandlers(props)}

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { RegisterEventHandlers } from "../google-map-component/RegisterEventHandlers";
+import { MapComponentHandlers } from "../google-map-component/MapComponentHandlers";
 import {
   GoogleMapContext,
   GoogleMapContextProvider,
@@ -313,7 +313,7 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
               {children}
             </GoogleMapContextProvider>
 
-            <RegisterEventHandlers
+            <MapComponentHandlers
               maps={ctx.maps}
               instance={ctx.map}
               handlers={createHandlers(this.props)}
