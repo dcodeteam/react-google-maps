@@ -1,8 +1,8 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { MapComponent, MapComponentProps } from "../MapComponent";
 import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
+import { MapComponent, MapComponentProps } from "../MapComponent";
 
 describe("MapComponent", () => {
   const map = new google.maps.Map(null);
