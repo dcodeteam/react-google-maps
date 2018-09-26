@@ -1,9 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
-import { isShallowEqual } from "../internal/DataUtils";
+import { MapComponent } from "../google-map-component/MapComponent";
+import { RegisterEventHandlers } from "../google-map-component/RegisterEventHandlers";
+import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { SizeLiteral, createSize } from "../internal/MapsUtils";
+import { pickChangedProps } from "../internal/PropsUtils";
 import { InfoWindowEvent } from "./InfoWindowEvent";
 
 export interface InfoWindowProps {
@@ -56,23 +58,28 @@ export interface InfoWindowProps {
   zIndex?: number;
 }
 
-interface Props extends InfoWindowProps {
-  map: google.maps.Map;
-  maps: typeof google.maps;
+interface Options extends google.maps.InfoWindowOptions {
+  open: boolean;
+  children: React.ReactNode;
 }
 
 function createOptions(
   maps: typeof google.maps,
   {
+    children,
     position,
     maxWidth,
     zIndex,
     pixelOffset,
 
+    open = true,
     disableAutoPan = false,
   }: InfoWindowProps,
-): google.maps.InfoWindowOptions {
+): Options {
   return {
+    open,
+    children,
+
     position,
     maxWidth,
     zIndex,
@@ -82,116 +89,94 @@ function createOptions(
   };
 }
 
-class InfoWindowElement extends React.Component<Props> {
-  private readonly div: HTMLDivElement;
-
-  private readonly infoWindow: google.maps.InfoWindow;
-
-  public constructor(props: Props, context: object) {
-    super(props, context);
-
-    const { maps } = props;
-
-    const infoWindow = new maps.InfoWindow();
-    const options = createOptions(maps, props);
-
-    infoWindow.setOptions(options);
-
-    this.infoWindow = infoWindow;
-    this.div = document.createElement("div");
-
-    infoWindow.addListener(InfoWindowEvent.onCloseClick, () => {
-      const { open, onCloseClick } = this.props;
-
-      // Reopen if it has `open` prop.
-      if (open) {
-        this.open();
-      }
-
-      if (onCloseClick) {
-        onCloseClick();
-      }
-    });
-  }
-
-  private open() {
-    const { map } = this.props;
-
-    this.infoWindow.open(map);
-  }
-
-  private close() {
-    this.infoWindow.close();
-  }
-
-  private updateContent() {
-    const { children } = this.props;
-
-    this.infoWindow.setContent(
-      typeof children === "string" ? children : this.div,
-    );
-  }
-
-  private updateVisibility() {
-    const { open } = this.props;
-
-    if (open) {
-      this.open();
-    } else {
-      this.close();
-    }
-  }
-
-  public componentDidMount(): void {
-    this.updateContent();
-    this.updateVisibility();
-  }
-
-  public componentDidUpdate(prevProps: Readonly<Props>): void {
-    const { maps, open, maxWidth, children } = this.props;
-
-    const prevOptions = createOptions(maps, prevProps);
-    const nextOptions = createOptions(maps, this.props);
-
-    if (!isShallowEqual(prevOptions, nextOptions)) {
-      this.infoWindow.setOptions(nextOptions);
-    }
-
-    if (children !== prevProps.children) {
-      this.updateContent();
-    }
-
-    if (open !== prevProps.open || (open && maxWidth !== prevProps.maxWidth)) {
-      this.updateVisibility();
-    }
-  }
-
-  public componentWillUnmount() {
-    const { maps } = this.props;
-
-    this.close();
-
-    maps.event.clearInstanceListeners(this.infoWindow);
-  }
-
-  public render() {
-    const { open, children } = this.props;
-
-    return !open || typeof children === "string"
-      ? null
-      : ReactDOM.createPortal(children, this.div);
-  }
+interface State {
+  div: HTMLDivElement;
+  infoWindow: google.maps.InfoWindow;
 }
 
-export function InfoWindow({ open = true, ...props }: InfoWindowProps) {
+function createHandlers({ onCloseClick }: InfoWindowProps) {
+  return {
+    [InfoWindowEvent.onCloseClick]: onCloseClick,
+  };
+}
+
+export function InfoWindow(props: InfoWindowProps) {
   return (
-    <GoogleMapContextConsumer>
-      {({ map, maps }) =>
-        map != null &&
-        maps != null && (
-          <InfoWindowElement {...props} open={open} map={map} maps={maps} />
-        )
-      }
-    </GoogleMapContextConsumer>
+    <MapComponent
+      createOptions={({ maps }: GoogleMapContext) => createOptions(maps, props)}
+      createInitialState={({ maps }: GoogleMapContext): State => ({
+        infoWindow: new maps.InfoWindow(),
+        div: document.createElement("div"),
+      })}
+      didMount={({
+        map,
+        state: { div, infoWindow },
+        options: { open, children, ...options },
+      }) => {
+        infoWindow.setOptions(options);
+
+        if (open) {
+          infoWindow.open(map);
+        }
+
+        infoWindow.setContent(typeof children === "string" ? children : div);
+
+        infoWindow.addListener(InfoWindowEvent.onCloseClick, () => {
+          infoWindow.open(map);
+        });
+      }}
+      didUpdate={(
+        { options: { open: prevOpen, children: prevChildren, ...prevOptions } },
+        {
+          map,
+          state: { div, infoWindow },
+          options: { open: nextOpen, children: nextChildren, ...nextOptions },
+        },
+      ) => {
+        const options = pickChangedProps(prevOptions, nextOptions);
+
+        if (options) {
+          infoWindow.setOptions(options);
+        }
+
+        if (prevChildren !== nextChildren) {
+          infoWindow.setContent(
+            typeof nextChildren === "string" ? nextChildren : div,
+          );
+        }
+
+        if (
+          prevOpen !== nextOpen ||
+          (nextOpen && prevOptions.maxWidth !== nextOptions.maxWidth)
+        ) {
+          if (nextOpen) {
+            infoWindow.open(map);
+          } else {
+            infoWindow.close();
+          }
+        }
+      }}
+      willUnmount={({ maps, state: { infoWindow } }) => {
+        infoWindow.close();
+        maps.event.clearInstanceListeners(infoWindow);
+      }}
+      render={({
+        maps,
+        state: { div, infoWindow },
+        options: { open, children },
+      }) => (
+        <>
+          {!open || typeof children === "string"
+            ? null
+            : ReactDOM.createPortal(children, div)}
+
+          <RegisterEventHandlers
+            maps={maps}
+            instance={infoWindow}
+            handlers={createHandlers(props)}
+          />
+        </>
+      )}
+    />
   );
 }

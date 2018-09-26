@@ -69,13 +69,7 @@ describe("InfoWindow", () => {
     wrapper.setProps({ zIndex: 10 });
 
     expect(infoWindow.setOptions).toBeCalledTimes(2);
-    expect(infoWindow.setOptions).lastCalledWith({
-      disableAutoPan: false,
-      maxWidth: undefined,
-      pixelOffset: undefined,
-      position: { lat: 0, lng: 1 },
-      zIndex: 10,
-    });
+    expect(infoWindow.setOptions).lastCalledWith({ zIndex: 10 });
 
     wrapper.setProps({ zIndex: 10 });
 
@@ -83,13 +77,7 @@ describe("InfoWindow", () => {
 
     wrapper.setProps({ zIndex: 20 });
 
-    expect(infoWindow.setOptions).lastCalledWith({
-      disableAutoPan: false,
-      maxWidth: undefined,
-      pixelOffset: undefined,
-      position: { lat: 0, lng: 1 },
-      zIndex: 20,
-    });
+    expect(infoWindow.setOptions).lastCalledWith({ zIndex: 20 });
   });
 
   it("should change visibility on update", () => {
@@ -179,7 +167,12 @@ describe("InfoWindow", () => {
 
     const infoWindow = getMockInfoWindowInstance();
 
-    expect(infoWindow.addListener).toHaveBeenCalledTimes(1);
+    const customEvents = 1;
+    const instanceEvents = Object.keys(InfoWindowEvent).length;
+
+    expect(infoWindow.addListener).toBeCalledTimes(
+      customEvents + instanceEvents,
+    );
   });
 
   it("should attach listeners with handlers", () => {
@@ -193,7 +186,7 @@ describe("InfoWindow", () => {
 
     const infoWindow = getMockInfoWindowInstance();
 
-    expect(onCloseClick).toHaveBeenCalledTimes(0);
+    expect(onCloseClick).toBeCalledTimes(0);
 
     emitEvent(infoWindow, InfoWindowEvent.onCloseClick);
 
@@ -214,22 +207,6 @@ describe("InfoWindow", () => {
 
     expect(infoWindow.open).toBeCalledTimes(2);
     expect(infoWindow.open).lastCalledWith(map);
-  });
-
-  it("should NOT reopen info window on close when it should be closed", () => {
-    mount(
-      <MockInfoWindow open={false} position={{ lat: 0, lng: 1 }}>
-        Content
-      </MockInfoWindow>,
-    );
-
-    const infoWindow = getMockInfoWindowInstance();
-
-    expect(infoWindow.open).toBeCalledTimes(0);
-
-    emitEvent(infoWindow, InfoWindowEvent.onCloseClick);
-
-    expect(infoWindow.open).toBeCalledTimes(0);
   });
 
   it("should render string content", () => {
@@ -284,10 +261,21 @@ describe("InfoWindow", () => {
 
     const infoWindow = getMockInfoWindowInstance();
 
+    expect(infoWindow.close).toBeCalledTimes(0);
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
+
     wrapper.unmount();
 
     expect(infoWindow.close).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).lastCalledWith(infoWindow);
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(2);
+
+    expect(google.maps.event.clearInstanceListeners).nthCalledWith(
+      1,
+      infoWindow,
+    );
+    expect(google.maps.event.clearInstanceListeners).nthCalledWith(
+      2,
+      infoWindow,
+    );
   });
 });

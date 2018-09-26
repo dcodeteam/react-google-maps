@@ -1,3 +1,3 @@
-export class InfoWindowEvent {
-  public static readonly onCloseClick = "closeclick";
+export enum InfoWindowEvent {
+  onCloseClick = "closeclick",
 }
