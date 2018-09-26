@@ -7,13 +7,13 @@ export interface PanToBoundsProps {
   /**
    * Rectangle from the points at its south-west and north-east corners.
    */
-  latLngBounds: google.maps.LatLngBoundsLiteral;
+  bounds: google.maps.LatLngBoundsLiteral;
 }
 
-export function PanToBounds({ latLngBounds }: PanToBoundsProps) {
+export function PanToBounds({ bounds }: PanToBoundsProps) {
   return (
     <MapComponent
-      createOptions={() => latLngBounds}
+      createOptions={() => bounds}
       didMount={({ map, options }) => {
         map.panToBounds(options);
       }}
