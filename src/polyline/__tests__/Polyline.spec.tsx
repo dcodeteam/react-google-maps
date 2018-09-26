@@ -93,7 +93,7 @@ describe("Polyline", () => {
 
     const polyline = getPolylineMockInstance();
 
-    const customEvents = 1;
+    const customEvents = 2;
     const propEvents = Object.keys(PolylineEvent).length;
 
     expect(polyline.addListener).toBeCalledTimes(customEvents + propEvents);
@@ -170,7 +170,9 @@ describe("Polyline", () => {
 
     expect(polyline.setMap).toBeCalledTimes(2);
     expect(polyline.setMap).lastCalledWith(null);
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).lastCalledWith(polyline);
+
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(2);
+    expect(google.maps.event.clearInstanceListeners).nthCalledWith(1, polyline);
+    expect(google.maps.event.clearInstanceListeners).nthCalledWith(2, polyline);
   });
 });

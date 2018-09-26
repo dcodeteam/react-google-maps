@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { GoogleMapComponent } from "../google-map-component/GoogleMapComponent";
+import { MapComponent } from "../google-map-component/MapComponent";
+import { RegisterEventHandlers } from "../google-map-component/RegisterEventHandlers";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { PolylineEvent } from "./PolylineEvent";
@@ -175,34 +176,54 @@ function createHandlers({
   };
 }
 
+interface State {
+  polyline: google.maps.Polyline;
+}
+
 export function Polyline(props: PolylineProps) {
   return (
-    <GoogleMapComponent
-      handlers={createHandlers(props)}
+    <MapComponent
       createOptions={() => createOptions(props)}
-      createInstance={({ maps }: GoogleMapContext) => new maps.Polyline()}
-      didMount={({ ctx, options, instance }) => {
-        instance.setMap(ctx.map);
-        instance.setOptions(options);
-        instance.addListener(PolylineEvent.onDragEnd, e => {
-          Object.assign(e, { path: instance.getPath().getArray() });
+      createInitialState={({ maps }: GoogleMapContext): State => ({
+        polyline: new maps.Polyline(),
+      })}
+      didMount={({ map, options, state: { polyline } }) => {
+        polyline.setMap(map);
+        polyline.setOptions(options);
 
-          instance.setPath(options.path!);
+        let lastPath = polyline.getPath();
+
+        polyline.addListener(PolylineEvent.onDragStart, () => {
+          lastPath = polyline.getPath();
+        });
+
+        polyline.addListener(PolylineEvent.onDragEnd, e => {
+          Object.assign(e, { path: polyline.getPath().getArray() });
+
+          polyline.setPath(lastPath.getArray());
         });
       }}
       didUpdate={(
         { options: prevOptions },
-        { options: nextOptions, instance },
+        { options: nextOptions, state: { polyline } },
       ) => {
         const options = pickChangedProps(prevOptions, nextOptions);
 
         if (options) {
-          instance.setOptions(options);
+          polyline.setOptions(options);
         }
       }}
-      willUnmount={({ instance }) => {
-        instance.setMap(null);
+      willUnmount={({ maps, state: { polyline } }) => {
+        polyline.setMap(null);
+        maps.event.clearInstanceListeners(polyline);
       }}
+      render={({ maps, state: { polyline } }) => (
+        <RegisterEventHandlers
+          maps={maps}
+          instance={polyline}
+          handlers={createHandlers(props)}
+        />
+      )}
     />
   );
 }
