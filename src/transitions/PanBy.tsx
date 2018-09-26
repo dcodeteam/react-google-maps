@@ -1,7 +1,6 @@
 import * as React from "react";
 
-import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
-import { ValueSpy } from "../internal/ValueSpy";
+import { MapComponent } from "../google-map-component/MapComponent";
 
 export interface PanByProps {
   /**
@@ -16,24 +15,19 @@ export interface PanByProps {
 
 export function PanBy(props: PanByProps) {
   return (
-    <GoogleMapContextConsumer>
-      {({ map }) => {
-        const panBy = () => {
-          map.panBy(props.x, props.y);
-        };
-
-        return (
-          <ValueSpy
-            value={props}
-            didMount={panBy}
-            didUpdate={prevValue => {
-              if (props.x !== prevValue.x || props.y !== prevValue.y) {
-                panBy();
-              }
-            }}
-          />
-        );
+    <MapComponent
+      createOptions={() => props}
+      didMount={({ map, options }) => {
+        map.panBy(options.x, options.y);
       }}
-    </GoogleMapContextConsumer>
+      didUpdate={({ options: prevOptions }, { map, options: nextOptions }) => {
+        if (
+          prevOptions.x !== nextOptions.x ||
+          prevOptions.y !== nextOptions.y
+        ) {
+          map.panBy(nextOptions.x, nextOptions.y);
+        }
+      }}
+    />
   );
 }
