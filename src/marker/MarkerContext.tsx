@@ -6,14 +6,7 @@ export interface MarkerContext {
 
 const { Consumer, Provider } = React.createContext<Partial<MarkerContext>>({});
 
-interface MarkerContextProviderProps {
-  value: MarkerContext;
-  children: React.ReactNode;
-}
-
-export function MarkerContextProvider(props: MarkerContextProviderProps) {
-  return <Provider {...props} />;
-}
+export const MarkerContextProvider = Provider as React.Provider<MarkerContext>;
 
 export interface MarkerContextConsumerProps {
   children: (ctx: MarkerContext) => React.ReactNode;
