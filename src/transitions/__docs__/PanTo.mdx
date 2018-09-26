@@ -10,7 +10,7 @@ import { GoogleMap } from '../../google-map/GoogleMap'
 
 # Pan To
 
-Changes the center of the map to the given `latLng`.
+Changes the center of the map to the given `position`.
 
 If the change is less than both the width and height of the map, the transition will be smoothly animated.
 
@@ -25,7 +25,7 @@ If the change is less than both the width and height of the map, the transition 
     style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
-    <PanTo latLng={{ lat: 36.964, lng: -122.015 }} />
+    <PanTo position={{ lat: 36.964, lng: -122.015 }} />
   </GoogleMap>
 </Playground>
 

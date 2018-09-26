@@ -7,13 +7,13 @@ export interface PanToProps {
   /**
    * Defines the next map center position.
    */
-  latLng: google.maps.LatLngLiteral;
+  position: google.maps.LatLngLiteral;
 }
 
-export function PanTo({ latLng }: PanToProps) {
+export function PanTo({ position }: PanToProps) {
   return (
     <MapComponent
-      createOptions={() => latLng}
+      createOptions={() => position}
       didMount={({ map, options }) => {
         map.panTo(options);
       }}

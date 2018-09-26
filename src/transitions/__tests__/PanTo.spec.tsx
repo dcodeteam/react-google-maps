@@ -20,24 +20,29 @@ describe("PanTo", () => {
   });
 
   it("should pan on mount", () => {
-    const latLng: google.maps.LatLngLiteral = { lat: 10, lng: 15 };
+    const position: google.maps.LatLngLiteral = { lat: 1, lng: 2 };
 
-    mount(<MockPanTo latLng={latLng} />);
+    mount(<MockPanTo position={position} />);
 
-    expect(map.panTo).toHaveBeenCalledTimes(1);
-    expect(map.panTo).toHaveBeenLastCalledWith(latLng);
+    expect(map.panTo).toBeCalledTimes(1);
+    expect(map.panTo).lastCalledWith(position);
   });
 
   it("should pan on update", () => {
-    const wrapper = mount(<MockPanTo latLng={{ lat: 10, lng: 15 }} />);
+    const initialPosition: google.maps.LatLngLiteral = { lat: 1, lng: 2 };
+    const updatedPosition: google.maps.LatLngLiteral = { lat: 3, lng: 4 };
 
-    expect(map.panTo).toHaveBeenCalledTimes(1);
+    const wrapper = mount(<MockPanTo position={initialPosition} />);
 
-    const latLng: google.maps.LatLngLiteral = { lat: 15, lng: 15 };
+    expect(map.panTo).toBeCalledTimes(1);
 
-    wrapper.setProps({ latLng });
+    wrapper.setProps({ position: initialPosition });
 
-    expect(map.panTo).toHaveBeenCalledTimes(2);
-    expect(map.panTo).toHaveBeenLastCalledWith(latLng);
+    expect(map.panTo).toBeCalledTimes(1);
+
+    wrapper.setProps({ position: updatedPosition });
+
+    expect(map.panTo).toBeCalledTimes(2);
+    expect(map.panTo).lastCalledWith(updatedPosition);
   });
 });
