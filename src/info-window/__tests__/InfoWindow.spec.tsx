@@ -25,7 +25,7 @@ describe("InfoWindow", () => {
     jest.clearAllMocks();
   });
 
-  it("should add info window with default options on mount", () => {
+  it("should set default options on mount", () => {
     mount(
       <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
     );
@@ -50,6 +50,57 @@ describe("InfoWindow", () => {
     expect(infoWindow.setOptions).lastCalledWith({
       disableAutoPan: false,
       position: { lat: 0, lng: 1 },
+    });
+  });
+
+  it("should open info window by default on mount", () => {
+    mount(
+      <MockInfoWindow position={{ lat: 0, lng: 1 }}>Content</MockInfoWindow>,
+    );
+
+    const infoWindow = getMockInfoWindowInstance();
+
+    expect(infoWindow.close).toBeCalledTimes(0);
+    expect(infoWindow.open).toBeCalledTimes(1);
+    expect(infoWindow.open).lastCalledWith(map);
+  });
+
+  it("should NOT open info window on mount if open is 'false'", () => {
+    mount(
+      <MockInfoWindow open={false} position={{ lat: 0, lng: 1 }}>
+        Content
+      </MockInfoWindow>,
+    );
+
+    const infoWindow = getMockInfoWindowInstance();
+
+    expect(infoWindow.open).toBeCalledTimes(0);
+    expect(infoWindow.close).toBeCalledTimes(0);
+  });
+
+  it("should set custom options on mount", () => {
+    mount(
+      <MockInfoWindow
+        open={false}
+        maxWidth={120}
+        zIndex={10}
+        disableAutoPan={true}
+        position={{ lat: 0, lng: 1 }}
+        pixelOffset={{ width: 0, height: 1 }}
+      >
+        Content
+      </MockInfoWindow>,
+    );
+
+    const infoWindow = getMockInfoWindowInstance();
+
+    expect(infoWindow.setOptions).toBeCalledTimes(1);
+    expect(infoWindow.setOptions).lastCalledWith({
+      disableAutoPan: true,
+      maxWidth: 120,
+      pixelOffset: { height: 1, width: 0 },
+      position: { lat: 0, lng: 1 },
+      zIndex: 10,
     });
   });
 
