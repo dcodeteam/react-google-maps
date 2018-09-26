@@ -8,9 +8,8 @@ class Comparable {
   }
 }
 
-class MVCObject {
+class ValueContainer {
   constructor(values) {
-    this.listeners = {};
     this.values = { ...values };
 
     this.get = jest.fn(key => this.values[key]);
@@ -21,6 +20,14 @@ class MVCObject {
     this.setValues = jest.fn(nextValues => {
       this.values = { ...this.values, ...nextValues };
     });
+  }
+}
+
+class MVCObject extends ValueContainer {
+  constructor(values) {
+    super(values);
+
+    this.listeners = {};
 
     this.emit = jest.fn((event, ...args) => {
       const listeners = this.listeners[event];
@@ -94,24 +101,15 @@ class GoogleMap extends MVCObject {
     this.panBy = jest.fn();
     this.panTo = jest.fn();
     this.panToBounds = jest.fn();
-  }
 
-  // this.data = {
-  //   items: [],
-  //   add(item) {
-  //     this.items.push(item);
-  //   },
-  //
-  //   remove(item) {
-  //     const index = this.items.indexOf(item);
-  //
-  //     if (index !== -1) {
-  //       this.items.splice(index, 1);
-  //     }
-  //   },
-  //
-  //   overrideStyle: noop,}
-  // };
+    this.data = {
+      ...new MVCObject(),
+
+      add: jest.fn(),
+      remove: jest.fn(),
+      overrideStyle: jest.fn(),
+    };
+  }
 }
 
 class Marker extends MVCObject {
@@ -155,6 +153,22 @@ class DrawingManager extends MVCObject {
 
     this.setOptions = this.setValues;
     this.setMap = jest.fn(map => this.set("map", map));
+  }
+}
+
+class DataPolygon extends ValueContainer {
+  constructor(values) {
+    super({ array: values });
+
+    this.getArray = jest.fn(() => this.get("array"));
+  }
+}
+
+class DataFeature extends ValueContainer {
+  constructor(values) {
+    super(values);
+
+    this.setGeometry = jest.fn(geometry => this.set("geometry", geometry));
   }
 }
 
@@ -226,6 +240,16 @@ module.exports = {
       .mockImplementation(options => new DrawingManager(options)),
   },
 
+  Data: {
+    Polygon: jest
+      .fn(DataPolygon)
+      .mockImplementation(options => new DataPolygon(options)),
+
+    Feature: jest
+      .fn(DataFeature)
+      .mockImplementation(options => new DataFeature(options)),
+  },
+
   // LatLng: function GoogleMapsLatLng(latLng) {
   //   this.lat = latLng.lat;
   //   this.lng = latLng.lng;
@@ -239,13 +263,5 @@ module.exports = {
   //
   //     return this;
   //   });
-  // },
-
-  // Data: {
-  //   Polygon: noop,
-  //
-  //   Feature: function GoogleMapsDataFeature() {
-  //     this.setGeometry = noop;
-  //   }
   // },
 };
