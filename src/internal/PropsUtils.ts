@@ -20,15 +20,3 @@ export function pickChangedProps<T extends object>(
 
   return hasChanged ? diff : null;
 }
-
-export function forEachEvent<P>(
-  events: unknown,
-  fn: (key: keyof P, event: string) => void,
-) {
-  const eventsObject = events as { [key: string]: string };
-  const keys = Object.keys(eventsObject) as Array<keyof P>;
-
-  keys.forEach(key => {
-    fn(key, eventsObject[String(key)]);
-  });
-}

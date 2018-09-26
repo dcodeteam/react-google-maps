@@ -4,10 +4,10 @@ import * as React from "react";
 import {
   createMockHandlers,
   emitEvent,
+  forEachEvent,
   getClassMockInstance,
 } from "../../__tests__/testUtils";
 import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
-import { forEachEvent } from "../../internal/PropsUtils";
 import { Polyline, PolylineProps } from "../Polyline";
 import { PolylineEvent } from "../PolylineEvent";
 

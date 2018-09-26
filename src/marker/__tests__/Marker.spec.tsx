@@ -3,10 +3,10 @@ import * as React from "react";
 
 import {
   createMockHandlers,
+  forEachEvent,
   getClassMockInstance,
 } from "../../__tests__/testUtils";
 import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
-import { forEachEvent } from "../../internal/PropsUtils";
 import { Marker, MarkerProps } from "../Marker";
 import { MarkerContextConsumer } from "../MarkerContext";
 import { MarkerEvent } from "../MarkerEvent";
