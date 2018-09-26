@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { MapComponent } from "../google-map-component/MapComponent";
+import { MapComponent } from "../map-component/MapComponent";
 
 export interface PanByProps {
   /**

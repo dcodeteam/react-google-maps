@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { MapComponent } from "../google-map-component/MapComponent";
-import { MapComponentHandlers } from "../google-map-component/MapComponentHandlers";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { pickChangedProps } from "../internal/PropsUtils";
+import { MapComponent } from "../map-component/MapComponent";
+import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
 import { MarkerContext, MarkerContextProvider } from "./MarkerContext";
 import { MarkerEvent } from "./MarkerEvent";
 

@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import { MapComponent } from "../../google-map-component/MapComponent";
 import { GoogleMapContext } from "../../google-map-context/GoogleMapContext";
 import { isDeepEqual } from "../../internal/DataUtils";
+import { MapComponent } from "../../map-component/MapComponent";
 
 export type MapControlPosition =
   | "BOTTOM_CENTER"

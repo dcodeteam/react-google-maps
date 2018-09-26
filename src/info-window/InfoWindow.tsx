@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { MapComponent } from "../google-map-component/MapComponent";
-import { MapComponentHandlers } from "../google-map-component/MapComponentHandlers";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { SizeLiteral, createSize } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
+import { MapComponent } from "../map-component/MapComponent";
+import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
 import { InfoWindowEvent } from "./InfoWindowEvent";
 
 export interface InfoWindowProps {

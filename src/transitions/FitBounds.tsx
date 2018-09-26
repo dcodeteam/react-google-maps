@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { MapComponent } from "../google-map-component/MapComponent";
 import { isShallowEqual } from "../internal/DataUtils";
+import { MapComponent } from "../map-component/MapComponent";
 
 export interface FitBoundsProps {
   /**

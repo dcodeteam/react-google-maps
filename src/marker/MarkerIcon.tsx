@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import { MapComponent } from "../google-map-component/MapComponent";
 import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
 import {
@@ -9,6 +8,7 @@ import {
   createPoint,
   createSize,
 } from "../internal/MapsUtils";
+import { MapComponent } from "../map-component/MapComponent";
 import { MarkerContextConsumer } from "./MarkerContext";
 
 export interface MarkerIconProps {
