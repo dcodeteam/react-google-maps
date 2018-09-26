@@ -7,13 +7,13 @@ export interface FitBoundsProps {
   /**
    * Rectangle from the points at its south-west and north-east corners.
    */
-  latLngBounds: google.maps.LatLngBoundsLiteral;
+  bounds: google.maps.LatLngBoundsLiteral;
 }
 
-export function FitBounds({ latLngBounds }: FitBoundsProps) {
+export function FitBounds({ bounds }: FitBoundsProps) {
   return (
     <MapComponent
-      createOptions={() => latLngBounds}
+      createOptions={() => bounds}
       didMount={({ map, options }) => {
         map.fitBounds(options);
       }}

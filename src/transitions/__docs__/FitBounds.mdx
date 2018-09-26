@@ -24,12 +24,7 @@ Sets the `viewport` to contain the given `bounds`.
     style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
-    <Marker position={{ lat: 36, lng: -122 }} />
-    <Marker position={{ lat: 34, lng: -120 }} />
-    <Marker position={{ lat: 33, lng: -124 }} />
-
-    <FitBounds latLngBounds={{south: 33, west: -124, north: 36, east: -120}} />
-
+    <FitBounds bounds={{south: 33, west: -124, north: 36, east: -120}} />
   </GoogleMap>
 </Playground>
 
