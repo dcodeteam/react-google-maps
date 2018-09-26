@@ -1,8 +1,7 @@
 import * as React from "react";
 
-import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
+import { MapComponent } from "../google-map-component/MapComponent";
 import { isShallowEqual } from "../internal/DataUtils";
-import { ValueSpy } from "../internal/ValueSpy";
 
 export interface FitBoundsProps {
   /**
@@ -13,24 +12,16 @@ export interface FitBoundsProps {
 
 export function FitBounds({ latLngBounds }: FitBoundsProps) {
   return (
-    <GoogleMapContextConsumer>
-      {({ map }) => {
-        const fitBounds = () => {
-          map.fitBounds(latLngBounds);
-        };
-
-        return (
-          <ValueSpy
-            value={latLngBounds}
-            didMount={fitBounds}
-            didUpdate={prevValue => {
-              if (!isShallowEqual(latLngBounds, prevValue)) {
-                fitBounds();
-              }
-            }}
-          />
-        );
+    <MapComponent
+      createOptions={() => latLngBounds}
+      didMount={({ map, options }) => {
+        map.fitBounds(options);
       }}
-    </GoogleMapContextConsumer>
+      didUpdate={({ options: prevOptions }, { map, options: nextOptions }) => {
+        if (!isShallowEqual(prevOptions, nextOptions)) {
+          map.fitBounds(nextOptions);
+        }
+      }}
+    />
   );
 }
