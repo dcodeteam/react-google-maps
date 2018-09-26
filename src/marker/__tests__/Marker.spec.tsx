@@ -6,7 +6,7 @@ import {
   forEachEvent,
   getClassMockInstance,
 } from "../../__tests__/testUtils";
-import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
+import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
 import { Marker, MarkerProps } from "../Marker";
 import { MarkerContextConsumer } from "../MarkerContext";
 import { MarkerEvent } from "../MarkerEvent";

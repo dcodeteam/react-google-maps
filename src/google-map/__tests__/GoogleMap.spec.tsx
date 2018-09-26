@@ -7,8 +7,8 @@ import {
   forEachEvent,
   getClassMockInstance,
 } from "../../__tests__/testUtils";
-import { GoogleMapContextConsumer } from "../../google-map-context/GoogleMapContext";
 import { GoogleMap, GoogleMapProps } from "../GoogleMap";
+import { GoogleMapContextConsumer } from "../GoogleMapContext";
 import { GoogleMapEvent } from "../GoogleMapEvent";
 
 export function getMapMockInstance(): google.maps.Map {

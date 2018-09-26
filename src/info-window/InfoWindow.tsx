@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
+import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { SizeLiteral, createSize } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponent } from "../map-component/MapComponent";

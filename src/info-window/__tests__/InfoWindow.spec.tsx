@@ -2,7 +2,7 @@ import { mount } from "enzyme";
 import * as React from "react";
 
 import { emitEvent, getClassMockInstance } from "../../__tests__/testUtils";
-import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
+import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
 import { InfoWindow, InfoWindowProps } from "../InfoWindow";
 import { InfoWindowEvent } from "../InfoWindowEvent";
 

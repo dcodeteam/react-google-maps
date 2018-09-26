@@ -1,11 +1,8 @@
 import * as React from "react";
 
-import {
-  GoogleMapContext,
-  GoogleMapContextProvider,
-} from "../google-map-context/GoogleMapContext";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
+import { GoogleMapContext, GoogleMapContextProvider } from "./GoogleMapContext";
 import { GoogleMapEvent } from "./GoogleMapEvent";
 
 interface EventProps {

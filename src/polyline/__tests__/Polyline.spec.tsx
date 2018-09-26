@@ -7,7 +7,7 @@ import {
   forEachEvent,
   getClassMockInstance,
 } from "../../__tests__/testUtils";
-import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
+import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
 import { Polyline, PolylineProps } from "../Polyline";
 import { PolylineEvent } from "../PolylineEvent";
 

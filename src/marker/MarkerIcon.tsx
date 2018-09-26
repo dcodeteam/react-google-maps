@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
+import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
 import {
   PointLiteral,

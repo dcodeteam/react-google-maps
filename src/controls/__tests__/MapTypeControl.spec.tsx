@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
+import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
 import { MapTypeControl, MapTypeControlProps } from "../MapTypeControl";
 
 describe("MapTypeControl", () => {

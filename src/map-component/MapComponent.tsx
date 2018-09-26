@@ -3,7 +3,7 @@ import * as React from "react";
 import {
   GoogleMapContext,
   GoogleMapContextConsumer,
-} from "../google-map-context/GoogleMapContext";
+} from "../google-map/GoogleMapContext";
 
 interface State<O, S> {
   state: S;
