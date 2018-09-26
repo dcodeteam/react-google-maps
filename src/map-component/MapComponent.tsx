@@ -10,30 +10,24 @@ interface State<O, S> {
   options: O;
 }
 
-type SetState<S> = (updater: (state: S) => null | S) => void;
+export type MapComponentArgs<O, S> = GoogleMapContext & State<O, S>;
 
-export interface GoogleMapComponentArgs<O, S>
-  extends State<O, S>,
-    GoogleMapContext {
-  setState: SetState<S>;
-}
-
-export interface GoogleMapComponentProps<O, S> {
+export interface MapComponentProps<O, S> {
   createOptions: (ctx: GoogleMapContext) => O;
   createInitialState?: (ctx: GoogleMapContext) => S;
 
-  didMount?: (args: GoogleMapComponentArgs<O, S>) => void;
+  didMount?: (args: MapComponentArgs<O, S>) => void;
   didUpdate?: (
-    prevArgs: GoogleMapComponentArgs<O, S>,
-    nextArgs: GoogleMapComponentArgs<O, S>,
+    prevArgs: MapComponentArgs<O, S>,
+    nextArgs: MapComponentArgs<O, S>,
   ) => void;
 
-  willUnmount?: (args: GoogleMapComponentArgs<O, S>) => void;
+  willUnmount?: (args: MapComponentArgs<O, S>) => void;
 
-  render?: (args: GoogleMapComponentArgs<O, S>) => React.ReactNode;
+  render?: (args: MapComponentArgs<O, S>) => React.ReactNode;
 }
 
-interface Props<O, S> extends GoogleMapComponentProps<O, S> {
+interface Props<O, S> extends MapComponentProps<O, S> {
   ctx: GoogleMapContext;
 }
 
@@ -48,30 +42,17 @@ function createState<O, S>({
   };
 }
 
-class GoogleMapComponentElement<O, S> extends React.Component<
+class MapComponentElement<O, S> extends React.Component<
   Props<O, S>,
   State<O, S>
 > {
   public state = createState(this.props);
 
-  private updateState: SetState<S> = updater => {
-    this.setState(({ state }) => {
-      const nextState = updater(state);
-
-      return !nextState ? null : { state: nextState };
-    });
-  };
-
   private createArgs(
     { ctx }: Props<O, S>,
     { state, options }: State<O, S>,
-  ): GoogleMapComponentArgs<O, S> {
-    return {
-      ...ctx,
-      state,
-      options,
-      setState: this.updateState,
-    };
+  ): MapComponentArgs<O, S> {
+    return { ...ctx, state, options };
   }
 
   public componentWillReceiveProps(nextProps: Readonly<Props<O, S>>): void {
@@ -115,10 +96,10 @@ class GoogleMapComponentElement<O, S> extends React.Component<
   }
 }
 
-export function MapComponent<P, S>(props: GoogleMapComponentProps<P, S>) {
+export function MapComponent<P, S>(props: MapComponentProps<P, S>) {
   return (
     <GoogleMapContextConsumer>
-      {ctx => <GoogleMapComponentElement {...props} ctx={ctx} />}
+      {ctx => <MapComponentElement {...props} ctx={ctx} />}
     </GoogleMapContextConsumer>
   );
 }
