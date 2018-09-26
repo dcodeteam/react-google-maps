@@ -1,20 +1,5 @@
 "use strict";
 
-// const controlTypes = [
-//   "BOTTOM_CENTER",
-//   "BOTTOM_LEFT",
-//   "BOTTOM_RIGHT",
-//   "LEFT_BOTTOM",
-//   "LEFT_CENTER",
-//   "LEFT_TOP",
-//   "RIGHT_BOTTOM",
-//   "RIGHT_CENTER",
-//   "RIGHT_TOP",
-//   "TOP_CENTER",
-//   "TOP_LEFT",
-//   "TOP_RIGHT"
-// ];
-
 class Comparable {
   equals(other) {
     return this === other;
@@ -56,6 +41,32 @@ class GoogleMap extends MVCObject {
 
     this.node = node;
 
+    this.controls = new Proxy(
+      {},
+      {
+        get: (ctx, key) => {
+          if (!ctx[key]) {
+            const items = [];
+
+            ctx[key] = {
+              push: jest.fn((...args) => {
+                items.push(...args);
+              }),
+              removeAt: jest.fn(index => {
+                items.splice(index, 1);
+              }),
+              getArray: jest.fn(() => items),
+              clear: jest.fn(() => {
+                items.splice(0, items.length);
+              }),
+            };
+          }
+
+          return ctx[key];
+        },
+      },
+    );
+
     this.setOptions = this.setValues;
     this.getZoom = jest.fn(() => this.get("zoom"));
     this.getBounds = jest.fn(() => ({ toJSON: () => this.get("bounds") }));
@@ -65,23 +76,6 @@ class GoogleMap extends MVCObject {
     this.panTo = jest.fn();
     this.panToBounds = jest.fn();
   }
-
-  // this.controls = controlTypes.reduce((acc, control) => {
-  //   const items = [];
-  //
-  //   acc[control] = {
-  //     items,
-  //     push: jest.fn((...args) => {
-  //       items.push(...args);
-  //     }),
-  //     indexOf: jest.fn(x => items.indexOf(x)),
-  //     removeAt: jest.fn(index => {
-  //       items.splice(index, 1);
-  //     })
-  //   };
-  //
-  //   return acc;
-  // }, {});
 
   // this.data = {
   //   items: [],
