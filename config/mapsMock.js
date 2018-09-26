@@ -52,13 +52,13 @@ class MVCObject {
 
 class GoogleMap extends MVCObject {
   constructor(node, options) {
-    super({ ...options, bounds: [] });
+    super({ ...options, bounds: { east: 0, north: 0, south: 0, west: 0 } });
 
     this.node = node;
 
     this.setOptions = this.setValues;
     this.getZoom = jest.fn(() => this.get("zoom"));
-    this.getBounds = jest.fn(() => this.get("bounds"));
+    this.getBounds = jest.fn(() => ({ toJSON: () => this.get("bounds") }));
 
     this.fitBounds = jest.fn();
     this.panBy = jest.fn();
