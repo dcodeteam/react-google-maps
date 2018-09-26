@@ -11,8 +11,6 @@ import {
 } from "../internal/PropsUtils";
 import { GoogleMapEvent } from "./GoogleMapEvent";
 
-const styles = { map: { height: "100%" } };
-
 interface EventProps {
   /**
    * This handler is called when the user clicks on the map.
@@ -267,15 +265,15 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
     const { style, className, children } = this.props;
 
     return (
-      <div style={style} className={className}>
-        <div style={styles.map} ref={this.mapRef} />
+      <>
+        <div style={style} className={className} ref={this.mapRef} />
 
         {ctx != null && (
           <GoogleMapContextProvider value={ctx}>
             {children}
           </GoogleMapContextProvider>
         )}
-      </div>
+      </>
     );
   }
 }

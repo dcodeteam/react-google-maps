@@ -25,7 +25,7 @@ describe("GoogleMap", () => {
         <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
       );
 
-      const mapDiv = wrapper.find("div > div");
+      const mapDiv = wrapper.find("div");
 
       expect(mapDiv.length).toBe(1);
     });
@@ -157,7 +157,7 @@ describe("GoogleMap", () => {
         <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
       );
 
-      const mapDiv = wrapper.find("div > div");
+      const mapDiv = wrapper.find("div");
 
       expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
 
