@@ -1,6 +1,7 @@
 import * as React from "react";
 
-import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
+import { MapComponent } from "../google-map-component/MapComponent";
+import { GoogleMapContext } from "../google-map-context/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
 import {
   PointLiteral,
@@ -8,7 +9,6 @@ import {
   createPoint,
   createSize,
 } from "../internal/MapsUtils";
-import { ValueSpy } from "../internal/ValueSpy";
 import { MarkerContextConsumer } from "./MarkerContext";
 
 export interface MarkerIconProps {
@@ -81,29 +81,22 @@ function createIcon(
 
 export function MarkerIcon(props: MarkerIconProps) {
   return (
-    <GoogleMapContextConsumer>
-      {({ maps }) => (
-        <MarkerContextConsumer>
-          {({ marker }) => {
-            const icon = createIcon(maps, props);
-            const setIcon = () => {
-              marker.setIcon(icon);
-            };
-
-            return (
-              <ValueSpy
-                value={icon}
-                didMount={setIcon}
-                didUpdate={prevValue => {
-                  if (!isShallowEqual(icon, prevValue)) {
-                    setIcon();
-                  }
-                }}
-              />
-            );
+    <MarkerContextConsumer>
+      {({ marker }) => (
+        <MapComponent
+          createOptions={({ maps }: GoogleMapContext) =>
+            createIcon(maps, props)
+          }
+          didMount={({ options }) => {
+            marker.setIcon(options);
           }}
-        </MarkerContextConsumer>
+          didUpdate={({ options: prevOptions }, { options: nextOptions }) => {
+            if (!isShallowEqual(prevOptions, nextOptions)) {
+              marker.setIcon(nextOptions);
+            }
+          }}
+        />
       )}
-    </GoogleMapContextConsumer>
+    </MarkerContextConsumer>
   );
 }
