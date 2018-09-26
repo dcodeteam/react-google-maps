@@ -2,6 +2,7 @@ import { mount } from "enzyme";
 import * as React from "react";
 
 import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
+import { PointLiteral } from "../../internal/MapsUtils";
 import { PanBy, PanByProps } from "../PanBy";
 
 describe("PanBy", () => {
@@ -20,25 +21,27 @@ describe("PanBy", () => {
   });
 
   it("should pan on mount", () => {
-    mount(<MockPanBy x={10} y={15} />);
+    mount(<MockPanBy offset={{ x: 1, y: 2 }} />);
 
     expect(map.panBy).toBeCalledTimes(1);
-    expect(map.panBy).lastCalledWith(10, 15);
+    expect(map.panBy).lastCalledWith(1, 2);
   });
 
   it("should pan on update", () => {
-    const wrapper = mount(<MockPanBy x={10} y={15} />);
+    const initialOffset: PointLiteral = { x: 1, y: 2 };
+    const updatedOffset: PointLiteral = { x: 3, y: 4 };
+
+    const wrapper = mount(<MockPanBy offset={initialOffset} />);
 
     expect(map.panBy).toBeCalledTimes(1);
 
-    wrapper.setProps({ x: 0 });
+    wrapper.setProps({ offset: initialOffset });
+
+    expect(map.panBy).toBeCalledTimes(1);
+
+    wrapper.setProps({ offset: updatedOffset });
 
     expect(map.panBy).toBeCalledTimes(2);
-    expect(map.panBy).lastCalledWith(0, 15);
-
-    wrapper.setProps({ y: 0 });
-
-    expect(map.panBy).toBeCalledTimes(3);
-    expect(map.panBy).lastCalledWith(0, 0);
+    expect(map.panBy).lastCalledWith(updatedOffset.x, updatedOffset.y);
   });
 });
