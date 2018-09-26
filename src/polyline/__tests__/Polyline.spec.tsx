@@ -7,7 +7,6 @@ import {
   getClassMockInstance,
 } from "../../__tests__/testUtils";
 import { GoogleMapContextProvider } from "../../google-map-context/GoogleMapContext";
-import { GenericEvent } from "../../internal/GenericEvent";
 import { forEachEvent } from "../../internal/PropsUtils";
 import { Polyline, PolylineProps } from "../Polyline";
 import { PolylineEvent } from "../PolylineEvent";
@@ -129,7 +128,7 @@ describe("Polyline", () => {
     expect(onDragEnd).toBeCalledTimes(0);
     expect(polyline.setPath).toBeCalledTimes(0);
 
-    emitEvent(polyline, GenericEvent.onDragEnd, {});
+    emitEvent(polyline, PolylineEvent.onDragEnd, {});
 
     expect(polyline.setPath).toBeCalledTimes(1);
     expect(polyline.setPath).lastCalledWith([{ lat: 0, lng: 1 }]);
