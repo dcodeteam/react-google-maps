@@ -9,17 +9,9 @@ const { Provider, Consumer } = React.createContext<Partial<GoogleMapContext>>(
   {},
 );
 
-export interface GoogleMapContextProviderProps {
-  value: GoogleMapContext;
-  children: React.ReactNode;
-}
-
-export function GoogleMapContextProvider({
-  value,
-  children,
-}: GoogleMapContextProviderProps) {
-  return <Provider value={value}>{children}</Provider>;
-}
+export const GoogleMapContextProvider = Provider as React.Provider<
+  GoogleMapContext
+>;
 
 export interface GoogleMapContextConsumerProps {
   children: (ctx: GoogleMapContext) => React.ReactNode;
