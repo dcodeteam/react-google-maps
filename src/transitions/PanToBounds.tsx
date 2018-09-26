@@ -1,8 +1,7 @@
 import * as React from "react";
 
-import { GoogleMapContextConsumer } from "../google-map-context/GoogleMapContext";
+import { MapComponent } from "../google-map-component/MapComponent";
 import { isShallowEqual } from "../internal/DataUtils";
-import { ValueSpy } from "../internal/ValueSpy";
 
 export interface PanToBoundsProps {
   /**
@@ -13,24 +12,16 @@ export interface PanToBoundsProps {
 
 export function PanToBounds({ latLngBounds }: PanToBoundsProps) {
   return (
-    <GoogleMapContextConsumer>
-      {({ map }) => {
-        const panToBounds = () => {
-          map.panToBounds(latLngBounds);
-        };
-
-        return (
-          <ValueSpy
-            value={latLngBounds}
-            didMount={panToBounds}
-            didUpdate={prevValue => {
-              if (!isShallowEqual(latLngBounds, prevValue)) {
-                panToBounds();
-              }
-            }}
-          />
-        );
+    <MapComponent
+      createOptions={() => latLngBounds}
+      didMount={({ map, options }) => {
+        map.panToBounds(options);
       }}
-    </GoogleMapContextConsumer>
+      didUpdate={({ options: prevOptions }, { map, options: nextOptions }) => {
+        if (!isShallowEqual(prevOptions, nextOptions)) {
+          map.panToBounds(nextOptions);
+        }
+      }}
+    />
   );
 }
