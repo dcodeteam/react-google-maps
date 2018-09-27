@@ -1,0 +1,69 @@
+---
+menu: Data Layer
+name: Data Polygon
+route: /data-layer/polygon
+---
+
+import { Playground, PropsTable } from 'docz'
+import { DataPolygon } from '../DataPolygon'
+import { GoogleMap } from '../../google-map/GoogleMap'
+
+# Data Polygon
+
+Draws `google.maps.Data.Polygon`.
+
+**Google Maps Docs:**
+
+- [google.maps.Data.Polygon](https://developers.google.com/maps/documentation/javascript/reference#Data.Polygon)
+
+
+<Playground>
+  <GoogleMap
+    zoom={5}
+    maps={google.maps}
+    style={{ height: "320px" }}
+    center={{ lat: -33, lng: 151 }}
+  >
+    <DataPolygon
+      visible={true}
+      clickable={true}
+      fillColor="#000000"
+      fillOpacity={0.4}
+      strokeColor="#000000"
+      strokeOpacity={1}
+      strokeWeight={3}
+      geometry={[
+        [
+          { lat: -32, lng: 153 },
+          { lat: -35, lng: 153 },
+          { lat: -35, lng: 158 },
+          { lat: -32, lng: 158 }
+        ],
+        [
+          { lat: -33, lng: 154 },
+          { lat: -34, lng: 154 },
+          { lat: -34, lng: 155 },
+          { lat: -33, lng: 155 }
+        ],
+        [
+          { lat: -33, lng: 156 },
+          { lat: -34, lng: 156 },
+          { lat: -34, lng: 157 },
+          { lat: -33, lng: 157 }
+        ]
+      ]}
+      onClick={(event) => {
+        alert('Checkout logs.')
+        console.log('onClick', event);
+      }}
+      onMouseOut={(event) => {
+        console.log('onMouseOut', event);
+      }}
+      onMouseOver={(event) => {
+        console.log('onMouseOver', event);
+      }}
+    />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={GoogleMap} />
