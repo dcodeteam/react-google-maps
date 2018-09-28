@@ -6,7 +6,10 @@
   "description": "Google Maps integration with React",
   "repository": "https://github.com/dcodeteam/react-google-maps.git",
   "author": "Umidbek Karimov <uma.karimov@gmail.com>",
-  "main": "lib/index.js",
+  "main": "cjs/index.js",
+  "module": "es/index.js",
+  "es2015": "es2015/index.js",
+  "typings": "typings/index.d.ts",
   "engines": {
     "node": ">=8.3.0"
   },
@@ -18,11 +21,15 @@
     "test": "jest --watch",
     "cover": "jest --coverage",
     "start": "docz dev",
-    "build:docs": "docz build"
+    "build": "yarn build:es && yarn build:es2015 && yarn build:cjs && yarn build:docs",
+    "build:docs": "docz build",
+    "build:es": "rollup -c ./config/rollup.es.js",
+    "build:cjs": "rollup -c ./config/rollup.cjs.js",
+    "build:es2015": "rollup -c ./config/rollup.es2015.js"
   },
   "peerDependencies": {
-    "@types/googlemaps": "^3.30.13",
-    "react": "^16.5.2"
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2"
   },
   "devDependencies": {
     "@dc0de/eslint-config": "^0.3.0",
@@ -53,6 +60,9 @@
     "prettier": "^1.14.3",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "rollup": "^0.66.2",
+    "rollup-plugin-cleaner": "^0.2.0",
+    "rollup-plugin-typescript2": "^0.17.0",
     "ts-jest": "^23.10.1",
     "typescript": "^3.0.1",
     "typescript-eslint-parser": "^18.0.0"

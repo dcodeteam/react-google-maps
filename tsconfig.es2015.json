@@ -3,7 +3,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     // Support es5 for browsers.
-    "target": "es5",
+    "target": "es2015",
     // Use es6 modules.
     "module": "es2015"
   }
