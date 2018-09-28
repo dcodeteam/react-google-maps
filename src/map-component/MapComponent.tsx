@@ -46,6 +46,13 @@ class MapComponentElement<O, S> extends React.Component<
   Props<O, S>,
   State<O, S>
 > {
+  public static getDerivedStateFromProps<O, S>({
+    ctx,
+    createOptions,
+  }: Props<O, S>): Partial<State<O, S>> {
+    return { options: createOptions(ctx) };
+  }
+
   public state = createState(this.props);
 
   private createArgs(
@@ -53,10 +60,6 @@ class MapComponentElement<O, S> extends React.Component<
     { state, options }: State<O, S>,
   ): MapComponentArgs<O, S> {
     return { ...ctx, state, options };
-  }
-
-  public componentWillReceiveProps(nextProps: Readonly<Props<O, S>>): void {
-    this.setState({ options: nextProps.createOptions(nextProps.ctx) });
   }
 
   public componentDidMount(): void {

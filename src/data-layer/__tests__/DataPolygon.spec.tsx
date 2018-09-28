@@ -11,12 +11,8 @@ import {
 import { DataLayerEvent } from "../DataLayerEvent";
 import { DataPolygon } from "../DataPolygon";
 
-function getMockFeatureInstance(): google.maps.Data.Feature {
+function getMockInstance(): google.maps.Data.Feature {
   return getClassMockInstance(google.maps.Data.Feature);
-}
-
-function getMockPolygonInstance(): google.maps.Data.Polygon {
-  return getClassMockInstance(google.maps.Data.Polygon);
 }
 
 describe("DataPolygon", () => {
@@ -30,7 +26,7 @@ describe("DataPolygon", () => {
   it("should create feature on mount", () => {
     mount(<Mock geometry={[]} />);
 
-    const feature = getMockFeatureInstance();
+    const feature = getMockInstance();
 
     expect(map.data.add).toBeCalledTimes(1);
     expect(map.data.add).lastCalledWith(feature);
@@ -39,19 +35,19 @@ describe("DataPolygon", () => {
   it("should set polygon to feature on mount", () => {
     mount(<Mock geometry={[[{ lat: 1, lng: 2 }]]} />);
 
-    const feature = getMockFeatureInstance();
-    const polygon = getMockPolygonInstance();
-
-    expect(polygon.getArray()).toEqual([[{ lat: 1, lng: 2 }]]);
+    const feature = getMockInstance();
 
     expect(feature.setGeometry).toBeCalledTimes(1);
-    expect(feature.setGeometry).lastCalledWith(polygon);
+
+    const polygon = feature.getGeometry() as google.maps.Data.Polygon;
+
+    expect(polygon.getArray()).toEqual([[{ lat: 1, lng: 2 }]]);
   });
 
   it("should set default style on mount", () => {
     mount(<Mock geometry={[]} />);
 
-    const feature = getMockFeatureInstance();
+    const feature = getMockInstance();
 
     expect(map.data.overrideStyle).toBeCalledTimes(1);
     expect(map.data.overrideStyle).lastCalledWith(feature, {
@@ -72,7 +68,7 @@ describe("DataPolygon", () => {
       />,
     );
 
-    const feature = getMockFeatureInstance();
+    const feature = getMockInstance();
 
     expect(map.data.overrideStyle).toBeCalledTimes(1);
     expect(map.data.overrideStyle).lastCalledWith(feature, {
@@ -89,7 +85,7 @@ describe("DataPolygon", () => {
   it("should change feature style on update", () => {
     const wrapper = mount(<Mock geometry={[]} />);
 
-    const feature = getMockFeatureInstance();
+    const feature = getMockInstance();
 
     expect(map.data.overrideStyle).toBeCalledTimes(1);
 
@@ -128,7 +124,7 @@ describe("DataPolygon", () => {
 
     mount(<Mock {...handlers} geometry={[]} />);
 
-    const feature = getMockFeatureInstance();
+    const feature = getMockInstance();
 
     forEachEvent(DataLayerEvent, (key, event) => {
       const handler = handlers[key];
@@ -149,7 +145,7 @@ describe("DataPolygon", () => {
   it("should remove feature on unmount", () => {
     const wrapper = mount(<Mock geometry={[]} />);
 
-    const feature = getMockFeatureInstance();
+    const feature = getMockInstance();
 
     expect(map.data.add).toBeCalledTimes(1);
     expect(map.data.remove).toBeCalledTimes(0);

@@ -168,6 +168,7 @@ class DataFeature extends ValueContainer {
   constructor(values) {
     super(values);
 
+    this.getGeometry = jest.fn(() => this.get("geometry"));
     this.setGeometry = jest.fn(geometry => this.set("geometry", geometry));
   }
 }
