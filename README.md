@@ -8,7 +8,7 @@
 [![codecov](https://codecov.io/gh/dcodeteam/react-google-maps/branch/master/graph/badge.svg)](https://codecov.io/gh/dcodeteam/react-google-maps)
 [![npm license](https://img.shields.io/npm/l/@dc0de/react-google-maps.svg)](https://npmjs.com/@dc0de/react-google-maps)
 
-Render-style components built with latest React features. Checkout [documentation](https://dcodeteam.github.io/react-google-maps/) with examples.
+Fully declarative render-style components built with latest React features. Checkout [documentation](https://dcodeteam.github.io/react-google-maps/) with examples.
 
 #### Installation
 
