@@ -1,5 +1,5 @@
 module.exports = {
-  dest: './docs',
+  dest: "./docs",
   typescript: true,
   themeConfig: { mode: "dark" },
   indexHtml: "./config/docz/index.tpl.html",
