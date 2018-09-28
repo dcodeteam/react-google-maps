@@ -19,7 +19,7 @@
     "dts": "tsc --noEmit",
     "lint": "js-scripts lint",
     "test": "jest --watch",
-    "cover": "jest --coverage",
+    "cover": "jest --coverage --forceExit",
     "codecov": "codecov -f ./coverage/lcov.info",
     "start": "docz dev",
     "build": "yarn build:es && yarn build:es2015 && yarn build:cjs && yarn build:docs",
