@@ -1,12 +1,9 @@
 import * as React from "react";
 
-import {
-  GoogleMapContext,
-  GoogleMapContextProvider
-} from "../google-map-context/GoogleMapContext";
-import { pickChangedProps } from "../internal/Utils";
-
-const styles = { map: { height: "100%" } };
+import { pickChangedProps } from "../internal/PropsUtils";
+import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
+import { GoogleMapContext, GoogleMapContextProvider } from "./GoogleMapContext";
+import { GoogleMapEvent } from "./GoogleMapEvent";
 
 interface EventProps {
   /**
@@ -15,7 +12,7 @@ interface EventProps {
    * An `MouseEvent` with properties for the clicked location is returned unless a place icon was clicked, in which case an `IconMouseEvent` with a `placeid` is returned.
    */
   onClick?: (
-    event: google.maps.MouseEvent | google.maps.IconMouseEvent
+    event: google.maps.MouseEvent | google.maps.IconMouseEvent,
   ) => void;
 
   /**
@@ -25,7 +22,7 @@ interface EventProps {
    * right before this one.
    */
   onDoubleClick?: (
-    event: google.maps.MouseEvent | google.maps.IconMouseEvent
+    event: google.maps.MouseEvent | google.maps.IconMouseEvent,
   ) => void;
 
   /**
@@ -33,7 +30,7 @@ interface EventProps {
    * fired on the map container.
    */
   onRightClick?: (
-    event: google.maps.MouseEvent | google.maps.IconMouseEvent
+    event: google.maps.MouseEvent | google.maps.IconMouseEvent,
   ) => void;
 
   /**
@@ -85,12 +82,14 @@ interface EventProps {
   /**
    * This event is fired when the map `zoom` property changes.
    */
-  onZoomChanged?: (event?: { zoom: number }) => void;
+  onZoomChanged?: (event: { zoom: number }) => void;
 
   /**
    * This handler is called when the viewport bounds have changed.
    */
-  onBoundsChanged?: (event?: { bounds: google.maps.LatLngBounds }) => void;
+  onBoundsChanged?: (
+    event: { bounds: null | undefined | google.maps.LatLngBoundsLiteral },
+  ) => void;
 
   /**
    * This handler is called when the map `center` property changes.
@@ -178,48 +177,64 @@ interface State {
   ctx?: GoogleMapContext;
 }
 
-const eventHandlerPairs: Array<[keyof EventProps, string]> = [
-  ["onClick", "click"],
-  ["onDoubleClick", "dblclick"],
-  ["onRightClick", "rightclick"],
-
-  ["onMouseOut", "mouseout"],
-  ["onMouseOver", "mouseover"],
-
-  ["onMouseMove", "mousemove"],
-
-  ["onDrag", "drag"],
-  ["onDragStart", "dragstart"],
-  ["onDragEnd", "dragend"],
-
-  ["onIdle", "idle"],
-  ["onTilesLoaded", "tilesloaded"],
-  ["onTiltChanged", "tilt_changed"],
-  ["onZoomChanged", "zoom_changed"],
-  ["onBoundsChanged", "bounds_changed"],
-  ["onCenterChanged", "center_changed"],
-  ["onHeadingChanged", "heading_changed"],
-  ["onMapTypeIdChanged", "maptypeid_changed"],
-  ["onProjectionChanged", "projection_changed"]
-];
-
-function createMapOptions({
+function createOptions({
   maps,
 
   zoom,
   center,
-  mapTypeId,
-  clickableIcons,
   backgroundColor,
-  disableDoubleClickZoom
+
+  mapTypeId = "ROADMAP",
+  clickableIcons = true,
+  disableDoubleClickZoom = false,
 }: GoogleMapProps): google.maps.MapOptions {
   return {
+    disableDefaultUI: true,
+
     zoom,
     center,
     clickableIcons,
     backgroundColor,
     disableDoubleClickZoom,
-    mapTypeId: mapTypeId && maps.MapTypeId[mapTypeId]
+    mapTypeId: mapTypeId && maps.MapTypeId[mapTypeId],
+  };
+}
+
+function createHandlers({
+  onClick,
+  onDoubleClick,
+  onRightClick,
+  onMouseOut,
+  onMouseOver,
+  onMouseMove,
+  onDrag,
+  onDragStart,
+  onDragEnd,
+  onIdle,
+  onTilesLoaded,
+  onTiltChanged,
+  onCenterChanged,
+  onHeadingChanged,
+  onMapTypeIdChanged,
+  onProjectionChanged,
+}: GoogleMapProps) {
+  return {
+    [GoogleMapEvent.onClick]: onClick,
+    [GoogleMapEvent.onDoubleClick]: onDoubleClick,
+    [GoogleMapEvent.onRightClick]: onRightClick,
+    [GoogleMapEvent.onMouseOut]: onMouseOut,
+    [GoogleMapEvent.onMouseOver]: onMouseOver,
+    [GoogleMapEvent.onMouseMove]: onMouseMove,
+    [GoogleMapEvent.onDrag]: onDrag,
+    [GoogleMapEvent.onDragStart]: onDragStart,
+    [GoogleMapEvent.onDragEnd]: onDragEnd,
+    [GoogleMapEvent.onIdle]: onIdle,
+    [GoogleMapEvent.onTilesLoaded]: onTilesLoaded,
+    [GoogleMapEvent.onTiltChanged]: onTiltChanged,
+    [GoogleMapEvent.onCenterChanged]: onCenterChanged,
+    [GoogleMapEvent.onHeadingChanged]: onHeadingChanged,
+    [GoogleMapEvent.onMapTypeIdChanged]: onMapTypeIdChanged,
+    [GoogleMapEvent.onProjectionChanged]: onProjectionChanged,
   };
 }
 
@@ -228,77 +243,57 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
 
   private mapRef = React.createRef<HTMLDivElement>();
 
-  private createPropProxy<T>(
-    name: keyof EventProps,
-    eventModifier?: (event: T) => T
-  ) {
-    return (event: T) => {
-      // eslint-disable-next-line react/destructuring-assignment,typescript/no-explicit-any
-      const handler = this.props[name] as any;
+  private handleZoomChanged = () => {
+    const { ctx } = this.state;
+    const { onZoomChanged } = this.props;
 
-      if (handler) {
-        handler(!eventModifier ? event : eventModifier(event));
-      }
-    };
-  }
+    if (onZoomChanged) {
+      onZoomChanged({ zoom: ctx!.map.getZoom() });
+    }
+  };
+
+  private handleBoundsChanged = () => {
+    const { ctx } = this.state;
+    const { onBoundsChanged } = this.props;
+
+    if (onBoundsChanged) {
+      const bounds = ctx!.map.getBounds();
+
+      onBoundsChanged({ bounds: bounds && bounds.toJSON() });
+    }
+  };
 
   public componentDidMount() {
     const { maps } = this.props;
+    const map = new maps.Map(this.mapRef.current);
 
-    const options = createMapOptions(this.props);
-    const googleMap = new maps.Map(this.mapRef.current, {
-      ...options,
-      disableDefaultUI: true
-    });
+    map.setOptions(createOptions(this.props));
+    map.addListener(GoogleMapEvent.onZoomChanged, this.handleZoomChanged);
+    map.addListener(GoogleMapEvent.onBoundsChanged, this.handleBoundsChanged);
 
-    eventHandlerPairs.forEach(([prop, event]) => {
-      switch (prop) {
-        case "onBoundsChanged":
-          googleMap.addListener(
-            event,
-            this.createPropProxy(prop, () => ({
-              bounds: googleMap.getBounds()
-            }))
-          );
-
-          break;
-
-        case "onZoomChanged":
-          googleMap.addListener(
-            event,
-            this.createPropProxy(prop, () => ({
-              zoom: googleMap.getZoom()
-            }))
-          );
-
-          break;
-
-        default:
-          googleMap.addListener(event, this.createPropProxy(prop));
-      }
-    });
-
-    this.setState({ ctx: { maps, map: googleMap } });
-
-    this.forceUpdate();
+    this.setState({ ctx: { map, maps } });
   }
 
   public componentDidUpdate(prevProps: Readonly<GoogleMapProps>): void {
     const { ctx } = this.state;
 
-    const prevOptions = createMapOptions(prevProps);
-    const nextOptions = createMapOptions(this.props);
+    const prevOptions = createOptions(prevProps);
+    const nextOptions = createOptions(this.props);
     const options = pickChangedProps(prevOptions, nextOptions);
 
     if (options) {
-      ctx!.map.setValues(options);
+      ctx!.map.setOptions(options);
     }
   }
 
   public componentWillUnmount() {
     const { ctx } = this.state;
+    const {
+      maps: { event },
+    } = this.props;
 
-    ctx!.maps.event.clearInstanceListeners(this.mapRef.current!);
+    event.clearInstanceListeners(ctx!.map);
+    event.clearInstanceListeners(this.mapRef.current!);
   }
 
   public render() {
@@ -306,15 +301,22 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
     const { style, className, children } = this.props;
 
     return (
-      <div style={style} className={className}>
-        <div style={styles.map} ref={this.mapRef} />
+      <>
+        <div style={style} className={className} ref={this.mapRef} />
 
         {ctx != null && (
-          <GoogleMapContextProvider value={ctx}>
-            {children}
-          </GoogleMapContextProvider>
+          <>
+            <GoogleMapContextProvider value={ctx}>
+              {children}
+            </GoogleMapContextProvider>
+
+            <MapComponentHandlers
+              instance={ctx.map}
+              handlers={createHandlers(this.props)}
+            />
+          </>
         )}
-      </div>
+      </>
     );
   }
 }

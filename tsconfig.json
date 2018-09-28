@@ -1,6 +1,6 @@
 {
   // Setup source directory.
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "compilerOptions": {
     // Transpile jsx.
     "jsx": "react",

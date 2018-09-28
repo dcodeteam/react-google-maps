@@ -1,0 +1,62 @@
+---
+order: 9
+menu: Basic
+name: Info Window
+route: /basic/info-window
+---
+
+import { Playground, PropsTable } from 'docz'
+
+import { InfoWindow } from '../InfoWindow'
+import { GoogleMap } from '../../google-map/GoogleMap'
+
+# Info Window
+
+Draws `google.maps.InfoWindow`.
+
+**Google Maps Docs:**
+
+- [google.maps.InfoWindow](https://developers.google.com/maps/documentation/javascript/reference#InfoWindow)
+- [google.maps.InfoWindowOptions](https://developers.google.com/maps/documentation/javascript/reference#InfoWindowOptions)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <InfoWindow
+      open={true}
+      maxWidth={300}
+      position={{ lat: 36.964, lng: -122.015 }}
+      onCloseClick={() => {
+        alert("It will not actually close, pass `open=false` to close.")
+      }}
+    >
+     <div style={{ color: '#000' }}>
+        <h1>{props.heading}</h1>
+         <p>
+          <b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large
+          sandstone rock formation in the southern part of the Northern
+          Territory, central Australia. It lies 335&#160;km (208&#160;mi) south
+          west of the nearest large town, Alice Springs; 450&#160;km
+          (280&#160;mi) by road. Kata Tjuta and Uluru are the two major features
+          of the Uluru - Kata Tjuta National Park. Uluru is sacred to the
+          Pitjantjatjara and Yankunytjatjara, the Aboriginal people of the area.
+          It has many springs, waterholes, rock caves and ancient paintings.
+          Uluru is listed as a World Heritage Site.
+        </p>
+        <p>
+          Attribution: Uluru,{' '}
+          <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">
+            https://en.wikipedia.org/w/index.php?title=Uluru
+          </a>{' '}
+          (last visited June 22, 2009).
+        </p>
+       </div>
+    </InfoWindow>
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={InfoWindow} />

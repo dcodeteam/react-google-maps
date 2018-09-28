@@ -1,0 +1,46 @@
+---
+menu: Basic
+name: Polyline
+route: /basic/polyline
+---
+
+import { Playground, PropsTable } from 'docz'
+
+import { Polyline } from '../Polyline'
+import { GoogleMap } from '../../google-map/GoogleMap'
+
+# Polyline
+
+Draws `google.maps.Polyline`.
+
+**Google Maps Docs:**
+
+- [google.maps.Polyline](https://developers.google.com/maps/documentation/javascript/reference#Polyline)
+- [google.maps.PolylineOptions](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <Polyline
+      visible={true}
+      clickable={true}
+      draggable={false}
+      strokeColor="#FF0000"
+      strokeWidth={1}
+      strokeOpacity={1}
+      path={[
+        { lat: 37.33821, lng: -121.88633 },
+        { lat:37.00578, lng: -121.56826},
+      ]}
+      onDragEnd={(e) => {
+        alert("It's position will reset, path new 'path' to set it's new position. Position changed to: " + JSON.stringify(e.path))
+      }}
+    />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={Polyline} />

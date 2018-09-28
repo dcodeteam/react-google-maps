@@ -1,0 +1,39 @@
+---
+menu: Controls
+name: Custom Control
+route: /controls/custom-control
+---
+
+import { Playground, PropsTable } from 'docz'
+import { GoogleMap } from '../../google-map/GoogleMap'
+import { CustomControl } from '../CustomControl'
+
+# Custom Control
+
+Controls display options of custom control.
+
+**Google Maps Docs:**
+
+- [Custom Controls](https://developers.google.com/maps/documentation/javascript/examples/control-custom)
+- [google.maps.ControlPosition](https://developers.google.com/maps/documentation/javascript/reference#ControlPosition)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <CustomControl position="BOTTOM_CENTER">
+      <button
+        type="button"
+        onClick={() => alert('Hey!')}
+        style={{ padding: '6px', marginBottom: '10px' }}
+      >
+        Button
+      </button>
+    </CustomControl>
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={CustomControl} />

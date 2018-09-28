@@ -1,0 +1,32 @@
+---
+menu: Transitions
+name: Pan To
+---
+
+import { Playground, PropsTable } from 'docz'
+import { PanTo } from '../PanTo'
+import { Marker } from '../../marker/Marker'
+import { GoogleMap } from '../../google-map/GoogleMap'
+
+# Pan To
+
+Changes the center of the map to the given `position`.
+
+If the change is less than both the width and height of the map, the transition will be smoothly animated.
+
+**Google Maps Docs:**
+
+- [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <PanTo position={{ lat: 36.964, lng: -122.015 }} />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={PanTo} />

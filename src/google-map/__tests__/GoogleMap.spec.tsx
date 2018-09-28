@@ -1,216 +1,192 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextConsumer } from "../../google-map-context/GoogleMapContext";
+import {
+  createMockHandlers,
+  emitEvent,
+  forEachEvent,
+  getClassMockInstance,
+} from "../../__tests__/testUtils";
 import { GoogleMap, GoogleMapProps } from "../GoogleMap";
+import { GoogleMapContextConsumer } from "../GoogleMapContext";
+import { GoogleMapEvent } from "../GoogleMapEvent";
 
-const eventHandlerPairs: Array<[keyof GoogleMapProps, string]> = [
-  ["onClick", "click"],
-  ["onDoubleClick", "dblclick"],
-  ["onRightClick", "rightclick"],
-
-  ["onMouseOut", "mouseout"],
-  ["onMouseOver", "mouseover"],
-
-  ["onMouseMove", "mousemove"],
-
-  ["onDrag", "drag"],
-  ["onDragStart", "dragstart"],
-  ["onDragEnd", "dragend"],
-
-  ["onIdle", "idle"],
-  ["onTilesLoaded", "tilesloaded"],
-  ["onTiltChanged", "tilt_changed"],
-  ["onZoomChanged", "zoom_changed"],
-  ["onBoundsChanged", "bounds_changed"],
-  ["onCenterChanged", "center_changed"],
-  ["onHeadingChanged", "heading_changed"],
-  ["onMapTypeIdChanged", "maptypeid_changed"],
-  ["onProjectionChanged", "projection_changed"]
-];
-
-const { Map: GoogleMapsMap } = google.maps;
-
-function mockMap() {
-  return jest
-    .spyOn(google.maps, "Map")
-    .mockImplementation((node, options) => new GoogleMapsMap(node, options));
+export function getMockInstance(): google.maps.Map {
+  return getClassMockInstance(google.maps.Map);
 }
 
 describe("GoogleMap", () => {
+  const instanceEvents = Object.keys(GoogleMapEvent).length;
+
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
-  describe("#componentDidMount", () => {
-    it("should attach map to child div", () => {
-      const wrapper = mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
-      );
+  it("should attach map to child div", () => {
+    const wrapper = mount(
+      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
+    );
 
-      const mapDiv = wrapper.find("div > div");
+    const mapDiv = wrapper.find("div");
 
-      expect(mapDiv.length).toBe(1);
-    });
+    expect(mapDiv.length).toBe(1);
+  });
 
-    it("should pass default options to map", () => {
-      const mapSpy = mockMap();
+  it("should pass default options to map", () => {
+    mount(
+      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
+    );
 
-      mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
-      );
+    const map = getMockInstance();
 
-      expect(mapSpy.mock.calls).toMatchSnapshot("calls");
-    });
-
-    it("should pass custom options to map", () => {
-      const mapSpy = mockMap();
-
-      mount(
-        <GoogleMap
-          maps={google.maps}
-          zoom={0}
-          center={{ lat: 0, lng: 1 }}
-          mapTypeId="HYBRID"
-          clickableIcons={false}
-          disableDoubleClickZoom={true}
-        />
-      );
-
-      expect(mapSpy.mock.calls).toMatchSnapshot("calls");
-    });
-
-    it("should add all event listeners", () => {
-      const mapSpy = mockMap();
-
-      mount(
-        <GoogleMap zoom={0} maps={google.maps} center={{ lat: 0, lng: 1 }} />
-      );
-
-      expect(mapSpy.mock.results[0]).toMatchSnapshot();
-    });
-
-    it("should add listeners with handlers", () => {
-      const handlers = eventHandlerPairs.reduce<Partial<GoogleMapProps>>(
-        (acc, [prop]) => {
-          acc[prop] = jest.fn();
-
-          return acc;
-        },
-        {}
-      );
-
-      const mapSpy = mockMap();
-
-      const zoom = 10;
-
-      mount(
-        <GoogleMap
-          zoom={zoom}
-          maps={google.maps}
-          center={{ lat: 0, lng: 1 }}
-          {...handlers}
-        />
-      );
-
-      const [{ value: instance }] = mapSpy.mock.results;
-
-      eventHandlerPairs.forEach(([prop, event]) => {
-        const handler = handlers[prop];
-        const payload = { prop, event };
-
-        expect(handler).toBeCalledTimes(0);
-
-        instance.emit(event, payload);
-
-        expect(handler).toBeCalledTimes(1);
-
-        switch (prop) {
-          case "onZoomChanged":
-            expect(handler).lastCalledWith({ zoom });
-            break;
-
-          case "onBoundsChanged":
-            expect(handler).lastCalledWith({ bounds: [] });
-            break;
-
-          default:
-            expect(handler).lastCalledWith(payload);
-        }
-      });
+    expect(map.setValues).toBeCalledTimes(1);
+    expect(map.setValues).lastCalledWith({
+      backgroundColor: undefined,
+      center: { lat: 0, lng: 1 },
+      clickableIcons: true,
+      disableDefaultUI: true,
+      disableDoubleClickZoom: false,
+      mapTypeId: "ROADMAP",
+      zoom: 0,
     });
   });
 
-  describe("#componentDidUpdate", () => {
-    it("pass only changed options to map", () => {
-      const mapSpy = mockMap();
-      const wrapper = mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
-      );
+  it("should pass custom options to map", () => {
+    mount(
+      <GoogleMap
+        maps={google.maps}
+        zoom={0}
+        center={{ lat: 0, lng: 1 }}
+        mapTypeId="HYBRID"
+        clickableIcons={false}
+        disableDoubleClickZoom={true}
+      />,
+    );
 
-      const [{ value: instance }] = mapSpy.mock.results;
+    const map = getMockInstance();
 
-      const setValuesSpy = jest.spyOn(instance, "setValues");
-
-      wrapper.setProps({ disableDoubleClickZoom: true });
-
-      expect(setValuesSpy).toBeCalledTimes(1);
-      expect(setValuesSpy).toHaveBeenLastCalledWith({
-        disableDoubleClickZoom: true
-      });
-
-      wrapper.setProps({
-        disableDoubleClickZoom: true
-      });
-
-      expect(setValuesSpy).toBeCalledTimes(1);
-
-      wrapper.setProps({
-        clickableIcons: true
-      });
-
-      expect(setValuesSpy).toBeCalledTimes(2);
-
-      expect(setValuesSpy).toHaveBeenLastCalledWith({
-        clickableIcons: true
-      });
+    expect(map.setValues).toBeCalledTimes(1);
+    expect(map.setValues).lastCalledWith({
+      backgroundColor: undefined,
+      center: { lat: 0, lng: 1 },
+      clickableIcons: false,
+      disableDefaultUI: true,
+      disableDoubleClickZoom: true,
+      mapTypeId: "HYBRID",
+      zoom: 0,
     });
   });
 
-  describe("#componentWillUnmount", () => {
-    it("should remove all listeners on unmount", () => {
-      const spy = jest.spyOn(google.maps.event, "clearInstanceListeners");
+  it("should add all event listeners", () => {
+    mount(
+      <GoogleMap zoom={0} maps={google.maps} center={{ lat: 0, lng: 1 }} />,
+    );
 
-      const wrapper = mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />
-      );
+    const map = getMockInstance();
 
-      const mapDiv = wrapper.find("div > div");
+    expect(map.addListener).toBeCalledTimes(instanceEvents);
+  });
 
-      expect(spy).toHaveBeenCalledTimes(0);
+  it("should add listeners with handlers", () => {
+    const handlers = createMockHandlers<GoogleMapProps>(GoogleMapEvent);
+    const zoom = 10;
 
-      wrapper.unmount();
+    mount(
+      <GoogleMap
+        {...handlers}
+        zoom={zoom}
+        maps={google.maps}
+        center={{ lat: 0, lng: 1 }}
+      />,
+    );
 
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenLastCalledWith(mapDiv.getDOMNode());
+    const map = getMockInstance();
+
+    forEachEvent<GoogleMapProps>(GoogleMapEvent, (key, event) => {
+      const handler = handlers[key];
+      const payload = { key, event };
+
+      expect(handler).toBeCalledTimes(0);
+
+      emitEvent(map, event, payload);
+
+      expect(handler).toBeCalledTimes(1);
+
+      if (event === GoogleMapEvent.onZoomChanged) {
+        expect(handler).lastCalledWith({ zoom });
+      } else if (event === GoogleMapEvent.onBoundsChanged) {
+        expect(handler).lastCalledWith({ bounds: map.getBounds()!.toJSON() });
+      } else {
+        expect(handler).lastCalledWith(payload);
+      }
     });
   });
 
-  describe("#render", () => {
-    it("should pass context", () => {
-      const consumer = jest.fn();
-      const mapSpy = mockMap();
+  it("pass only changed options to map", () => {
+    const wrapper = mount(
+      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
+    );
 
-      mount(
-        <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }}>
-          <GoogleMapContextConsumer>{consumer}</GoogleMapContextConsumer>
-        </GoogleMap>
-      );
+    const map = getMockInstance();
 
-      const [{ value: instance }] = mapSpy.mock.results;
+    expect(map.setOptions).toBeCalledTimes(1);
 
-      expect(consumer).toBeCalledTimes(1);
-      expect(consumer).toBeCalledWith({ maps: google.maps, map: instance });
+    wrapper.setProps({ zoom: 1 });
+
+    expect(map.setOptions).toBeCalledTimes(2);
+    expect(map.setOptions).lastCalledWith({ zoom: 1 });
+
+    wrapper.setProps({ zoom: 1 });
+
+    expect(map.setOptions).toBeCalledTimes(2);
+
+    wrapper.setProps({ zoom: 2 });
+
+    expect(map.setOptions).toBeCalledTimes(3);
+
+    expect(map.setOptions).lastCalledWith({ zoom: 2 });
+  });
+
+  it("should remove all listeners on unmount", () => {
+    const wrapper = mount(
+      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
+    );
+
+    const map = getMockInstance();
+    const mapDiv = wrapper.find("div");
+    const {
+      mock: { results },
+    } = map.addListener as jest.Mock;
+
+    expect(results.length).toBe(instanceEvents);
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
+
+    wrapper.unmount();
+
+    results.forEach(({ value }) => {
+      expect(value.remove).toBeCalled();
     });
+
+    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(2);
+    expect(google.maps.event.clearInstanceListeners).nthCalledWith(1, map);
+    expect(google.maps.event.clearInstanceListeners).nthCalledWith(
+      2,
+      mapDiv.getDOMNode(),
+    );
+  });
+
+  it("should pass context", () => {
+    const consumer = jest.fn();
+
+    mount(
+      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }}>
+        <GoogleMapContextConsumer>{consumer}</GoogleMapContextConsumer>
+      </GoogleMap>,
+    );
+
+    const map = getMockInstance();
+
+    expect(consumer).toBeCalledTimes(1);
+    expect(consumer).toBeCalledWith({ maps: google.maps, map });
   });
 });

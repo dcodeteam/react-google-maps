@@ -1,0 +1,37 @@
+---
+menu: Controls
+name: Map Type Control
+route: /controls/map-type
+---
+
+import { Playground, PropsTable } from 'docz'
+import { GoogleMap } from '../../google-map/GoogleMap'
+import { MapTypeControl } from '../MapTypeControl'
+
+# Zoom Control
+
+Controls display options of zoom control.
+
+**Google Maps Docs:**
+
+- [google.maps.MapTypeId](https://developers.google.com/maps/documentation/javascript/reference#MapTypeId)
+- [google.maps.ControlPosition](https://developers.google.com/maps/documentation/javascript/reference#ControlPosition)
+- [google.maps.MapTypeControlStyle](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlStyle)
+- [google.maps.MapTypeControlOptions](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlOptions)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <MapTypeControl
+      style="DEFAULT"
+      position="TOP_CENTER"
+      mapTypeIds={['HYBRID', 'ROADMAP', 'SATELLITE', 'TERRAIN']}
+    />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={MapTypeControl} />

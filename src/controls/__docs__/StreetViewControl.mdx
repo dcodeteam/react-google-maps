@@ -1,0 +1,31 @@
+---
+menu: Controls
+name: Street View Control
+route: /controls/street-view
+---
+
+import { Playground, PropsTable } from 'docz'
+import { GoogleMap } from '../../google-map/GoogleMap'
+import { StreetViewControl } from '../StreetViewControl'
+
+# Street View Control
+
+Controls display options of Street View Pegman control.
+
+**Google Maps Docs:**
+
+- [google.maps.ControlPosition](https://developers.google.com/maps/documentation/javascript/reference#ControlPosition)
+- [google.maps.StreetViewControlOptions](https://developers.google.com/maps/documentation/javascript/reference#StreetViewControlOptions)
+
+<Playground>
+  <GoogleMap
+    zoom={18}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <StreetViewControl position="BOTTOM_CENTER" />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={StreetViewControl} />

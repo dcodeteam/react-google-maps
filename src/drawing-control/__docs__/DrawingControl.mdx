@@ -1,0 +1,41 @@
+---
+menu: Controls
+name: Drawing Control
+route: /controls/drawing
+---
+
+import { Playground, PropsTable } from 'docz'
+import { GoogleMap } from '../../google-map/GoogleMap'
+import { DrawingControl } from '../DrawingControl'
+
+# Custom Control
+
+Controls display options of `google.maps.drawing.DrawingManager` control.
+
+**Google Maps Docs:**
+
+- [Custom Controls](https://developers.google.com/maps/documentation/javascript/examples/control-custom)
+- [google.maps.ControlPosition](https://developers.google.com/maps/documentation/javascript/reference#ControlPosition)
+- [google.maps.drawing.DrawingManager](https://developers.google.com/maps/documentation/javascript/3.exp/reference#DrawingManager)
+- [google.maps.drawing.DrawingManagerOptions](https://developers.google.com/maps/documentation/javascript/3.exp/reference#DrawingManagerOptions)
+
+<Playground>
+  <GoogleMap
+    zoom={8}
+    maps={google.maps}
+    style={{ height: '320px' }}
+    center={{ lat: 36.964, lng: -122.015 }}
+  >
+    <DrawingControl
+      position="BOTTOM_CENTER"
+      drawingModes={['CIRCLE', 'MARKER', 'POLYGON', 'POLYLINE', 'RECTANGLE']}
+      onOverlayComplete={(event) => {
+        alert('Check console');
+
+        console.log(event)
+      }}
+    />
+  </GoogleMap>
+</Playground>
+
+<PropsTable of={DrawingControl} />

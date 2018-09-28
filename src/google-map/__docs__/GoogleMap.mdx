@@ -1,13 +1,21 @@
 ---
-name: GoogleMap
+order: 10
+menu: Basic
+name: Google Map
+route: /basic/google-map
 ---
 
 import { Playground, PropsTable } from 'docz'
-import { GoogleMap } from '../GoogleMap.tsx'
+import { GoogleMap } from '../GoogleMap'
 
-# GoogleMap
+# Map
 
 Draws `google.maps.Map`.
+
+**Google Maps Docs:**
+
+- [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
+- [google.maps.MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)
 
 <Playground>
   <GoogleMap
@@ -24,14 +32,10 @@ Draws `google.maps.Map`.
     onDoubleClick={event => {
       console.log('onDoubleClick', event)
     }}
-    onRightClick={event => {
-      console.log('onDoubleClick', event)
+    onZoomChanged={event => {
+      console.log('onZoomChanged', event)
     }}
   />
 </Playground>
-
-**Google Maps Docs:**
-* [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
-* [google.maps.MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)
 
 <PropsTable of={GoogleMap} />

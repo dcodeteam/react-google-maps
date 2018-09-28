@@ -2,7 +2,7 @@
   // Use base config.
   "extends": "./tsconfig.json",
   // Exclude tests source directory.
-  "exclude": ["**/__tests__/**/*.ts"],
+  "exclude": ["**/__tests__/**/*.ts", "**/__tests__/**/*.tsx"],
   "compilerOptions": {
     // Support es5 for browsers.
     "target": "es5",
