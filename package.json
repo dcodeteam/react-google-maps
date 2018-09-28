@@ -14,12 +14,12 @@
     "node": ">=8.3.0"
   },
   "scripts": {
-    "ci": "yarn lint && yarn dts && yarn cover --ci",
+    "ci": "yarn lint && yarn dts && yarn cover --ci --runInBand",
     "all": "yarn lint --fix && yarn dts && yarn cover -u",
     "dts": "tsc --noEmit",
     "lint": "js-scripts lint",
     "test": "jest --watch",
-    "cover": "jest --coverage --forceExit",
+    "cover": "jest --coverage",
     "codecov": "codecov -f ./coverage/lcov.info",
     "start": "docz dev",
     "build": "yarn build:es && yarn build:es2015 && yarn build:cjs && yarn build:docs",
