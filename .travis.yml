@@ -31,7 +31,7 @@ deploy:
     email: uma.karimov@gmail.com
     api_key: $NPM_TOKEN
     on:
-      tags: false
+      tags: true
       branch: master
       repo: dcodeteam/react-google-maps
       condition: "$TRAVIS_NODE_VERSION = 8"
