@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`index should provide public api 1`] = `
+Object {
+  "CustomControl": [Function],
+  "DataPolygon": [Function],
+  "DrawingControl": [Function],
+  "FitBounds": [Function],
+  "FullscreenControl": [Function],
+  "GoogleMap": [Function],
+  "GoogleMapContextConsumer": [Function],
+  "GoogleMapContextProvider": Object {
+    "$$typeof": Symbol(react.provider),
+    "_context": Object {
+      "$$typeof": Symbol(react.context),
+      "Consumer": [Circular],
+      "Provider": [Circular],
+      "_calculateChangedBits": null,
+      "_currentRenderer": null,
+      "_currentRenderer2": null,
+      "_currentValue": Object {},
+      "_currentValue2": Object {},
+      "unstable_read": [Function],
+    },
+  },
+  "InfoWindow": [Function],
+  "MapComponent": [Function],
+  "MapComponentHandlers": [Function],
+  "MapTypeControl": [Function],
+  "Marker": [Function],
+  "MarkerContextConsumer": [Function],
+  "MarkerContextProvider": Object {
+    "$$typeof": Symbol(react.provider),
+    "_context": Object {
+      "$$typeof": Symbol(react.context),
+      "Consumer": [Circular],
+      "Provider": [Circular],
+      "_calculateChangedBits": null,
+      "_currentRenderer": null,
+      "_currentRenderer2": null,
+      "_currentValue": Object {},
+      "_currentValue2": Object {},
+      "unstable_read": [Function],
+    },
+  },
+  "MarkerIcon": [Function],
+  "MarkerSymbol": [Function],
+  "PanBy": [Function],
+  "PanTo": [Function],
+  "PanToBounds": [Function],
+  "Polyline": [Function],
+  "RotateControl": [Function],
+  "ScaleControl": [Function],
+  "StreetViewControl": [Function],
+  "ZoomControl": [Function],
+}
+`;
