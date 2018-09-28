@@ -19,27 +19,6 @@ export interface MapTypeControlProps {
   mapTypeIds?: Array<"HYBRID" | "ROADMAP" | "SATELLITE" | "TERRAIN">;
 }
 
-/**
- * Controls display options Map type control.
- *
- * **Usage:**
- *
- * ```javascript
- * import React from "react";
- * import { GoogleMap, MapTypeControl } from "react-google-map-components"
- *
- * export default function GoogleMapWrapper(props) {
- *   return (
- *     <GoogleMap {...props} maps={google.maps}>
- *       <MapTypeControl />
- *     </GoogleMap>
- *   );
- * }
- * ```
- *
- * **Google Maps Docs:**
- * * [google.maps.MapTypeControlOptions](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlOptions)
- */
 export function MapTypeControl({
   position = "TOP_RIGHT",
   style = "DEFAULT",
