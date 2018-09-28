@@ -6,32 +6,41 @@ notifications:
   email: false
 
 node_js:
-- 10
-- 9
-- 8
+  - 10
+  - 9
+  - 8
 
 install:
-- yarn
+  - yarn
 
 script:
-- yarn ci
-- yarn build
+  - yarn ci
+  - yarn build
 
 after_success:
-- if [[ $TRAVIS_NODE_VERSION == "8" ]]; then yarn codecov; fi
+  - if [[ $TRAVIS_NODE_VERSION == "8" ]]; then yarn codecov; fi
 
 branches:
   except:
-  - "/^v\\d+\\.\\d+\\.\\d+$/"
+    - "/^v\\d+\\.\\d+\\.\\d+$/"
 
 deploy:
-  provider: npm
-  skip_cleanup: true
-  email: uma.karimov@gmail.com
-  api_key:
-    secure: xBeKgR//XJTGKQJv0oE2XG4T/mPyDx7tdSX67HaTVHOZ9gJy3KK6UPGUZFU0N7YPrES8Dm9Tmd/6MFk/LBApC6X9U7eKGiJ4B0v7jaX7DolRyYx74dmQwgiVlzKguAhiBoULre9RG5MI2pdxlBw6LUrCbuMv4SqSqHKTWUUXMOfzhEQAMkuXwEFWDDfwo/JDM53yK+xuRYRuBDXqO/SW8iHduI5dSqCHY2DKibjpUIoGMEqLjpxw2OjLHAcX7CBETPS1jeREZTU+u3QnH3ewDWFM70UdN8WRaYZRVO/Bg/ykhRmvwXEjRhCoivu2GCwduPEtcyOfzRhW3aycLbC5cvKgLGQtIXyLJtZ9eO0oxz4+O6tMJ1re6KfyZyr/eA+fbZtXrKcpszD96oF9oYMCkL7pLA6AAHt+yTxzHuGkNcZbItWnDemqiZtESIPy2+wMSur/vO9uo+62tW6W7cu9RMNYwNhKBZk90IwLMifrbZYxs5u30Cmnqe/So1Ibs7/j8bTg5BRVR3mLEXc+YW4GlYAx0LQKq17ynP7x6RAI2n0ANnx3faRi1slm+nAAJMOd8SaFCaJQvCrF2mu2A3Nm4kQYqW/lzx+Ji28w5DI5THqQaYX943WsIYfBA48y9sU9La1Vtp6HLZb1vpX5ytCy3JA/TGHVDnE0/eZ9sQTP/Q4=
-  on:
-    tags: true
-    branch: master
-    repo: dcodeteam/react-google-maps
-    condition: "$TRAVIS_NODE_VERSION = 8"
+  - provider: npm
+    skip_cleanup: true
+    email: uma.karimov@gmail.com
+    api_key:
+      secure: xBeKgR//XJTGKQJv0oE2XG4T/mPyDx7tdSX67HaTVHOZ9gJy3KK6UPGUZFU0N7YPrES8Dm9Tmd/6MFk/LBApC6X9U7eKGiJ4B0v7jaX7DolRyYx74dmQwgiVlzKguAhiBoULre9RG5MI2pdxlBw6LUrCbuMv4SqSqHKTWUUXMOfzhEQAMkuXwEFWDDfwo/JDM53yK+xuRYRuBDXqO/SW8iHduI5dSqCHY2DKibjpUIoGMEqLjpxw2OjLHAcX7CBETPS1jeREZTU+u3QnH3ewDWFM70UdN8WRaYZRVO/Bg/ykhRmvwXEjRhCoivu2GCwduPEtcyOfzRhW3aycLbC5cvKgLGQtIXyLJtZ9eO0oxz4+O6tMJ1re6KfyZyr/eA+fbZtXrKcpszD96oF9oYMCkL7pLA6AAHt+yTxzHuGkNcZbItWnDemqiZtESIPy2+wMSur/vO9uo+62tW6W7cu9RMNYwNhKBZk90IwLMifrbZYxs5u30Cmnqe/So1Ibs7/j8bTg5BRVR3mLEXc+YW4GlYAx0LQKq17ynP7x6RAI2n0ANnx3faRi1slm+nAAJMOd8SaFCaJQvCrF2mu2A3Nm4kQYqW/lzx+Ji28w5DI5THqQaYX943WsIYfBA48y9sU9La1Vtp6HLZb1vpX5ytCy3JA/TGHVDnE0/eZ9sQTP/Q4=
+    on:
+      tags: true
+      branch: master
+      repo: dcodeteam/react-google-maps
+      condition: "$TRAVIS_NODE_VERSION = 8"
+
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN # Set in the settings page of your repository, as a secure variable
+    on:
+      tags: false
+      branch: master
+      repo: dcodeteam/react-google-maps
+      condition: "$TRAVIS_NODE_VERSION = 8"
