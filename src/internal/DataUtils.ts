@@ -71,34 +71,3 @@ export function isDeepEqual<T>(a: T, b: T): boolean {
 export function isShallowEqual<T>(a: T, b: T): boolean {
   return isEqualWith(a, b, isStrictEqual);
 }
-
-function isEqualChildrenWith<V>(
-  a: V,
-  b: V,
-  keys: Array<keyof V>,
-  comparator: (a: V[keyof V], b: V[keyof V]) => boolean,
-) {
-  return isEqualWith(a, b, (aChild, bChild, key) => {
-    if (keys.includes(key)) {
-      return comparator(aChild, bChild);
-    }
-
-    return true;
-  });
-}
-
-export function isDeepEqualChildren<T, K1 extends keyof T>(
-  a: T,
-  b: T,
-  keys: K1[],
-) {
-  return isEqualChildrenWith(a, b, keys, isDeepEqual);
-}
-
-export function isShallowEqualChildren<T, K1 extends keyof T>(
-  a: T,
-  b: T,
-  keys: K1[],
-) {
-  return isEqualChildrenWith(a, b, keys, isStrictEqual);
-}
