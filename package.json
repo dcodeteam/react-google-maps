@@ -24,9 +24,9 @@
     "start": "docz dev",
     "build": "yarn build:es && yarn build:es2015 && yarn build:cjs && yarn build:docs",
     "build:docs": "docz build",
-    "build:es": "rollup -c ./config/rollup.es.js",
-    "build:cjs": "rollup -c ./config/rollup.cjs.js",
-    "build:es2015": "rollup -c ./config/rollup.es2015.js"
+    "build:es": "rollup -c ./config/rollup/rollup.es.js",
+    "build:cjs": "rollup -c ./config/rollup/rollup.cjs.js",
+    "build:es2015": "rollup -c ./config/rollup/rollup.es2015.js"
   },
   "dependencies": {
     "tslib": "^1.9.0"

@@ -3,7 +3,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
-  setupFiles: ["<rootDir>/config/setupTests.js"],
+  setupFiles: ["<rootDir>/config/jest/setupTests.js"],
   snapshotSerializers: ["enzyme-to-json/serializer"],
   testMatch: ["**/__tests__/**/*.spec.ts?(x)"],
   collectCoverageFrom: [
