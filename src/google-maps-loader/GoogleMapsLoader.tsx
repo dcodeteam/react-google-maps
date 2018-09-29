@@ -37,7 +37,7 @@ function loadMaps(key: string, onResolve: () => void): () => void {
 
   loadScript(
     CALLBACK,
-    `https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key=${key}&callback=${CALLBACK}`,
+    `https://maps.googleapis.com/maps/api/js?libraries=places,drawing,geometry&key=${key}&callback=${CALLBACK}`,
   );
 
   return () => {

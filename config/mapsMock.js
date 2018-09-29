@@ -173,6 +173,14 @@ class DataFeature extends ValueContainer {
   }
 }
 
+class PlacesAutocomplete extends MVCObject {
+  constructor(input, values) {
+    super({ ...values, input });
+
+    this.getPlace = jest.fn(() => this.get("place"));
+  }
+}
+
 module.exports = {
   Animation: EnumMirror,
   MapTypeId: EnumMirror,
@@ -232,6 +240,14 @@ module.exports = {
   Polyline: jest
     .fn(Polyline)
     .mockImplementation(options => new Polyline(options)),
+
+  places: {
+    Autocomplete: jest
+      .fn(PlacesAutocomplete)
+      .mockImplementation(
+        (input, options) => new PlacesAutocomplete(input, options),
+      ),
+  },
 
   drawing: {
     OverlayType: EnumMirror,

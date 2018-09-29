@@ -1,0 +1,44 @@
+---
+menu: Places
+name: Place Autocomplete
+route: /places/place-autocomplete
+---
+
+import { Playground, PropsTable } from 'docz'
+import { PlaceAutocomplete } from '../PlaceAutocomplete'
+import { GoogleMapsLoader } from '../../google-maps-loader/GoogleMapsLoader'
+
+
+# Place Autocomplete
+
+Attaches place autocomplete to input.
+
+**Google Maps Docs:**
+
+- [google.maps.places.PlaceResult](https://developers.google.com/maps/documentation/javascript/reference/places-service#PlaceResult)
+- [google.maps.places.Autocomplete](https://developers.google.com/maps/documentation/javascript/reference/places-widget#Autocomplete)
+- [google.maps.places.AutocompleteOptions](https://developers.google.com/maps/documentation/javascript/reference/places-widget#AutocompleteOptions)
+- [google.maps.places.ComponentRestrictions](https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#ComponentRestrictions)
+
+<Playground>
+<GoogleMapsLoader
+  apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
+    render={(maps) => (
+      <PlaceAutocomplete
+        maps={maps}
+        placeIdOnly={true}
+        strictBounds={true}
+        types={["geocode"]}
+        componentRestrictions={{ country: "USA" }}
+        onPlaceChanged={(event) => {
+          alert(JSON.stringify(event, null, 2));
+        }}
+        render={({ ref }) => (
+          <input ref={ref} type="text" />
+        )}
+      />
+    )}
+  />
+</Playground>
+
+<PropsTable of={PlaceAutocomplete} />
