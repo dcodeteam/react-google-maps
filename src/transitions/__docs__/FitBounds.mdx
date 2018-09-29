@@ -6,7 +6,7 @@ name: Fit Bounds
 import { Playground, PropsTable } from 'docz'
 import { FitBounds } from '../FitBounds'
 import { Marker } from '../../marker/Marker'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 
 # Fit Bounds
 
@@ -18,14 +18,12 @@ Sets the `viewport` to contain the given `bounds`.
 - [google.maps.LatLngBounds](https://developers.google.com/maps/documentation/javascript/3.exp/reference#LatLngBounds)
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={8}
-    maps={google.maps}
-    style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
     <FitBounds bounds={{south: 33, west: -124, north: 36, east: -120}} />
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={FitBounds} />

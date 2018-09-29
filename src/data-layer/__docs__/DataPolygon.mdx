@@ -6,7 +6,7 @@ route: /data-layer/polygon
 
 import { Playground, PropsTable } from 'docz'
 import { DataPolygon } from '../DataPolygon'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 
 # Data Polygon
 
@@ -18,9 +18,8 @@ Draws `google.maps.Data.Polygon`.
 
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={5}
-    maps={google.maps}
     style={{ height: "320px" }}
     center={{ lat: -33, lng: 151 }}
   >
@@ -63,7 +62,7 @@ Draws `google.maps.Data.Polygon`.
         console.log('onMouseOver', event);
       }}
     />
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={GoogleMap} />

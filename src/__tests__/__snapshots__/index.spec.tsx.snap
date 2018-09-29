@@ -23,6 +23,7 @@ Object {
       "unstable_read": [Function],
     },
   },
+  "GoogleMapsLoader": [Function],
   "InfoWindow": [Function],
   "MapComponent": [Function],
   "MapComponentHandlers": [Function],

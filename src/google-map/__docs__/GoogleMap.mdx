@@ -7,6 +7,7 @@ route: /
 
 import { Playground, PropsTable } from 'docz'
 import { GoogleMap } from '../GoogleMap'
+import { GoogleMapsLoader } from '../../google-maps-loader/GoogleMapsLoader'
 
 # Map
 
@@ -18,23 +19,29 @@ Draws `google.maps.Map`.
 - [google.maps.MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)
 
 <Playground>
-  <GoogleMap
-    zoom={9}
-    maps={google.maps}
-    mapTypeId="ROADMAP"
-    style={{ height: '320px' }}
-    clickableIcons={true}
-    disableDoubleClickZoom={false}
-    center={{ lat: 36.964, lng: -122.015 }}
-    onClick={event => {
-      console.log('onClick', event)
-    }}
-    onDoubleClick={event => {
-      console.log('onDoubleClick', event)
-    }}
-    onZoomChanged={event => {
-      console.log('onZoomChanged', event)
-    }}
+  <GoogleMapsLoader
+  apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
+    render={(maps) => (
+      <GoogleMap
+        zoom={9}
+        maps={maps}
+        mapTypeId="ROADMAP"
+
+        clickableIcons={true}
+        disableDoubleClickZoom={false}
+        center={{ lat: 36.964, lng: -122.015 }}
+        onClick={event => {
+          console.log('onClick', event)
+        }}
+        onDoubleClick={event => {
+          console.log('onDoubleClick', event)
+        }}
+        onZoomChanged={event => {
+          console.log('onZoomChanged', event)
+        }}
+      />
+
+    )}
   />
 </Playground>
 

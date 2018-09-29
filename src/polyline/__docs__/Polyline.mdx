@@ -7,7 +7,7 @@ route: /basic/polyline
 import { Playground, PropsTable } from 'docz'
 
 import { Polyline } from '../Polyline'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 
 # Polyline
 
@@ -19,10 +19,8 @@ Draws `google.maps.Polyline`.
 - [google.maps.PolylineOptions](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={8}
-    maps={google.maps}
-    style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
     <Polyline
@@ -40,7 +38,7 @@ Draws `google.maps.Polyline`.
         alert("It's position will reset, path new 'path' to set it's new position. Position changed to: " + JSON.stringify(e.path))
       }}
     />
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={Polyline} />

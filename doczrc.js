@@ -5,5 +5,4 @@ module.exports = {
   base: "/react-google-maps/",
   typescript: true,
   themeConfig: { mode: "dark" },
-  indexHtml: "./config/docz/index.tpl.html",
 };

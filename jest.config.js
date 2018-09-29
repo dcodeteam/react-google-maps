@@ -6,7 +6,11 @@ module.exports = {
   setupFiles: ["<rootDir>/config/setupTests.js"],
   snapshotSerializers: ["enzyme-to-json/serializer"],
   testMatch: ["**/__tests__/**/*.spec.ts?(x)"],
-  collectCoverageFrom: ["src/**/*.ts?(x)", "!src/**/__tests__/**/*"],
+  collectCoverageFrom: [
+    "src/**/*.ts?(x)",
+    "!src/**/__docs__/**/*",
+    "!src/**/__tests__/**/*",
+  ],
   coverageThreshold: {
     global: {
       statements: 95,

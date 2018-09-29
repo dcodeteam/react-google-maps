@@ -7,7 +7,7 @@ route: /basic/marker
 import { Playground, PropsTable } from 'docz'
 
 import { Marker } from '../Marker'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 
 # Marker
 
@@ -19,10 +19,8 @@ Draws `google.maps.Marker`.
 - [google.maps.MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions)
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={8}
-    maps={google.maps}
-    style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
     <Marker
@@ -33,7 +31,7 @@ Draws `google.maps.Marker`.
         alert("It will go back")
       }}
     />
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={Marker} />

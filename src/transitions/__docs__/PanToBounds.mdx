@@ -6,7 +6,7 @@ name: Pan To Bounds
 import { Playground, PropsTable } from 'docz'
 import { PanToBounds } from '../PanToBounds'
 import { Marker } from '../../marker/Marker'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 
 # Pan To Bounds
 
@@ -25,19 +25,12 @@ If the change in the map's position is less than both the width and height of th
 - [google.maps.LatLngBounds](https://developers.google.com/maps/documentation/javascript/3.exp/reference#LatLngBounds)
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={8}
-    maps={google.maps}
-    style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
-    <Marker position={{ lat: 36, lng: -122 }} />
-    <Marker position={{ lat: 34, lng: -120 }} />
-    <Marker position={{ lat: 33, lng: -124 }} />
-
     <PanToBounds bounds={{south: 33, west: -124, north: 36, east: -120}} />
-
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={PanToBounds} />

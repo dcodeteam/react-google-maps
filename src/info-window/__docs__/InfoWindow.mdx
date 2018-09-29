@@ -8,7 +8,7 @@ route: /basic/info-window
 import { Playground, PropsTable } from 'docz'
 
 import { InfoWindow } from '../InfoWindow'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 
 # Info Window
 
@@ -20,10 +20,8 @@ Draws `google.maps.InfoWindow`.
 - [google.maps.InfoWindowOptions](https://developers.google.com/maps/documentation/javascript/reference#InfoWindowOptions)
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={8}
-    maps={google.maps}
-    style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
     <InfoWindow
@@ -56,7 +54,7 @@ Draws `google.maps.InfoWindow`.
         </p>
        </div>
     </InfoWindow>
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={InfoWindow} />

@@ -5,7 +5,7 @@ route: /controls/zoom
 ---
 
 import { Playground, PropsTable } from 'docz'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 import { ZoomControl } from '../ZoomControl'
 
 # Zoom Control
@@ -18,14 +18,12 @@ Controls display options of zoom control.
 - [google.maps.ZoomControlOptions](https://developers.google.com/maps/documentation/javascript/reference#ZoomControlOptions)
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={8}
-    maps={google.maps}
-    style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
     <ZoomControl position="BOTTOM_CENTER" />
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={ZoomControl} />

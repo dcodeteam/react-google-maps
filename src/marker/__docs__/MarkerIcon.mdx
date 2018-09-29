@@ -8,7 +8,7 @@ import { Playground, PropsTable } from 'docz'
 
 import { Marker } from '../Marker'
 import { MarkerIcon } from '../MarkerIcon'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 import Icon from './marker-icon.svg'
 
 # Marker Icon
@@ -20,10 +20,8 @@ Defines icon options of `Marker` component.
 - [google.maps.Icon](https://developers.google.com/maps/documentation/javascript/reference#Icon)
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={8}
-    maps={google.maps}
-    style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
     <Marker
@@ -40,7 +38,7 @@ Defines icon options of `Marker` component.
         />
       }
     />
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={MarkerIcon} />

@@ -13,6 +13,8 @@ export * from "./drawing-control/DrawingControl";
 export * from "./google-map/GoogleMap";
 export * from "./google-map/GoogleMapContext";
 
+export * from "./google-maps-loader/GoogleMapsLoader";
+
 export * from "./info-window/InfoWindow";
 
 export * from "./map-component/MapComponent";

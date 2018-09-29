@@ -6,7 +6,7 @@ name: Pan By
 import { Playground, PropsTable } from 'docz'
 import { PanBy } from '../PanBy'
 import { Marker } from '../../marker/Marker'
-import { GoogleMap } from '../../google-map/GoogleMap'
+import { DocsMap } from '../../__docs__/DocsMap'
 
 # Pan By
 
@@ -19,14 +19,12 @@ If the distance is less than both the width and height of the map, the transitio
 - [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
 
 <Playground>
-  <GoogleMap
+  <DocsMap
     zoom={8}
-    maps={google.maps}
-    style={{ height: '320px' }}
     center={{ lat: 36.964, lng: -122.015 }}
   >
     <PanBy offset={{ x: 0, y: 0 }} />
-  </GoogleMap>
+  </DocsMap>
 </Playground>
 
 <PropsTable of={PanBy} />
