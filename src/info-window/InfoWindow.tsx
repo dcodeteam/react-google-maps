@@ -80,11 +80,11 @@ function createInfoWindowOptions(
     open,
     children,
 
-    position,
     maxWidth,
     zIndex,
     disableAutoPan,
 
+    position: new maps.LatLng(position.lat, position.lng),
     pixelOffset: pixelOffset && createSize(maps, pixelOffset),
   };
 }
