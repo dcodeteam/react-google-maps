@@ -19,30 +19,28 @@ Draws `google.maps.Map`.
 - [google.maps.MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)
 
 <Playground>
-  <GoogleMapsLoader
-  apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
-    render={(maps) => (
-      <GoogleMap
-        zoom={9}
-        maps={maps}
-        mapTypeId="ROADMAP"
-
-        clickableIcons={true}
-        disableDoubleClickZoom={false}
-        center={{ lat: 36.964, lng: -122.015 }}
-        onClick={event => {
-          console.log('onClick', event)
-        }}
-        onDoubleClick={event => {
-          console.log('onDoubleClick', event)
-        }}
-        onZoomChanged={event => {
-          console.log('onZoomChanged', event)
-        }}
-      />
-
-    )}
-  />
+ <GoogleMapsLoader
+   apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
+   render={maps => (
+     <GoogleMap
+       zoom={9}
+       maps={maps}
+       mapTypeId="ROADMAP"
+       clickableIcons={true}
+       disableDoubleClickZoom={false}
+       center={{ lat: 36.964, lng: -122.015 }}
+       onClick={event => {
+         console.log('onClick', event)
+       }}
+       onDoubleClick={event => {
+         console.log('onDoubleClick', event)
+       }}
+       onZoomChanged={event => {
+         console.log('onZoomChanged', event)
+       }}
+     />
+   )}
+ />
 </Playground>
 
 <PropsTable of={GoogleMap} />

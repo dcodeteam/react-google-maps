@@ -5,7 +5,66 @@ import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
 import { GoogleMapContext, GoogleMapContextProvider } from "./GoogleMapContext";
 import { GoogleMapEvent } from "./GoogleMapEvent";
 
-interface EventProps {
+export interface GoogleMapProps {
+  /**
+   * Loaded `google.Maps` instance.
+   */
+  maps: typeof google.maps;
+
+  /**
+   * The initial Map `center`.
+   */
+  center: google.maps.LatLngLiteral;
+
+  /**
+   * The initial Map `zoom` level.
+   */
+  zoom: number;
+
+  /**
+   * The initial Map `mapTypeId`.
+   */
+  mapTypeId?: "HYBRID" | "ROADMAP" | "SATELLITE" | "TERRAIN";
+
+  /**
+   * Google Maps child components.
+   */
+  children?: React.ReactNode;
+
+  /**
+   * When `false`, map icons are not clickable.
+   *
+   * A map icon represents a point of interest, also known as a POI.
+   */
+  clickableIcons?: boolean;
+
+  /**
+   * Enables/disables `zoom` and `center` on double click.
+   */
+  disableDoubleClickZoom?: boolean;
+
+  //
+  // Styling
+  //
+
+  /**
+   * Styles of map div.
+   */
+  style?: React.CSSProperties;
+
+  /**
+   * Classes of map div.
+   */
+  className?: string;
+
+  /**
+   * Color used for the background of the Map.
+   *
+   * This color will be visible when tiles have not yet
+   * loaded as the user pans.
+   */
+  backgroundColor?: string;
+
   /**
    * This handler is called when the user clicks on the map.
    *
@@ -112,67 +171,6 @@ interface EventProps {
   onProjectionChanged?: () => void;
 }
 
-export interface GoogleMapProps extends EventProps {
-  /**
-   * Loaded `google.Maps` instance.
-   */
-  maps: typeof google.maps;
-
-  /**
-   * The initial Map `center`.
-   */
-  center: google.maps.LatLngLiteral;
-
-  /**
-   * The initial Map `zoom` level.
-   */
-  zoom: number;
-
-  /**
-   * The initial Map `mapTypeId`.
-   */
-  mapTypeId?: "HYBRID" | "ROADMAP" | "SATELLITE" | "TERRAIN";
-
-  /**
-   * Google Maps child components.
-   */
-  children?: React.ReactNode;
-
-  /**
-   * When `false`, map icons are not clickable.
-   *
-   * A map icon represents a point of interest, also known as a POI.
-   */
-  clickableIcons?: boolean;
-
-  /**
-   * Enables/disables `zoom` and `center` on double click.
-   */
-  disableDoubleClickZoom?: boolean;
-
-  //
-  // Styling
-  //
-
-  /**
-   * Styles of map div.
-   */
-  style?: React.CSSProperties;
-
-  /**
-   * Classes of map div.
-   */
-  className?: string;
-
-  /**
-   * Color used for the background of the Map.
-   *
-   * This color will be visible when tiles have not yet
-   * loaded as the user pans.
-   */
-  backgroundColor?: string;
-}
-
 interface State {
   ctx?: GoogleMapContext;
 }
@@ -192,10 +190,11 @@ function createGoogleMapOptions({
     disableDefaultUI: true,
 
     zoom,
-    center,
     clickableIcons,
     backgroundColor,
     disableDoubleClickZoom,
+
+    center: new maps.LatLng(center.lat, center.lng),
     mapTypeId: mapTypeId && maps.MapTypeId[mapTypeId],
   };
 }

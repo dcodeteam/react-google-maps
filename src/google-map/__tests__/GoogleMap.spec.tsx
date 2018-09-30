@@ -1,4 +1,4 @@
-import { mount } from "enzyme";
+import { mount, shallow } from "enzyme";
 import * as React from "react";
 
 import {
@@ -23,7 +23,7 @@ describe("GoogleMap", () => {
   });
 
   it("should attach map to child div", () => {
-    const wrapper = mount(
+    const wrapper = shallow(
       <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 
@@ -33,7 +33,7 @@ describe("GoogleMap", () => {
   });
 
   it("should pass default options to map", () => {
-    mount(
+    shallow(
       <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 
@@ -52,7 +52,7 @@ describe("GoogleMap", () => {
   });
 
   it("should pass custom options to map", () => {
-    mount(
+    shallow(
       <GoogleMap
         maps={google.maps}
         zoom={0}
@@ -123,7 +123,7 @@ describe("GoogleMap", () => {
   });
 
   it("pass only changed options to map", () => {
-    const wrapper = mount(
+    const wrapper = shallow(
       <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 

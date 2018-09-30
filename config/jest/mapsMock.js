@@ -201,6 +201,27 @@ module.exports = {
     }),
   },
 
+  LatLng: class extends Comparable {
+    constructor(lat, lng) {
+      super();
+
+      this.lat = lat;
+      this.lng = lng;
+    }
+
+    equals(other) {
+      return this.lat === other.lat && this.lng === other.lng;
+    }
+  },
+
+  LatLngBounds: class extends Comparable {
+    constructor() {
+      super();
+
+      this.extend = jest.fn();
+    }
+  },
+
   Size: class extends Comparable {
     constructor(width, height) {
       super();
@@ -266,19 +287,4 @@ module.exports = {
       .fn(DataFeature)
       .mockImplementation(options => new DataFeature(options)),
   },
-
-  // LatLng: function GoogleMapsLatLng(latLng) {
-  //   this.lat = latLng.lat;
-  //   this.lng = latLng.lng;
-  // },
-
-  // LatLngBounds: function GoogleMapsLatLngBounds() {
-  //   this.extends = [];
-  //
-  //   this.extend = jest.fn(latLng => {
-  //     this.extends.push(latLng);
-  //
-  //     return this;
-  //   });
-  // },
 };
