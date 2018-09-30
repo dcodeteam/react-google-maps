@@ -4,9 +4,14 @@ export interface MarkerContext {
   marker: google.maps.Marker;
 }
 
-const { Consumer, Provider } = React.createContext<Partial<MarkerContext>>({});
+const {
+  Consumer: PartialMarkerContextConsumer,
+  Provider: PartialMarkerContextProvider,
+} = React.createContext<Partial<MarkerContext>>({});
 
-export const MarkerContextProvider = Provider as React.Provider<MarkerContext>;
+export const MarkerContextProvider = PartialMarkerContextProvider as React.Provider<
+  MarkerContext
+>;
 
 export interface MarkerContextConsumerProps {
   children: (ctx: MarkerContext) => React.ReactNode;
@@ -16,8 +21,8 @@ export function MarkerContextConsumer({
   children,
 }: MarkerContextConsumerProps) {
   return (
-    <Consumer>
+    <PartialMarkerContextConsumer>
       {ctx => (!ctx.marker ? null : children(ctx as MarkerContext))}
-    </Consumer>
+    </PartialMarkerContextConsumer>
   );
 }

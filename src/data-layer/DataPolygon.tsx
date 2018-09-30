@@ -101,7 +101,7 @@ export interface DataPolygonProps {
   onMouseUp?: (event: DataPolygonHandlerEvent) => void;
 }
 
-function createOptions(
+function createDataPolygonOptions(
   maps: typeof google.maps,
   {
     geometry,
@@ -132,7 +132,7 @@ function createOptions(
   };
 }
 
-function enhanceHandler(
+function enhanceDataPolygonHandler(
   polygon: google.maps.Data.Feature,
   handler?: (event: DataPolygonHandlerEvent) => void,
 ): (event: DataPolygonHandlerEvent) => void {
@@ -143,7 +143,7 @@ function enhanceHandler(
   };
 }
 
-function createHandlers(
+function createDataPolygonHandlers(
   polygon: google.maps.Data.Feature,
   {
     onClick,
@@ -156,13 +156,25 @@ function createHandlers(
   }: DataPolygonProps,
 ) {
   return {
-    [DataLayerEvent.onClick]: enhanceHandler(polygon, onClick),
-    [DataLayerEvent.onDoubleClick]: enhanceHandler(polygon, onDoubleClick),
-    [DataLayerEvent.onRightClick]: enhanceHandler(polygon, onRightClick),
-    [DataLayerEvent.onMouseOut]: enhanceHandler(polygon, onMouseOut),
-    [DataLayerEvent.onMouseOver]: enhanceHandler(polygon, onMouseOver),
-    [DataLayerEvent.onMouseDown]: enhanceHandler(polygon, onMouseDown),
-    [DataLayerEvent.onMouseUp]: enhanceHandler(polygon, onMouseUp),
+    [DataLayerEvent.onClick]: enhanceDataPolygonHandler(polygon, onClick),
+    [DataLayerEvent.onDoubleClick]: enhanceDataPolygonHandler(
+      polygon,
+      onDoubleClick,
+    ),
+    [DataLayerEvent.onRightClick]: enhanceDataPolygonHandler(
+      polygon,
+      onRightClick,
+    ),
+    [DataLayerEvent.onMouseOut]: enhanceDataPolygonHandler(polygon, onMouseOut),
+    [DataLayerEvent.onMouseOver]: enhanceDataPolygonHandler(
+      polygon,
+      onMouseOver,
+    ),
+    [DataLayerEvent.onMouseDown]: enhanceDataPolygonHandler(
+      polygon,
+      onMouseDown,
+    ),
+    [DataLayerEvent.onMouseUp]: enhanceDataPolygonHandler(polygon, onMouseUp),
   };
 }
 
@@ -173,7 +185,9 @@ interface State {
 export function DataPolygon(props: DataPolygonProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) => createOptions(maps, props)}
+      createOptions={({ maps }: GoogleMapContext) =>
+        createDataPolygonOptions(maps, props)
+      }
       createInitialState={({ maps }: GoogleMapContext): State => ({
         polygon: new maps.Data.Feature(),
       })}
@@ -201,7 +215,7 @@ export function DataPolygon(props: DataPolygonProps) {
       render={({ map, state: { polygon } }) => (
         <MapComponentHandlers
           instance={map.data}
-          handlers={createHandlers(polygon, props)}
+          handlers={createDataPolygonHandlers(polygon, props)}
         />
       )}
     />

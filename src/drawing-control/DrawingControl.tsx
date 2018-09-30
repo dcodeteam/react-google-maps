@@ -56,7 +56,7 @@ export interface DrawingControlProps {
   onRectangleComplete?: () => void;
 }
 
-function createOptions(
+function createDrawingControlOptions(
   maps: typeof google.maps,
   {
     position = "TOP_LEFT",
@@ -76,7 +76,7 @@ interface State {
   manager: google.maps.drawing.DrawingManager;
 }
 
-function createHandlers({
+function createDrawingControlHandlers({
   onCircleComplete,
   onMarkerComplete,
   onOverlayComplete,
@@ -97,7 +97,9 @@ function createHandlers({
 export function DrawingControl(props: DrawingControlProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) => createOptions(maps, props)}
+      createOptions={({ maps }: GoogleMapContext) =>
+        createDrawingControlOptions(maps, props)
+      }
       createInitialState={({ maps }: GoogleMapContext): State => ({
         manager: new maps.drawing.DrawingManager(),
       })}
@@ -124,7 +126,7 @@ export function DrawingControl(props: DrawingControlProps) {
       render={({ state: { manager } }) => (
         <MapComponentHandlers
           instance={manager}
-          handlers={createHandlers(props)}
+          handlers={createDrawingControlHandlers(props)}
         />
       )}
     />

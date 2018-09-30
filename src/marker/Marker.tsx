@@ -137,7 +137,7 @@ export interface MarkerProps {
   onPositionChanged?: () => void;
 }
 
-function createOptions(
+function createMarkerOptions(
   maps: typeof google.maps,
   {
     position,
@@ -174,7 +174,7 @@ function createOptions(
   };
 }
 
-function createHandlers({
+function createMarkerHandlers({
   onClick,
   onDoubleClick,
   onRightClick,
@@ -213,7 +213,7 @@ export function Marker(props: MarkerProps) {
   return (
     <MapComponent
       createOptions={({ maps }: GoogleMapContext): google.maps.MarkerOptions =>
-        createOptions(maps, props)
+        createMarkerOptions(maps, props)
       }
       createInitialState={({ maps }: GoogleMapContext): State => {
         const marker = new maps.Marker();
@@ -255,7 +255,7 @@ export function Marker(props: MarkerProps) {
 
           <MapComponentHandlers
             instance={marker}
-            handlers={createHandlers(props)}
+            handlers={createMarkerHandlers(props)}
           />
         </MarkerContextProvider>
       )}

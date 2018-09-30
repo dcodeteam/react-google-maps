@@ -5,11 +5,12 @@ export interface GoogleMapContext {
   readonly maps: typeof google.maps;
 }
 
-const { Provider, Consumer } = React.createContext<Partial<GoogleMapContext>>(
-  {},
-);
+const {
+  Consumer: PartialGoogleMapContextConsumer,
+  Provider: PartialGoogleMapContextProvider,
+} = React.createContext<Partial<GoogleMapContext>>({});
 
-export const GoogleMapContextProvider = Provider as React.Provider<
+export const GoogleMapContextProvider = PartialGoogleMapContextProvider as React.Provider<
   GoogleMapContext
 >;
 
@@ -21,10 +22,10 @@ export function GoogleMapContextConsumer({
   children,
 }: GoogleMapContextConsumerProps) {
   return (
-    <Consumer>
+    <PartialGoogleMapContextConsumer>
       {ctx =>
         !ctx.map || !ctx.maps ? null : children(ctx as GoogleMapContext)
       }
-    </Consumer>
+    </PartialGoogleMapContextConsumer>
   );
 }

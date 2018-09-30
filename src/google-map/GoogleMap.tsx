@@ -177,7 +177,7 @@ interface State {
   ctx?: GoogleMapContext;
 }
 
-function createOptions({
+function createGoogleMapOptions({
   maps,
 
   zoom,
@@ -200,7 +200,7 @@ function createOptions({
   };
 }
 
-function createHandlers({
+function createGoogleMapHandlers({
   onClick,
   onDoubleClick,
   onRightClick,
@@ -267,7 +267,7 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
     const { maps } = this.props;
     const map = new maps.Map(this.mapRef.current);
 
-    map.setOptions(createOptions(this.props));
+    map.setOptions(createGoogleMapOptions(this.props));
     map.addListener(GoogleMapEvent.onZoomChanged, this.handleZoomChanged);
     map.addListener(GoogleMapEvent.onBoundsChanged, this.handleBoundsChanged);
 
@@ -277,8 +277,8 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
   public componentDidUpdate(prevProps: Readonly<GoogleMapProps>): void {
     const { ctx } = this.state;
 
-    const prevOptions = createOptions(prevProps);
-    const nextOptions = createOptions(this.props);
+    const prevOptions = createGoogleMapOptions(prevProps);
+    const nextOptions = createGoogleMapOptions(this.props);
     const options = pickChangedProps(prevOptions, nextOptions);
 
     if (options) {
@@ -312,7 +312,7 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
 
             <MapComponentHandlers
               instance={ctx.map}
-              handlers={createHandlers(this.props)}
+              handlers={createGoogleMapHandlers(this.props)}
             />
           </>
         )}

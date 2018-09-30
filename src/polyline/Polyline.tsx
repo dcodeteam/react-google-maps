@@ -123,7 +123,7 @@ export interface PolylineProps {
   onDragEnd?: (event?: { path: google.maps.LatLng[] }) => void;
 }
 
-function createOptions({
+function createPolylineOptions({
   path,
   zIndex,
   strokeColor,
@@ -148,7 +148,7 @@ function createOptions({
   };
 }
 
-function createHandlers({
+function createPolylineHandlers({
   onClick,
   onDoubleClick,
   onRightClick,
@@ -183,7 +183,7 @@ interface State {
 export function Polyline(props: PolylineProps) {
   return (
     <MapComponent
-      createOptions={() => createOptions(props)}
+      createOptions={() => createPolylineOptions(props)}
       createInitialState={({ maps }: GoogleMapContext): State => ({
         polyline: new maps.Polyline(),
       })}
@@ -220,7 +220,7 @@ export function Polyline(props: PolylineProps) {
       render={({ state: { polyline } }) => (
         <MapComponentHandlers
           instance={polyline}
-          handlers={createHandlers(props)}
+          handlers={createPolylineHandlers(props)}
         />
       )}
     />

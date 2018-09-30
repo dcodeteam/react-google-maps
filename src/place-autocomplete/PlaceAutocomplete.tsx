@@ -68,7 +68,7 @@ export interface PlaceAutocompleteProps {
   render: (renderProps: PlaceAutocompleteRenderProps) => React.ReactNode;
 }
 
-function createOptions({
+function createPlaceAutocompleteOptions({
   types,
   bounds,
   placeIdOnly = false,
@@ -97,7 +97,7 @@ export class PlaceAutocomplete extends React.Component<PlaceAutocompleteProps> {
 
   public componentDidMount(): void {
     const { maps } = this.props;
-    const options = createOptions(this.props);
+    const options = createPlaceAutocompleteOptions(this.props);
     const autocomplete = new maps.places.Autocomplete(this.ref!);
 
     autocomplete.setValues(options);
@@ -113,8 +113,8 @@ export class PlaceAutocomplete extends React.Component<PlaceAutocompleteProps> {
   }
 
   public componentDidUpdate(prevProps: Readonly<PlaceAutocompleteProps>): void {
-    const prevOptions = createOptions(prevProps);
-    const nextOptions = createOptions(this.props);
+    const prevOptions = createPlaceAutocompleteOptions(prevProps);
+    const nextOptions = createPlaceAutocompleteOptions(this.props);
     const options = pickChangedProps(prevOptions, nextOptions);
 
     if (options) {

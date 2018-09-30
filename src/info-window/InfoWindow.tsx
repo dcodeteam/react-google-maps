@@ -63,7 +63,7 @@ interface Options extends google.maps.InfoWindowOptions {
   children: React.ReactNode;
 }
 
-function createOptions(
+function createInfoWindowOptions(
   maps: typeof google.maps,
   {
     children,
@@ -94,7 +94,7 @@ interface State {
   infoWindow: google.maps.InfoWindow;
 }
 
-function createHandlers({ onCloseClick }: InfoWindowProps) {
+function createInfoWindowHandlers({ onCloseClick }: InfoWindowProps) {
   return {
     [InfoWindowEvent.onCloseClick]: onCloseClick,
   };
@@ -103,7 +103,9 @@ function createHandlers({ onCloseClick }: InfoWindowProps) {
 export function InfoWindow(props: InfoWindowProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) => createOptions(maps, props)}
+      createOptions={({ maps }: GoogleMapContext) =>
+        createInfoWindowOptions(maps, props)
+      }
       createInitialState={({ maps }: GoogleMapContext): State => ({
         infoWindow: new maps.InfoWindow(),
         div: document.createElement("div"),
@@ -168,7 +170,7 @@ export function InfoWindow(props: InfoWindowProps) {
 
           <MapComponentHandlers
             instance={infoWindow}
-            handlers={createHandlers(props)}
+            handlers={createInfoWindowHandlers(props)}
           />
         </>
       )}
