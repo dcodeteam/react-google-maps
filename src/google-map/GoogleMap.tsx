@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { createLatLng } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
 import { GoogleMapContext, GoogleMapContextProvider } from "./GoogleMapContext";
@@ -194,7 +195,7 @@ function createGoogleMapOptions({
     backgroundColor,
     disableDoubleClickZoom,
 
-    center: new maps.LatLng(center.lat, center.lng),
+    center: createLatLng(maps, center),
     mapTypeId: mapTypeId && maps.MapTypeId[mapTypeId],
   };
 }

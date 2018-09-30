@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { GoogleMapContext } from "../google-map/GoogleMapContext";
-import { SizeLiteral, createSize } from "../internal/MapsUtils";
+import { SizeLiteral, createLatLng, createSize } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponent } from "../map-component/MapComponent";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
@@ -84,7 +84,7 @@ function createInfoWindowOptions(
     zIndex,
     disableAutoPan,
 
-    position: new maps.LatLng(position.lat, position.lng),
+    position: createLatLng(maps, position),
     pixelOffset: pixelOffset && createSize(maps, pixelOffset),
   };
 }

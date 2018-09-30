@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { GoogleMapContext } from "../google-map/GoogleMapContext";
+import { createLatLng } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponent } from "../map-component/MapComponent";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
@@ -157,7 +158,6 @@ function createMarkerOptions(
   }: MarkerProps,
 ): google.maps.MarkerOptions {
   return {
-    position,
     title,
     visible,
     clickable,
@@ -169,6 +169,7 @@ function createMarkerOptions(
     shape,
     zIndex,
 
+    position: createLatLng(maps, position),
     icon: typeof icon === "string" ? icon : undefined,
     animation: animation && maps.Animation[animation],
   };
