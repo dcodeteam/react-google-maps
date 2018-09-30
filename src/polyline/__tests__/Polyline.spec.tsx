@@ -43,7 +43,7 @@ describe("Polyline", () => {
       clickable: true,
       draggable: false,
       geodesic: false,
-      path: [],
+      path: { values: [] },
       strokeColor: undefined,
       strokeOpacity: undefined,
       strokeWeight: undefined,
@@ -72,7 +72,7 @@ describe("Polyline", () => {
       clickable: false,
       draggable: true,
       geodesic: false,
-      path: [],
+      path: { values: [] },
       strokeColor: "#FF0000",
       strokeOpacity: 1,
       strokeWeight: 1,
@@ -122,10 +122,14 @@ describe("Polyline", () => {
     emitEvent(polyline, PolylineEvent.onDragEnd, {});
 
     expect(polyline.setPath).toBeCalledTimes(1);
-    expect(polyline.setPath).lastCalledWith([{ lat: 0, lng: 1 }]);
+    expect(polyline.setPath).lastCalledWith(
+      new google.maps.MVCArray([{ lat: 0, lng: 1 }]),
+    );
 
     expect(onDragEnd).toBeCalledTimes(1);
-    expect(onDragEnd).lastCalledWith({ path: [{ lat: 0, lng: 1 }] });
+    expect(onDragEnd).lastCalledWith({
+      path: [{ lat: 0, lng: 1 }],
+    });
   });
 
   it("should update only changed options on props update", () => {

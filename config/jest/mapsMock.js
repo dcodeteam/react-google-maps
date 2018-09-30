@@ -61,6 +61,32 @@ class MVCObject extends ValueContainer {
   }
 }
 
+class MVCArray {
+  constructor(values) {
+    this.values = [];
+
+    if (values && values.forEach) {
+      values.forEach(x => {
+        this.values.push(x);
+      });
+    }
+
+    Object.defineProperties(this, {
+      push: {
+        writable: false,
+        enumerable: false,
+        value: jest.fn(x => this.values.push(x)),
+      },
+
+      getArray: {
+        writable: false,
+        enumerable: false,
+        value: jest.fn(() => this.values),
+      },
+    });
+  }
+}
+
 class GoogleMap extends MVCObject {
   constructor(node, options) {
     super({ ...options, bounds: { east: 0, north: 0, south: 0, west: 0 } });
@@ -142,8 +168,8 @@ class Polyline extends MVCObject {
     this.setOptions = this.setValues;
     this.setMap = jest.fn();
 
-    this.setPath = jest.fn(path => this.set("path", path));
-    this.getPath = jest.fn(() => ({ getArray: () => this.get("path") }));
+    this.getPath = jest.fn(() => this.get("path"));
+    this.setPath = jest.fn(path => this.set("path", new MVCArray(path)));
   }
 }
 
@@ -247,6 +273,10 @@ module.exports = {
       return this.x === other.x && this.y === other.y;
     }
   },
+
+  MVCArray: jest
+    .fn(MVCArray)
+    .mockImplementation(values => new MVCArray(values)),
 
   Map: jest
     .fn(GoogleMap)

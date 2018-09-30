@@ -1,4 +1,4 @@
-import { isStrictEqual } from "./DataUtils";
+import { isDeepEqual } from "./DataUtils";
 
 export function pickChangedProps<T extends object>(
   prevProps: T,
@@ -12,7 +12,7 @@ export function pickChangedProps<T extends object>(
     const prevValue = prevProps[key];
     const nextValue = nextProps[key];
 
-    if (!isStrictEqual(prevValue, nextValue)) {
+    if (!isDeepEqual(prevValue, nextValue)) {
       hasChanged = true;
       diff[key] = nextValue;
     }

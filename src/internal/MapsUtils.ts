@@ -22,3 +22,17 @@ export function createLatLng(
 ) {
   return new maps.LatLng(position.lat, position.lng);
 }
+
+export function createMVCArray<S, R>(
+  maps: typeof google.maps,
+  source: S[],
+  mapper: (value: S) => R,
+): google.maps.MVCArray<R> {
+  const result = new maps.MVCArray<R>();
+
+  source.forEach(x => {
+    result.push(mapper(x));
+  });
+
+  return result;
+}

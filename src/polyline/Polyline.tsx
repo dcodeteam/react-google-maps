@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { GoogleMapContext } from "../google-map/GoogleMapContext";
+import { createLatLng, createMVCArray } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponent } from "../map-component/MapComponent";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
@@ -123,20 +124,22 @@ export interface PolylineProps {
   onDragEnd?: (event?: { path: google.maps.LatLng[] }) => void;
 }
 
-function createPolylineOptions({
-  path,
-  zIndex,
-  strokeColor,
-  strokeWeight,
-  strokeOpacity,
-
-  visible = true,
-  geodesic = false,
-  clickable = true,
-  draggable = false,
-}: PolylineProps): google.maps.PolylineOptions {
-  return {
+function createPolylineOptions(
+  maps: typeof google.maps,
+  {
     path,
+    zIndex,
+    strokeColor,
+    strokeWeight,
+    strokeOpacity,
+
+    visible = true,
+    geodesic = false,
+    clickable = true,
+    draggable = false,
+  }: PolylineProps,
+): google.maps.PolylineOptions {
+  return {
     zIndex,
     visible,
     geodesic,
@@ -145,6 +148,7 @@ function createPolylineOptions({
     strokeColor,
     strokeWeight,
     strokeOpacity,
+    path: createMVCArray(maps, path, x => createLatLng(maps, x)),
   };
 }
 
@@ -183,7 +187,9 @@ interface State {
 export function Polyline(props: PolylineProps) {
   return (
     <MapComponent
-      createOptions={() => createPolylineOptions(props)}
+      createOptions={({ maps }: GoogleMapContext) =>
+        createPolylineOptions(maps, props)
+      }
       createInitialState={({ maps }: GoogleMapContext): State => ({
         polyline: new maps.Polyline(),
       })}
@@ -200,7 +206,7 @@ export function Polyline(props: PolylineProps) {
         polyline.addListener(PolylineEvent.onDragEnd, e => {
           Object.assign(e, { path: polyline.getPath().getArray() });
 
-          polyline.setPath(lastPath.getArray());
+          polyline.setPath(lastPath);
         });
       }}
       didUpdate={(
