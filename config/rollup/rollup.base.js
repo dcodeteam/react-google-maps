@@ -1,13 +1,13 @@
 "use strict";
 
 const cleaner = require("rollup-plugin-cleaner");
+const prettier = require("rollup-plugin-prettier");
 const typescript = require("rollup-plugin-typescript2");
 
 module.exports = function createRollupConfig({ target }) {
   return {
     input: "./src/index.ts",
     output: {
-      sourcemap: true,
       format: target.startsWith("es") ? "es" : target,
       file: `./${target}/index.js`,
     },
@@ -33,6 +33,8 @@ module.exports = function createRollupConfig({ target }) {
         useTsconfigDeclarationDir: true,
         tsconfig: `./tsconfig.${target}.json`,
       }),
+
+      prettier({ parser: "babylon" }),
     ],
   };
 };

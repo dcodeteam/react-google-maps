@@ -67,6 +67,7 @@
     "react-dom": "^16.5.2",
     "rollup": "^0.66.2",
     "rollup-plugin-cleaner": "^0.2.0",
+    "rollup-plugin-prettier": "^0.4.0",
     "rollup-plugin-typescript2": "^0.17.0",
     "ts-jest": "^23.10.1",
     "typescript": "^3.0.1",
