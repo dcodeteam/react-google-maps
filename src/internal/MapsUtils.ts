@@ -1,3 +1,17 @@
+export function createMVCArray<S, R>(
+  maps: typeof google.maps,
+  source: S[],
+  mapper: (value: S) => R,
+): google.maps.MVCArray<R> {
+  const result = new maps.MVCArray<R>();
+
+  source.forEach(x => {
+    result.push(mapper(x));
+  });
+
+  return result;
+}
+
 export interface SizeLiteral {
   width: number;
   height: number;
@@ -23,16 +37,12 @@ export function createLatLng(
   return new maps.LatLng(position.lat, position.lng);
 }
 
-export function createMVCArray<S, R>(
+export function createLatLngBounds(
   maps: typeof google.maps,
-  source: S[],
-  mapper: (value: S) => R,
-): google.maps.MVCArray<R> {
-  const result = new maps.MVCArray<R>();
-
-  source.forEach(x => {
-    result.push(mapper(x));
-  });
-
-  return result;
+  bounds: google.maps.LatLngBoundsLiteral,
+) {
+  return new maps.LatLngBounds(
+    createLatLng(maps, { lat: bounds.south, lng: bounds.west }),
+    createLatLng(maps, { lat: bounds.north, lng: bounds.east }),
+  );
 }

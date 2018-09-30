@@ -241,10 +241,22 @@ module.exports = {
   },
 
   LatLngBounds: class extends Comparable {
-    constructor() {
+    constructor(sw, ne) {
       super();
 
-      this.extend = jest.fn();
+      this.south = sw && sw.lat;
+      this.west = sw && sw.lng;
+
+      this.north = ne && ne.lat;
+      this.east = ne && ne.lng;
+
+      Object.defineProperties(this, {
+        extend: {
+          writable: false,
+          enumerable: false,
+          value: jest.fn(),
+        },
+      });
     }
   },
 

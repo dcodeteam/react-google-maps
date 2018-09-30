@@ -1,6 +1,8 @@
 import * as React from "react";
 
+import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
+import { createLatLngBounds } from "../internal/MapsUtils";
 import { MapComponent } from "../map-component/MapComponent";
 
 export interface FitBoundsProps {
@@ -13,7 +15,9 @@ export interface FitBoundsProps {
 export function FitBounds({ bounds }: FitBoundsProps) {
   return (
     <MapComponent
-      createOptions={() => bounds}
+      createOptions={({ maps }: GoogleMapContext) =>
+        createLatLngBounds(maps, bounds)
+      }
       didMount={({ map, options }) => {
         map.fitBounds(options);
       }}
