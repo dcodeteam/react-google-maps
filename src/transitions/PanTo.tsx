@@ -1,6 +1,8 @@
 import * as React from "react";
 
+import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
+import { createLatLng } from "../internal/MapsUtils";
 import { MapComponent } from "../map-component/MapComponent";
 
 export interface PanToProps {
@@ -13,7 +15,9 @@ export interface PanToProps {
 export function PanTo({ position }: PanToProps) {
   return (
     <MapComponent
-      createOptions={() => position}
+      createOptions={({ maps }: GoogleMapContext) =>
+        createLatLng(maps, position)
+      }
       didMount={({ map, options }) => {
         map.panTo(options);
       }}
