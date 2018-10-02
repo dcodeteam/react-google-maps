@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { ZoomControl, ZoomControlProps } from "../ZoomControl";
 
 describe("ZoomControl", () => {
@@ -9,9 +9,9 @@ describe("ZoomControl", () => {
 
   function MockZoomControl(props: ZoomControlProps) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <ZoomControl {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

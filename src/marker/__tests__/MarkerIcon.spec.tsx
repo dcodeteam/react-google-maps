@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { MarkerContextProvider } from "../MarkerContext";
 import { MarkerIcon, MarkerIconProps } from "../MarkerIcon";
 
@@ -11,11 +11,11 @@ describe("MarkerIcon", () => {
 
   function MockMarkerIcon(props: MarkerIconProps) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <MarkerContextProvider value={{ marker }}>
           <MarkerIcon {...props} />
         </MarkerContextProvider>
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

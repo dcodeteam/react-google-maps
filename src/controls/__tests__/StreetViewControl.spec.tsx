@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import {
   StreetViewControl,
   StreetViewControlProps,
@@ -12,9 +12,9 @@ describe("StreetViewControl", () => {
 
   function MockStreetViewControl(props: StreetViewControlProps) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <StreetViewControl {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

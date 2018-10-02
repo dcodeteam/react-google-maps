@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { ScaleControl } from "../ScaleControl";
 
 describe("ScaleControl", () => {
@@ -9,9 +9,9 @@ describe("ScaleControl", () => {
 
   function MockScaleControl() {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <ScaleControl />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

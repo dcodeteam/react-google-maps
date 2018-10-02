@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { PanTo, PanToProps } from "../PanTo";
 
 describe("PanTo", () => {
@@ -9,9 +9,9 @@ describe("PanTo", () => {
 
   function MockPanTo(props: PanToProps) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <PanTo {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

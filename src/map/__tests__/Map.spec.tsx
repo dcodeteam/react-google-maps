@@ -8,7 +8,7 @@ import {
   getClassMockInstance,
 } from "../../__tests__/testUtils";
 import { GoogleMapProps, Map } from "../Map";
-import { GoogleMapContextConsumer } from "../MapContext";
+import { MapContextConsumer } from "../MapContext";
 import { MapEvent } from "../MapEvent";
 
 export function getMockInstance(): google.maps.Map {
@@ -176,7 +176,7 @@ describe("Map", () => {
 
     mount(
       <Map maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }}>
-        <GoogleMapContextConsumer>{consumer}</GoogleMapContextConsumer>
+        <MapContextConsumer>{consumer}</MapContextConsumer>
       </Map>,
     );
 

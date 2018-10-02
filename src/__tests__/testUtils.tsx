@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { GoogleMapContextProvider, MapContext } from "../map/MapContext";
+import { MapContext, MapContextProvider } from "../map/MapContext";
 
 export function getClassMockInstance(value: unknown) {
   return (value as jest.Mock).mock.results[0].value;
@@ -43,9 +43,9 @@ export function createMockMapComponent<P>(Component: React.ComponentType<P>) {
 
   function Mock(props: P) {
     return (
-      <GoogleMapContextProvider value={context}>
+      <MapContextProvider value={context}>
         <Component {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

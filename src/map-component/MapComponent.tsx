@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { GoogleMapContextConsumer, MapContext } from "../map/MapContext";
+import { MapContext, MapContextConsumer } from "../map/MapContext";
 
 interface State<O, S> {
   state: S;
@@ -98,8 +98,8 @@ class MapComponentElement<O, S> extends React.Component<
 
 export function MapComponent<P, S>(props: MapComponentProps<P, S>) {
   return (
-    <GoogleMapContextConsumer>
+    <MapContextConsumer>
       {ctx => <MapComponentElement {...props} ctx={ctx} />}
-    </GoogleMapContextConsumer>
+    </MapContextConsumer>
   );
 }

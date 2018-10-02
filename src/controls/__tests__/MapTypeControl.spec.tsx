@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { MapTypeControl, MapTypeControlProps } from "../MapTypeControl";
 
 describe("MapTypeControl", () => {
@@ -9,9 +9,9 @@ describe("MapTypeControl", () => {
 
   function MockMapTypeControl(props: MapTypeControlProps) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <MapTypeControl {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

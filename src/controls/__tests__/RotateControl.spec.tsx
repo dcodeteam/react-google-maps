@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { RotateControl, RotateControlProps } from "../RotateControl";
 
 describe("RotateControl", () => {
@@ -9,9 +9,9 @@ describe("RotateControl", () => {
 
   function MockRotateControl(props: RotateControlProps) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <RotateControl {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

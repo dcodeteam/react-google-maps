@@ -7,8 +7,13 @@ Object {
   "DrawingControl": [Function],
   "FitBounds": [Function],
   "FullscreenControl": [Function],
-  "GoogleMapContextConsumer": [Function],
-  "GoogleMapContextProvider": Object {
+  "GoogleMapsLoader": [Function],
+  "InfoWindow": [Function],
+  "Map": [Function],
+  "MapComponent": [Function],
+  "MapComponentHandlers": [Function],
+  "MapContextConsumer": [Function],
+  "MapContextProvider": Object {
     "$$typeof": Symbol(react.provider),
     "_context": Object {
       "$$typeof": Symbol(react.context),
@@ -22,11 +27,6 @@ Object {
       "unstable_read": [Function],
     },
   },
-  "GoogleMapsLoader": [Function],
-  "InfoWindow": [Function],
-  "Map": [Function],
-  "MapComponent": [Function],
-  "MapComponentHandlers": [Function],
   "MapTypeControl": [Function],
   "Marker": [Function],
   "MarkerContextConsumer": [Function],

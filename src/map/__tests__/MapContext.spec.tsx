@@ -1,13 +1,13 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextConsumer } from "../MapContext";
+import { MapContextConsumer } from "../MapContext";
 
 describe("MapContext", () => {
   it("should not render if 'map' or 'maps' are not provided", () => {
     const consumer = jest.fn();
 
-    mount(<GoogleMapContextConsumer>{consumer}</GoogleMapContextConsumer>);
+    mount(<MapContextConsumer>{consumer}</MapContextConsumer>);
 
     expect(consumer).toBeCalledTimes(0);
   });

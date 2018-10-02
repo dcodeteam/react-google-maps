@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { FitBounds, FitBoundsProps } from "../FitBounds";
 
 describe("FitBounds", () => {
@@ -9,9 +9,9 @@ describe("FitBounds", () => {
 
   function MockFitBounds(props: FitBoundsProps) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <FitBounds {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

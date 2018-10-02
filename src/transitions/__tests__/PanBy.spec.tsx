@@ -2,7 +2,7 @@ import { mount } from "enzyme";
 import * as React from "react";
 
 import { PointLiteral } from "../../internal/MapsUtils";
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { PanBy, PanByProps } from "../PanBy";
 
 describe("PanBy", () => {
@@ -10,9 +10,9 @@ describe("PanBy", () => {
 
   function MockPanBy(props: PanByProps) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <PanBy {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 

@@ -6,24 +6,22 @@ export interface MapContext {
 }
 
 const {
-  Consumer: PartialGoogleMapContextConsumer,
-  Provider: PartialGoogleMapContextProvider,
+  Consumer: PartialMapContextConsumer,
+  Provider: PartialMapContextProvider,
 } = React.createContext<Partial<MapContext>>({});
 
-export const GoogleMapContextProvider = PartialGoogleMapContextProvider as React.Provider<
+export const MapContextProvider = PartialMapContextProvider as React.Provider<
   MapContext
 >;
 
-export interface GoogleMapContextConsumerProps {
+export interface MapContextConsumerProps {
   children: (ctx: MapContext) => React.ReactNode;
 }
 
-export function GoogleMapContextConsumer({
-  children,
-}: GoogleMapContextConsumerProps) {
+export function MapContextConsumer({ children }: MapContextConsumerProps) {
   return (
-    <PartialGoogleMapContextConsumer>
+    <PartialMapContextConsumer>
       {ctx => (!ctx.map || !ctx.maps ? null : children(ctx as MapContext))}
-    </PartialGoogleMapContextConsumer>
+    </PartialMapContextConsumer>
   );
 }

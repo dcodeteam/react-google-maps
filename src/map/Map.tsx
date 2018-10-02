@@ -3,7 +3,7 @@ import * as React from "react";
 import { createLatLng } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
-import { GoogleMapContextProvider, MapContext } from "./MapContext";
+import { MapContext, MapContextProvider } from "./MapContext";
 import { MapEvent } from "./MapEvent";
 
 export interface GoogleMapProps {
@@ -306,9 +306,7 @@ export class Map extends React.Component<GoogleMapProps, State> {
 
         {ctx != null && (
           <>
-            <GoogleMapContextProvider value={ctx}>
-              {children}
-            </GoogleMapContextProvider>
+            <MapContextProvider value={ctx}>{children}</MapContextProvider>
 
             <MapComponentHandlers
               instance={ctx.map}

@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../map/MapContext";
+import { MapContextProvider } from "../../map/MapContext";
 import { MapComponent, MapComponentProps } from "../MapComponent";
 
 describe("MapComponent", () => {
@@ -9,9 +9,9 @@ describe("MapComponent", () => {
 
   function MockMapComponent<O, S>(props: MapComponentProps<O, S>) {
     return (
-      <GoogleMapContextProvider value={{ map, maps: google.maps }}>
+      <MapContextProvider value={{ map, maps: google.maps }}>
         <MapComponent {...props} />
-      </GoogleMapContextProvider>
+      </MapContextProvider>
     );
   }
 
