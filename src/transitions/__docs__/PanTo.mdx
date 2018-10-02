@@ -1,12 +1,13 @@
 ---
 menu: Transitions
 name: Pan To
+route: /transitions/pan-to
 ---
 
 import { Playground, PropsTable } from 'docz'
 import { PanTo } from '../PanTo'
 import { Marker } from '../../marker/Marker'
-import { DocsMap } from '../../__docs__/DocsMap'
+import { TransitionExample } from './TransitionExample'
 
 # Pan To
 
@@ -19,12 +20,28 @@ If the change is less than both the width and height of the map, the transition 
 - [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
 
 <Playground>
-  <DocsMap
+  <TransitionExample
     zoom={8}
-    center={{ lat: 36.964, lng: -122.015 }}
-  >
-    <PanTo position={{ lat: 36.964, lng: -122.015 }} />
-  </DocsMap>
+    center={{ lat: 36, lng: -122 }}
+    initialState={{ position: null }}
+    onAnimateClick={({ setState }) => {
+      const latOffset = (Math.random() - 0.5) * 2
+      const lngOffset = (Math.random() - 0.5) * 2
+      setState({ position: { lat: 36 + latOffset, lng: -122 + lngOffset } })
+    }}
+    render={({ state }) => (
+      <>
+        {state.position != null && (
+          <>
+            <PanTo position={state.position} />
+            <Marker label="P" position={state.position} />
+          </>
+        )}
+
+        <Marker label="C" position={{ lat: 36, lng: -122 }} />
+      </>
+    )}
+  />
 </Playground>
 
 <PropsTable of={PanTo} />

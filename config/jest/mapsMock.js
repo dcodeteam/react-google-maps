@@ -27,7 +27,18 @@ class MVCObject extends ValueContainer {
   constructor(values) {
     super(values);
 
-    this.listeners = {};
+    this.listeners = new Proxy(
+      {},
+      {
+        get: (acc, key) => {
+          if (!acc[key]) {
+            acc[key] = [];
+          }
+
+          return acc[key];
+        },
+      },
+    );
 
     this.emit = jest.fn((event, ...args) => {
       const listeners = this.listeners[event];
@@ -40,7 +51,8 @@ class MVCObject extends ValueContainer {
     });
 
     this.addListener = jest.fn((event, fn) => {
-      const listeners = this.listeners[event] || [];
+      const listeners = this.listeners[event];
+
       const listener = {
         fn,
         remove: jest.fn(() => {
@@ -214,6 +226,16 @@ module.exports = {
   MapTypeControlStyle: EnumMirror,
 
   event: {
+    addListenerOnce: jest.fn((instance, event, fn) => {
+      const listener = instance.addListener(event, () => {
+        listener.remove();
+
+        fn();
+      });
+
+      return listener;
+    }),
+
     clearInstanceListeners: jest.fn(instance => {
       if (instance.listeners) {
         Object.keys(instance.listeners).forEach(event => {
@@ -222,6 +244,16 @@ module.exports = {
           while (listeners.length > 0) {
             listeners[0].remove();
           }
+        });
+      }
+    }),
+
+    trigger: jest.fn((instance, event, ...args) => {
+      if (instance.listeners) {
+        const listeners = instance.listeners[event];
+
+        listeners.forEach(({ fn }) => {
+          fn(...args);
         });
       }
     }),
@@ -244,17 +276,25 @@ module.exports = {
     constructor(sw, ne) {
       super();
 
-      this.south = sw && sw.lat;
-      this.west = sw && sw.lng;
+      this.south = sw ? sw.lat : 0;
+      this.west = sw ? sw.lng : 0;
 
-      this.north = ne && ne.lat;
-      this.east = ne && ne.lng;
+      this.north = ne ? ne.lat : 0;
+      this.east = ne ? ne.lng : 0;
 
       Object.defineProperties(this, {
         extend: {
           writable: false,
           enumerable: false,
-          value: jest.fn(),
+          value: jest.fn(({ lat, lng }) => {
+            this.south = Math.min(this.south, lat);
+            this.north = Math.max(this.north, lat);
+
+            this.west = Math.min(this.west, lng);
+            this.east = Math.max(this.east, lng);
+
+            return this;
+          }),
         },
       });
     }

@@ -12,10 +12,12 @@ export interface FitBoundsProps {
   bounds: google.maps.LatLngBoundsLiteral;
 }
 
-export function FitBounds({ bounds }: FitBoundsProps) {
+export function FitBounds(props: FitBoundsProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: MapContext) => createLatLngBounds(maps, bounds)}
+      createOptions={({ maps }: MapContext) =>
+        createLatLngBounds(maps, props.bounds)
+      }
       didMount={({ map, options }) => {
         map.fitBounds(options);
       }}

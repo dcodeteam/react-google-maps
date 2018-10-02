@@ -241,23 +241,23 @@ function createGoogleMapHandlers({
 export class Map extends React.Component<GoogleMapProps, State> {
   public state: State = {};
 
+  private map?: google.maps.Map;
+
   private mapRef = React.createRef<HTMLDivElement>();
 
   private handleZoomChanged = () => {
-    const { ctx } = this.state;
     const { onZoomChanged } = this.props;
 
     if (onZoomChanged) {
-      onZoomChanged({ zoom: ctx!.map.getZoom() });
+      onZoomChanged({ zoom: this.map!.getZoom() });
     }
   };
 
   private handleBoundsChanged = () => {
-    const { ctx } = this.state;
     const { onBoundsChanged } = this.props;
 
     if (onBoundsChanged) {
-      const bounds = ctx!.map.getBounds();
+      const bounds = this.map!.getBounds();
 
       onBoundsChanged({ bounds: bounds && bounds.toJSON() });
     }
@@ -268,31 +268,33 @@ export class Map extends React.Component<GoogleMapProps, State> {
     const map = new maps.Map(this.mapRef.current);
 
     map.setOptions(createGoogleMapOptions(this.props));
-    map.addListener(MapEvent.onZoomChanged, this.handleZoomChanged);
-    map.addListener(MapEvent.onBoundsChanged, this.handleBoundsChanged);
 
-    this.setState({ ctx: { map, maps } });
+    this.map = map;
+
+    maps.event.addListenerOnce(map, MapEvent.onBoundsChanged, () => {
+      map.addListener(MapEvent.onZoomChanged, this.handleZoomChanged);
+      map.addListener(MapEvent.onBoundsChanged, this.handleBoundsChanged);
+
+      this.setState({ ctx: { map, maps } });
+    });
   }
 
   public componentDidUpdate(prevProps: Readonly<GoogleMapProps>): void {
-    const { ctx } = this.state;
-
     const prevOptions = createGoogleMapOptions(prevProps);
     const nextOptions = createGoogleMapOptions(this.props);
     const options = pickChangedProps(prevOptions, nextOptions);
 
     if (options) {
-      ctx!.map.setOptions(options);
+      this.map!.setOptions(options);
     }
   }
 
   public componentWillUnmount() {
-    const { ctx } = this.state;
     const {
       maps: { event },
     } = this.props;
 
-    event.clearInstanceListeners(ctx!.map);
+    event.clearInstanceListeners(this.map!);
     event.clearInstanceListeners(this.mapRef.current!);
   }
 

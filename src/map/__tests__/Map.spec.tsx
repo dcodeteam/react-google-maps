@@ -16,6 +16,7 @@ export function getMockInstance(): google.maps.Map {
 }
 
 describe("Map", () => {
+  const customEvents = 1;
   const instanceEvents = Object.keys(MapEvent).length;
 
   afterEach(() => {
@@ -80,7 +81,9 @@ describe("Map", () => {
 
     const map = getMockInstance();
 
-    expect(map.addListener).toBeCalledTimes(instanceEvents);
+    google.maps.event.trigger(map, MapEvent.onBoundsChanged);
+
+    expect(map.addListener).toBeCalledTimes(instanceEvents + customEvents);
   });
 
   it("should add listeners with handlers", () => {
@@ -98,13 +101,15 @@ describe("Map", () => {
 
     const map = getMockInstance();
 
+    google.maps.event.trigger(map, MapEvent.onBoundsChanged);
+
     forEachEvent<GoogleMapProps>(MapEvent, (key, event) => {
       const handler = handlers[key];
       const payload = { key, event };
 
       expect(handler).toBeCalledTimes(0);
 
-      emitEvent(map, event, payload);
+      google.maps.event.trigger(map, event, payload);
 
       expect(handler).toBeCalledTimes(1);
 
@@ -149,12 +154,15 @@ describe("Map", () => {
     );
 
     const map = getMockInstance();
+
+    emitEvent(map, MapEvent.onBoundsChanged);
+
     const mapDiv = wrapper.find("div");
     const {
       mock: { results },
     } = map.addListener as jest.Mock;
 
-    expect(results.length).toBe(instanceEvents);
+    expect(results.length).toBe(instanceEvents + customEvents);
     expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
 
     wrapper.unmount();
@@ -181,6 +189,8 @@ describe("Map", () => {
     );
 
     const map = getMockInstance();
+
+    emitEvent(map, MapEvent.onBoundsChanged);
 
     expect(consumer).toBeCalledTimes(1);
     expect(consumer).toBeCalledWith({ maps: google.maps, map });

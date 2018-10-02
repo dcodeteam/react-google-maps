@@ -1,19 +1,11 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { MapContextProvider } from "../../map/MapContext";
-import { PanTo, PanToProps } from "../PanTo";
+import { createMockMapComponent } from "../../__tests__/testUtils";
+import { PanTo } from "../PanTo";
 
 describe("PanTo", () => {
-  const map = new google.maps.Map(null);
-
-  function MockPanTo(props: PanToProps) {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <PanTo {...props} />
-      </MapContextProvider>
-    );
-  }
+  const { map, Mock } = createMockMapComponent(PanTo);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -22,7 +14,7 @@ describe("PanTo", () => {
   it("should pan on mount", () => {
     const position: google.maps.LatLngLiteral = { lat: 1, lng: 2 };
 
-    mount(<MockPanTo position={position} />);
+    mount(<Mock position={position} />);
 
     expect(map.panTo).toBeCalledTimes(1);
     expect(map.panTo).lastCalledWith(position);
@@ -32,7 +24,7 @@ describe("PanTo", () => {
     const initialPosition: google.maps.LatLngLiteral = { lat: 1, lng: 2 };
     const updatedPosition: google.maps.LatLngLiteral = { lat: 3, lng: 4 };
 
-    const wrapper = mount(<MockPanTo position={initialPosition} />);
+    const wrapper = mount(<Mock position={initialPosition} />);
 
     expect(map.panTo).toBeCalledTimes(1);
 

@@ -1,0 +1,52 @@
+---
+menu: Transitions
+name: Pan To Path
+route: /transitions/pan-to-path
+---
+
+import { Playground, PropsTable } from 'docz'
+import { PanToPath } from '../PanToPath'
+import { Marker } from '../../marker/Marker'
+import { TransitionExample } from './TransitionExample'
+
+# Pan To Path
+
+Sets the `viewport` to contain the given `bounds` created from `path`.
+
+**Google Maps Docs:**
+
+- [google.maps.Map](https://developers.google.com/maps/documentation/javascript/reference#Map)
+- [google.maps.LatLngBounds](https://developers.google.com/maps/documentation/javascript/3.exp/reference#LatLngBounds)
+
+<Playground>
+  <TransitionExample
+    zoom={8}
+    center={{ lat: 36, lng: -122 }}
+    initialState={{ path: [] }}
+    onAnimateClick={({ setState }) => {
+      const offset = (Math.random() - 0.5) * 10
+
+      setState({
+        path: [
+          { lat: 36 + offset, lng: -121 + offset },
+          { lat: 36 + offset, lng: -123 + offset },
+          { lat: 35 + offset, lng: -121 + offset },
+          { lat: 35 + offset, lng: -123 + offset },
+        ],
+      })
+    }}
+    render={({ state: { path } }) => (
+      <>
+        {path.length > 0 && <PanToPath path={path} />}
+
+        <Marker label="C" position={{ lat: 36, lng: -122 }} />
+
+        {path.map((x, idx) => (
+          <Marker key={idx} position={x} label={String(idx + 1)} />
+        ))}
+      </>
+    )}
+  />
+</Playground>
+
+<PropsTable of={PanToPath} />

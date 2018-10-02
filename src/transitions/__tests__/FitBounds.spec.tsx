@@ -1,19 +1,11 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { MapContextProvider } from "../../map/MapContext";
-import { FitBounds, FitBoundsProps } from "../FitBounds";
+import { createMockMapComponent } from "../../__tests__/testUtils";
+import { FitBounds } from "../FitBounds";
 
 describe("FitBounds", () => {
-  const map = new google.maps.Map(null);
-
-  function MockFitBounds(props: FitBoundsProps) {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <FitBounds {...props} />
-      </MapContextProvider>
-    );
-  }
+  const { map, Mock } = createMockMapComponent(FitBounds);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -27,7 +19,7 @@ describe("FitBounds", () => {
       west: 4,
     };
 
-    mount(<MockFitBounds bounds={bounds} />);
+    mount(<Mock bounds={bounds} />);
 
     expect(map.fitBounds).toBeCalledTimes(1);
     expect(map.fitBounds).lastCalledWith(bounds);
@@ -47,7 +39,7 @@ describe("FitBounds", () => {
       west: 8,
     };
 
-    const wrapper = mount(<MockFitBounds bounds={initialBounds} />);
+    const wrapper = mount(<Mock bounds={initialBounds} />);
 
     expect(map.fitBounds).toBeCalledTimes(1);
 

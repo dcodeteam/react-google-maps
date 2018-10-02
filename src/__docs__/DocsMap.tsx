@@ -1,8 +1,11 @@
 import * as React from "react";
 
+import { Omit } from "../internal/DataUtils";
 import { GoogleMapProps, GoogleMapsLoader, Map } from "..";
 
-export function DocsMap(props: GoogleMapProps) {
+type DocsMapProps = Omit<GoogleMapProps, "maps">;
+
+export function DocsMap(props: DocsMapProps) {
   return (
     <GoogleMapsLoader
       apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"

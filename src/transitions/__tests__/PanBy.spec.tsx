@@ -1,27 +1,19 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
+import { createMockMapComponent } from "../../__tests__/testUtils";
 import { PointLiteral } from "../../internal/MapsUtils";
-import { MapContextProvider } from "../../map/MapContext";
-import { PanBy, PanByProps } from "../PanBy";
+import { PanBy } from "../PanBy";
 
 describe("PanBy", () => {
-  const map = new google.maps.Map(null);
-
-  function MockPanBy(props: PanByProps) {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <PanBy {...props} />
-      </MapContextProvider>
-    );
-  }
+  const { map, Mock } = createMockMapComponent(PanBy);
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should pan on mount", () => {
-    mount(<MockPanBy offset={{ x: 1, y: 2 }} />);
+    mount(<Mock offset={{ x: 1, y: 2 }} />);
 
     expect(map.panBy).toBeCalledTimes(1);
     expect(map.panBy).lastCalledWith(1, 2);
@@ -31,7 +23,7 @@ describe("PanBy", () => {
     const initialOffset: PointLiteral = { x: 1, y: 2 };
     const updatedOffset: PointLiteral = { x: 3, y: 4 };
 
-    const wrapper = mount(<MockPanBy offset={initialOffset} />);
+    const wrapper = mount(<Mock offset={initialOffset} />);
 
     expect(map.panBy).toBeCalledTimes(1);
 

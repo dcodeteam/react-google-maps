@@ -46,3 +46,10 @@ export function createLatLngBounds(
     createLatLng(maps, { lat: bounds.north, lng: bounds.east }),
   );
 }
+
+export function pathToLatLngBounds(
+  maps: typeof google.maps,
+  path: google.maps.LatLngLiteral[],
+) {
+  return path.reduce((acc, x) => acc.extend(x), new maps.LatLngBounds());
+}

@@ -1,12 +1,13 @@
 ---
 menu: Transitions
 name: Pan To Bounds
+route: /transitions/pan-to-bounds
 ---
 
 import { Playground, PropsTable } from 'docz'
 import { PanToBounds } from '../PanToBounds'
 import { Marker } from '../../marker/Marker'
-import { DocsMap } from '../../__docs__/DocsMap'
+import { TransitionExample } from './TransitionExample'
 
 # Pan To Bounds
 
@@ -25,12 +26,36 @@ If the change in the map's position is less than both the width and height of th
 - [google.maps.LatLngBounds](https://developers.google.com/maps/documentation/javascript/3.exp/reference#LatLngBounds)
 
 <Playground>
-  <DocsMap
+  <TransitionExample
     zoom={8}
-    center={{ lat: 36.964, lng: -122.015 }}
-  >
-    <PanToBounds bounds={{south: 33, west: -124, north: 36, east: -120}} />
-  </DocsMap>
+    center={{ lat: 36, lng: -122 }}
+    initialState={{ bounds: null, markers: [] }}
+    onAnimateClick={({ setState }) => {
+      const offset = Math.random();
+
+      setState({
+        markers: [
+          { lat: 35, lng: -122 },
+          { lat: 35 - offset, lng: -122 - offset },
+          { lat: 35 - offset, lng: -122 + offset },
+        ],
+        bounds: { south: 35 - offset, west: -122 - offset, north: 35 + offset, east: -122 + offset },
+      })
+    }}
+    render={({ state }) => (
+      <>
+        {state.bounds != null && (
+          <PanToBounds bounds={state.bounds} />
+        )}
+
+        {state.markers.map((x, idx) => (
+          <Marker key={idx} label={String(idx + 1)} position={x} />
+        ))}
+
+        <Marker label="C" position={{ lat: 36, lng: -122 }} />
+      </>
+    )}
+  />
 </Playground>
 
 <PropsTable of={PanToBounds} />

@@ -1,19 +1,11 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { MapContextProvider } from "../../map/MapContext";
-import { PanToBounds, PanToBoundsProps } from "../PanToBounds";
+import { createMockMapComponent } from "../../__tests__/testUtils";
+import { PanToBounds } from "../PanToBounds";
 
 describe("PanToBounds", () => {
-  const map = new google.maps.Map(null);
-
-  function MockPanToBounds(props: PanToBoundsProps) {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <PanToBounds {...props} />
-      </MapContextProvider>
-    );
-  }
+  const { map, Mock } = createMockMapComponent(PanToBounds);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -27,7 +19,7 @@ describe("PanToBounds", () => {
       west: 2,
     };
 
-    mount(<MockPanToBounds bounds={bounds} />);
+    mount(<Mock bounds={bounds} />);
 
     expect(map.panToBounds).toBeCalledTimes(1);
     expect(map.panToBounds).lastCalledWith(bounds);
@@ -47,7 +39,7 @@ describe("PanToBounds", () => {
       west: 4,
     };
 
-    const wrapper = mount(<MockPanToBounds bounds={initialBounds} />);
+    const wrapper = mount(<Mock bounds={initialBounds} />);
 
     expect(map.panToBounds).toBeCalledTimes(1);
 

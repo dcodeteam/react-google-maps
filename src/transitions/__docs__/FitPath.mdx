@@ -1,18 +1,17 @@
 ---
 menu: Transitions
-name: Fit Bounds
-route: /transitions/fit-bounds
+name: Fit Path
+route: /transitions/fit-path
 ---
 
 import { Playground, PropsTable } from 'docz'
-import { FitBounds } from '../FitBounds'
+import { FitPath } from '../FitPath'
 import { Marker } from '../../marker/Marker'
 import { TransitionExample } from './TransitionExample'
 
+# Fit Path
 
-# Fit Bounds
-
-Sets the `viewport` to contain the given `bounds`.
+Sets the `viewport` to contain the given `bounds` created from `path`.
 
 **Google Maps Docs:**
 
@@ -23,33 +22,30 @@ Sets the `viewport` to contain the given `bounds`.
   <TransitionExample
     zoom={8}
     center={{ lat: 36, lng: -122 }}
-    initialState={{ bounds: null, markers: [] }}
+    initialState={{ path: [] }}
     onAnimateClick={({ setState }) => {
       const offset = Math.random() * 10;
 
       setState({
-        markers: [
+        path: [
           { lat: 36 + offset, lng: -122 },
           { lat: 36 - offset, lng: -122 - offset },
           { lat: 36 - offset, lng: -122 + offset },
         ],
-        bounds: { south: 36 - offset, west: -122 - offset, north: 36 + offset, east: -122 + offset },
       })
     }}
-    render={({ state }) => (
+    render={({ state: { path } }) => (
       <>
-        {state.bounds != null && (
-          <FitBounds bounds={state.bounds} />
-        )}
-
-        {state.markers.map((x, idx) => (
-          <Marker key={idx} label={String(idx + 1)} position={x} />
-        ))}
+        {path.length > 0 && <FitPath path={path} />}
 
         <Marker label="C" position={{ lat: 36, lng: -122 }} />
+
+        {path.map((x, idx) => (
+          <Marker key={idx} position={x} label={String(idx + 1)} />
+        ))}
       </>
     )}
   />
 </Playground>
 
-<PropsTable of={FitBounds} />
+<PropsTable of={FitPath} />
