@@ -10,8 +10,8 @@ export * from "./data-layer/DataPolygon";
 
 export * from "./drawing-control/DrawingControl";
 
-export * from "./google-map/GoogleMap";
-export * from "./google-map/GoogleMapContext";
+export * from "./map/Map";
+export * from "./map/MapContext";
 
 export * from "./google-maps-loader/GoogleMapsLoader";
 

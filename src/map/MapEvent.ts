@@ -1,4 +1,4 @@
-export enum GoogleMapEvent {
+export enum MapEvent {
   onClick = "click",
   onDoubleClick = "dblclick",
   onRightClick = "rightclick",

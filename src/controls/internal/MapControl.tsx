@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import { GoogleMapContext } from "../../google-map/GoogleMapContext";
 import { isDeepEqual } from "../../internal/DataUtils";
 import { MapComponent } from "../../map-component/MapComponent";
+import { MapContext } from "../../map/MapContext";
 
 export type MapControlPosition =
   | "BOTTOM_CENTER"
@@ -45,7 +45,7 @@ function createMapOptions(visible: boolean, control: ControlVariant) {
 export function MapControl({ createControl }: MapControlProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) => createControl(maps)}
+      createOptions={({ maps }: MapContext) => createControl(maps)}
       didMount={({ map, options }) => {
         map.setOptions(createMapOptions(true, options));
       }}

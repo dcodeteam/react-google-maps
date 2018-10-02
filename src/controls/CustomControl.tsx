@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { MapComponent } from "../map-component/MapComponent";
+import { MapContext } from "../map/MapContext";
 import { MapControlPosition } from "./internal/MapControl";
 
 export interface CustomControlProps {
@@ -50,7 +50,7 @@ interface State {
 export function CustomControl(props: CustomControlProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext): Options => ({
+      createOptions={({ maps }: MapContext): Options => ({
         children: props.children,
         position: maps.ControlPosition[props.position],
       })}

@@ -1,8 +1,8 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
 import { PointLiteral } from "../../internal/MapsUtils";
+import { GoogleMapContextProvider } from "../../map/MapContext";
 import { PanBy, PanByProps } from "../PanBy";
 
 describe("PanBy", () => {

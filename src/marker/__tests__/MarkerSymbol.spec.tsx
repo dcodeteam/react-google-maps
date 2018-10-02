@@ -1,7 +1,7 @@
 import { mount } from "enzyme";
 import * as React from "react";
 
-import { GoogleMapContextProvider } from "../../google-map/GoogleMapContext";
+import { GoogleMapContextProvider } from "../../map/MapContext";
 import { MarkerContextProvider } from "../MarkerContext";
 import { MarkerSymbol, MarkerSymbolProps } from "../MarkerSymbol";
 

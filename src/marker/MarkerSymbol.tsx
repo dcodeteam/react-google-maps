@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
 import { PointLiteral, createPoint } from "../internal/MapsUtils";
 import { MapComponent } from "../map-component/MapComponent";
+import { MapContext } from "../map/MapContext";
 import { MarkerContextConsumer } from "./MarkerContext";
 
 export interface MarkerSymbolProps {
@@ -95,9 +95,7 @@ export function MarkerSymbol(props: MarkerSymbolProps) {
     <MarkerContextConsumer>
       {({ marker }) => (
         <MapComponent
-          createOptions={({ maps }: GoogleMapContext) =>
-            createSymbol(maps, props)
-          }
+          createOptions={({ maps }: MapContext) => createSymbol(maps, props)}
           didMount={({ options }) => {
             marker.setIcon(options);
           }}

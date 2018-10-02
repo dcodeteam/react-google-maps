@@ -7,16 +7,16 @@ import {
   forEachEvent,
   getClassMockInstance,
 } from "../../__tests__/testUtils";
-import { GoogleMap, GoogleMapProps } from "../GoogleMap";
-import { GoogleMapContextConsumer } from "../GoogleMapContext";
-import { GoogleMapEvent } from "../GoogleMapEvent";
+import { GoogleMapProps, Map } from "../Map";
+import { GoogleMapContextConsumer } from "../MapContext";
+import { MapEvent } from "../MapEvent";
 
 export function getMockInstance(): google.maps.Map {
   return getClassMockInstance(google.maps.Map);
 }
 
-describe("GoogleMap", () => {
-  const instanceEvents = Object.keys(GoogleMapEvent).length;
+describe("Map", () => {
+  const instanceEvents = Object.keys(MapEvent).length;
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -24,7 +24,7 @@ describe("GoogleMap", () => {
 
   it("should attach map to child div", () => {
     const wrapper = shallow(
-      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
+      <Map maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 
     const mapDiv = wrapper.find("div");
@@ -33,9 +33,7 @@ describe("GoogleMap", () => {
   });
 
   it("should pass default options to map", () => {
-    shallow(
-      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
-    );
+    shallow(<Map maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />);
 
     const map = getMockInstance();
 
@@ -53,7 +51,7 @@ describe("GoogleMap", () => {
 
   it("should pass custom options to map", () => {
     shallow(
-      <GoogleMap
+      <Map
         maps={google.maps}
         zoom={0}
         center={{ lat: 0, lng: 1 }}
@@ -78,9 +76,7 @@ describe("GoogleMap", () => {
   });
 
   it("should add all event listeners", () => {
-    mount(
-      <GoogleMap zoom={0} maps={google.maps} center={{ lat: 0, lng: 1 }} />,
-    );
+    mount(<Map zoom={0} maps={google.maps} center={{ lat: 0, lng: 1 }} />);
 
     const map = getMockInstance();
 
@@ -88,11 +84,11 @@ describe("GoogleMap", () => {
   });
 
   it("should add listeners with handlers", () => {
-    const handlers = createMockHandlers<GoogleMapProps>(GoogleMapEvent);
+    const handlers = createMockHandlers<GoogleMapProps>(MapEvent);
     const zoom = 10;
 
     mount(
-      <GoogleMap
+      <Map
         {...handlers}
         zoom={zoom}
         maps={google.maps}
@@ -102,7 +98,7 @@ describe("GoogleMap", () => {
 
     const map = getMockInstance();
 
-    forEachEvent<GoogleMapProps>(GoogleMapEvent, (key, event) => {
+    forEachEvent<GoogleMapProps>(MapEvent, (key, event) => {
       const handler = handlers[key];
       const payload = { key, event };
 
@@ -112,9 +108,9 @@ describe("GoogleMap", () => {
 
       expect(handler).toBeCalledTimes(1);
 
-      if (event === GoogleMapEvent.onZoomChanged) {
+      if (event === MapEvent.onZoomChanged) {
         expect(handler).lastCalledWith({ zoom });
-      } else if (event === GoogleMapEvent.onBoundsChanged) {
+      } else if (event === MapEvent.onBoundsChanged) {
         expect(handler).lastCalledWith({ bounds: map.getBounds()!.toJSON() });
       } else {
         expect(handler).lastCalledWith(payload);
@@ -124,7 +120,7 @@ describe("GoogleMap", () => {
 
   it("pass only changed options to map", () => {
     const wrapper = shallow(
-      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
+      <Map maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 
     const map = getMockInstance();
@@ -149,7 +145,7 @@ describe("GoogleMap", () => {
 
   it("should remove all listeners on unmount", () => {
     const wrapper = mount(
-      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
+      <Map maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }} />,
     );
 
     const map = getMockInstance();
@@ -179,9 +175,9 @@ describe("GoogleMap", () => {
     const consumer = jest.fn();
 
     mount(
-      <GoogleMap maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }}>
+      <Map maps={google.maps} zoom={0} center={{ lat: 0, lng: 1 }}>
         <GoogleMapContextConsumer>{consumer}</GoogleMapContextConsumer>
-      </GoogleMap>,
+      </Map>,
     );
 
     const map = getMockInstance();

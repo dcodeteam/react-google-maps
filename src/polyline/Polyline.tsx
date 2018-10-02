@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { createLatLng, createMVCArray } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponent } from "../map-component/MapComponent";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
+import { MapContext } from "../map/MapContext";
 import { PolylineEvent } from "./PolylineEvent";
 
 export interface PolylineProps {
@@ -187,10 +187,10 @@ interface State {
 export function Polyline(props: PolylineProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) =>
+      createOptions={({ maps }: MapContext) =>
         createPolylineOptions(maps, props)
       }
-      createInitialState={({ maps }: GoogleMapContext): State => ({
+      createInitialState={({ maps }: MapContext): State => ({
         polyline: new maps.Polyline(),
       })}
       didMount={({ map, options, state: { polyline } }) => {

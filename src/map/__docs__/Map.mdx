@@ -1,12 +1,12 @@
 ---
 order: 10
 menu: Basic
-name: Google Map
+name: Map
 route: /
 ---
 
 import { Playground, PropsTable } from 'docz'
-import { GoogleMap } from '../GoogleMap'
+import { Map } from '../Map'
 import { GoogleMapsLoader } from '../../google-maps-loader/GoogleMapsLoader'
 
 # Map
@@ -22,7 +22,7 @@ Draws `google.maps.Map`.
  <GoogleMapsLoader
    apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
    render={maps => (
-     <GoogleMap
+     <Map
        zoom={9}
        maps={maps}
        mapTypeId="ROADMAP"
@@ -43,4 +43,4 @@ Draws `google.maps.Map`.
  />
 </Playground>
 
-<PropsTable of={GoogleMap} />
+<PropsTable of={Map} />

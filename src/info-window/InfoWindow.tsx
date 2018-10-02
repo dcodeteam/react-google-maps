@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { SizeLiteral, createLatLng, createSize } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponent } from "../map-component/MapComponent";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
+import { MapContext } from "../map/MapContext";
 import { InfoWindowEvent } from "./InfoWindowEvent";
 
 export interface InfoWindowProps {
@@ -103,10 +103,10 @@ function createInfoWindowHandlers({ onCloseClick }: InfoWindowProps) {
 export function InfoWindow(props: InfoWindowProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) =>
+      createOptions={({ maps }: MapContext) =>
         createInfoWindowOptions(maps, props)
       }
-      createInitialState={({ maps }: GoogleMapContext): State => ({
+      createInitialState={({ maps }: MapContext): State => ({
         infoWindow: new maps.InfoWindow(),
         div: document.createElement("div"),
       })}

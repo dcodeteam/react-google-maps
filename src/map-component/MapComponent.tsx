@@ -1,20 +1,17 @@
 import * as React from "react";
 
-import {
-  GoogleMapContext,
-  GoogleMapContextConsumer,
-} from "../google-map/GoogleMapContext";
+import { GoogleMapContextConsumer, MapContext } from "../map/MapContext";
 
 interface State<O, S> {
   state: S;
   options: O;
 }
 
-export type MapComponentArgs<O, S> = GoogleMapContext & State<O, S>;
+export type MapComponentArgs<O, S> = MapContext & State<O, S>;
 
 export interface MapComponentProps<O, S> {
-  createOptions: (ctx: GoogleMapContext) => O;
-  createInitialState?: (ctx: GoogleMapContext) => S;
+  createOptions: (ctx: MapContext) => O;
+  createInitialState?: (ctx: MapContext) => S;
 
   didMount?: (args: MapComponentArgs<O, S>) => void;
   didUpdate?: (
@@ -28,7 +25,7 @@ export interface MapComponentProps<O, S> {
 }
 
 interface Props<O, S> extends MapComponentProps<O, S> {
-  ctx: GoogleMapContext;
+  ctx: MapContext;
 }
 
 function createState<O, S>({

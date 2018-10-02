@@ -3,8 +3,8 @@ import * as React from "react";
 import { createLatLng } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
-import { GoogleMapContext, GoogleMapContextProvider } from "./GoogleMapContext";
-import { GoogleMapEvent } from "./GoogleMapEvent";
+import { GoogleMapContextProvider, MapContext } from "./MapContext";
+import { MapEvent } from "./MapEvent";
 
 export interface GoogleMapProps {
   /**
@@ -173,7 +173,7 @@ export interface GoogleMapProps {
 }
 
 interface State {
-  ctx?: GoogleMapContext;
+  ctx?: MapContext;
 }
 
 function createGoogleMapOptions({
@@ -219,26 +219,26 @@ function createGoogleMapHandlers({
   onProjectionChanged,
 }: GoogleMapProps) {
   return {
-    [GoogleMapEvent.onClick]: onClick,
-    [GoogleMapEvent.onDoubleClick]: onDoubleClick,
-    [GoogleMapEvent.onRightClick]: onRightClick,
-    [GoogleMapEvent.onMouseOut]: onMouseOut,
-    [GoogleMapEvent.onMouseOver]: onMouseOver,
-    [GoogleMapEvent.onMouseMove]: onMouseMove,
-    [GoogleMapEvent.onDrag]: onDrag,
-    [GoogleMapEvent.onDragStart]: onDragStart,
-    [GoogleMapEvent.onDragEnd]: onDragEnd,
-    [GoogleMapEvent.onIdle]: onIdle,
-    [GoogleMapEvent.onTilesLoaded]: onTilesLoaded,
-    [GoogleMapEvent.onTiltChanged]: onTiltChanged,
-    [GoogleMapEvent.onCenterChanged]: onCenterChanged,
-    [GoogleMapEvent.onHeadingChanged]: onHeadingChanged,
-    [GoogleMapEvent.onMapTypeIdChanged]: onMapTypeIdChanged,
-    [GoogleMapEvent.onProjectionChanged]: onProjectionChanged,
+    [MapEvent.onClick]: onClick,
+    [MapEvent.onDoubleClick]: onDoubleClick,
+    [MapEvent.onRightClick]: onRightClick,
+    [MapEvent.onMouseOut]: onMouseOut,
+    [MapEvent.onMouseOver]: onMouseOver,
+    [MapEvent.onMouseMove]: onMouseMove,
+    [MapEvent.onDrag]: onDrag,
+    [MapEvent.onDragStart]: onDragStart,
+    [MapEvent.onDragEnd]: onDragEnd,
+    [MapEvent.onIdle]: onIdle,
+    [MapEvent.onTilesLoaded]: onTilesLoaded,
+    [MapEvent.onTiltChanged]: onTiltChanged,
+    [MapEvent.onCenterChanged]: onCenterChanged,
+    [MapEvent.onHeadingChanged]: onHeadingChanged,
+    [MapEvent.onMapTypeIdChanged]: onMapTypeIdChanged,
+    [MapEvent.onProjectionChanged]: onProjectionChanged,
   };
 }
 
-export class GoogleMap extends React.Component<GoogleMapProps, State> {
+export class Map extends React.Component<GoogleMapProps, State> {
   public state: State = {};
 
   private mapRef = React.createRef<HTMLDivElement>();
@@ -268,8 +268,8 @@ export class GoogleMap extends React.Component<GoogleMapProps, State> {
     const map = new maps.Map(this.mapRef.current);
 
     map.setOptions(createGoogleMapOptions(this.props));
-    map.addListener(GoogleMapEvent.onZoomChanged, this.handleZoomChanged);
-    map.addListener(GoogleMapEvent.onBoundsChanged, this.handleBoundsChanged);
+    map.addListener(MapEvent.onZoomChanged, this.handleZoomChanged);
+    map.addListener(MapEvent.onBoundsChanged, this.handleBoundsChanged);
 
     this.setState({ ctx: { map, maps } });
   }

@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
 import { MapComponent } from "../map-component/MapComponent";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
+import { MapContext } from "../map/MapContext";
 import { DataLayerEvent } from "./DataLayerEvent";
 
 interface DataPolygonHandlerEvent {
@@ -185,10 +185,10 @@ interface State {
 export function DataPolygon(props: DataPolygonProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) =>
+      createOptions={({ maps }: MapContext) =>
         createDataPolygonOptions(maps, props)
       }
-      createInitialState={({ maps }: GoogleMapContext): State => ({
+      createInitialState={({ maps }: MapContext): State => ({
         polygon: new maps.Data.Feature(),
       })}
       didMount={({ map, state: { polygon }, options: { style, geometry } }) => {

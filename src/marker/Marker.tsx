@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { createLatLng } from "../internal/MapsUtils";
 import { pickChangedProps } from "../internal/PropsUtils";
 import { MapComponent } from "../map-component/MapComponent";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
+import { MapContext } from "../map/MapContext";
 import { MarkerContext, MarkerContextProvider } from "./MarkerContext";
 import { MarkerEvent } from "./MarkerEvent";
 
@@ -213,10 +213,10 @@ export function Marker(props: MarkerProps) {
 
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext): google.maps.MarkerOptions =>
+      createOptions={({ maps }: MapContext): google.maps.MarkerOptions =>
         createMarkerOptions(maps, props)
       }
-      createInitialState={({ maps }: GoogleMapContext): State => {
+      createInitialState={({ maps }: MapContext): State => {
         const marker = new maps.Marker();
 
         return { marker, ctx: { marker } };

@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
 import { createLatLngBounds } from "../internal/MapsUtils";
 import { MapComponent } from "../map-component/MapComponent";
+import { MapContext } from "../map/MapContext";
 
 export interface PanToBoundsProps {
   /**
@@ -15,9 +15,7 @@ export interface PanToBoundsProps {
 export function PanToBounds({ bounds }: PanToBoundsProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) =>
-        createLatLngBounds(maps, bounds)
-      }
+      createOptions={({ maps }: MapContext) => createLatLngBounds(maps, bounds)}
       didMount={({ map, options }) => {
         map.panToBounds(options);
       }}

@@ -1,10 +1,10 @@
 import * as React from "react";
 
 import { MapControlPosition } from "../controls/internal/MapControl";
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { isDeepEqual } from "../internal/DataUtils";
 import { MapComponent } from "../map-component/MapComponent";
 import { MapComponentHandlers } from "../map-component/MapComponentHandlers";
+import { MapContext } from "../map/MapContext";
 import { DrawingControlEvent } from "./DrawingControlEvent";
 
 export interface DrawingControlProps {
@@ -97,10 +97,10 @@ function createDrawingControlHandlers({
 export function DrawingControl(props: DrawingControlProps) {
   return (
     <MapComponent
-      createOptions={({ maps }: GoogleMapContext) =>
+      createOptions={({ maps }: MapContext) =>
         createDrawingControlOptions(maps, props)
       }
-      createInitialState={({ maps }: GoogleMapContext): State => ({
+      createInitialState={({ maps }: MapContext): State => ({
         manager: new maps.drawing.DrawingManager(),
       })}
       didMount={({ map, options, state: { manager } }) => {

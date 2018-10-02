@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import { GoogleMapContext } from "../google-map/GoogleMapContext";
 import { isShallowEqual } from "../internal/DataUtils";
 import {
   PointLiteral,
@@ -9,6 +8,7 @@ import {
   createSize,
 } from "../internal/MapsUtils";
 import { MapComponent } from "../map-component/MapComponent";
+import { MapContext } from "../map/MapContext";
 import { MarkerContextConsumer } from "./MarkerContext";
 
 export interface MarkerIconProps {
@@ -84,9 +84,7 @@ export function MarkerIcon(props: MarkerIconProps) {
     <MarkerContextConsumer>
       {({ marker }) => (
         <MapComponent
-          createOptions={({ maps }: GoogleMapContext) =>
-            createIcon(maps, props)
-          }
+          createOptions={({ maps }: MapContext) => createIcon(maps, props)}
           didMount={({ options }) => {
             marker.setIcon(options);
           }}
