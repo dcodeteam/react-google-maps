@@ -6,8 +6,8 @@ notifications:
   email: false
 
 node_js:
-  - 10
-  - 8
+  - "8"
+  - "10"
 
 install:
   - yarn
@@ -18,23 +18,29 @@ before_script:
 script:
   - yarn build
 
-after_success:
-  - if [[ $TRAVIS_NODE_VERSION == "8" ]]; then yarn codecov; fi
-
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
 
 deploy:
+  - provider: script
+    skip_cleanup: true
+    script: yarn codecov
+    on:
+      tags: true
+      node_js: "8"
+      branch: master
+      repo: dcodeteam/react-google-maps
+
   - provider: npm
     skip_cleanup: true
     email: uma.karimov@gmail.com
     api_key: $NPM_TOKEN
     on:
       tags: true
+      node_js: "8"
       branch: master
       repo: dcodeteam/react-google-maps
-      condition: "$TRAVIS_NODE_VERSION = 8"
 
   - provider: pages
     local-dir: ./docs
@@ -42,6 +48,6 @@ deploy:
     github-token: $GITHUB_TOKEN
     on:
       tags: true
+      node_js: "8"
       branch: master
       repo: dcodeteam/react-google-maps
-      condition: "$TRAVIS_NODE_VERSION = 8"
