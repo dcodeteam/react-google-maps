@@ -3,10 +3,10 @@
 /.docz
 
 # Distributive
-/es
-/cjs
-/es2015
-/typings
+/typings/**
+/react-google-maps.es.js
+/react-google-maps.cjs.js
+/react-google-maps.es2015.js
 
 # Logs
 logs
