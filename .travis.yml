@@ -27,7 +27,7 @@ deploy:
     skip_cleanup: true
     script: yarn codecov
     on:
-      tags: true
+      tags: false
       node_js: "8"
       branch: master
       repo: dcodeteam/react-google-maps
