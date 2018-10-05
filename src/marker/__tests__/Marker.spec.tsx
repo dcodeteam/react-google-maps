@@ -41,21 +41,7 @@ describe("Marker", () => {
     const marker = getMockInstance();
 
     expect(marker.setOptions).toBeCalledTimes(1);
-    expect(marker.setOptions).lastCalledWith({
-      animation: undefined,
-      clickable: undefined,
-      cursor: undefined,
-      draggable: undefined,
-      icon: undefined,
-      label: undefined,
-      opacity: undefined,
-      optimized: undefined,
-      position: { lat: 0, lng: 1 },
-      shape: undefined,
-      title: undefined,
-      visible: undefined,
-      zIndex: undefined,
-    });
+    expect(marker.setOptions).lastCalledWith({ position: { lat: 0, lng: 1 } });
   });
 
   it("should set custom options on mount", () => {

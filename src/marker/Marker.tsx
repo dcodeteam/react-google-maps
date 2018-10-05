@@ -157,7 +157,7 @@ function createMarkerOptions(
     animation,
   }: MarkerProps,
 ): google.maps.MarkerOptions {
-  return {
+  const options: google.maps.MarkerOptions = {
     title,
     visible,
     clickable,
@@ -170,9 +170,14 @@ function createMarkerOptions(
     zIndex,
 
     position: createLatLng(maps, position),
-    icon: typeof icon === "string" ? icon : undefined,
     animation: animation && maps.Animation[animation],
   };
+
+  if (typeof icon === "string") {
+    options.icon = icon;
+  }
+
+  return options;
 }
 
 function createMarkerHandlers({
