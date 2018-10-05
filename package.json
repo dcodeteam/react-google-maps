@@ -6,13 +6,19 @@
   "description": "Google Maps integration with React",
   "repository": "https://github.com/dcodeteam/react-google-maps.git",
   "author": "Umidbek Karimov <uma.karimov@gmail.com>",
+  "engines": {
+    "node": ">=8.3.0"
+  },
   "typings": "typings/index.d.ts",
   "main": "./react-google-maps.cjs.js",
   "module": "./react-google-maps.es.js",
   "es2015": "./react-google-maps.es2015.js",
-  "engines": {
-    "node": ">=8.3.0"
-  },
+  "files": [
+    "typings/**",
+    "react-google-maps.es.js",
+    "react-google-maps.cjs.js",
+    "react-google-maps.es2015.js"
+  ],
   "scripts": {
     "ci": "yarn lint && yarn dts && yarn cover --ci --runInBand",
     "all": "yarn lint --fix && yarn dts && yarn cover -u",
