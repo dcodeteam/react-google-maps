@@ -1,7 +1,5 @@
 {
-  // Use base config.
   "extends": "./tsconfig.json",
-  // Exclude tests source directory.
   "exclude": [
     "**/__docs__/**/*.ts",
     "**/__docs__/**/*.tsx",
@@ -9,10 +7,8 @@
     "**/__tests__/**/*.tsx"
   ],
   "compilerOptions": {
-    // Support es5 for browsers.
-    "target": "es5",
-    // Create d.ts declarations.
     "declaration": true,
-    "declarationDir": "typings"
+    "declarationDir": "typings",
+    "emitDeclarationOnly": true
   }
 }

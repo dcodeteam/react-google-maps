@@ -1,22 +1,18 @@
 "use strict";
 
 module.exports = {
-  preset: "ts-jest",
   testEnvironment: "jsdom",
   setupFiles: ["<rootDir>/config/jest/setupTests.js"],
   snapshotSerializers: ["enzyme-to-json/serializer"],
-  testMatch: ["**/__tests__/**/*.spec.ts?(x)"],
+  testMatch: ["**/*.spec.ts?(x)"],
+  moduleFileExtensions: ["ts", "tsx", "js"],
+  transform: { "^.+\\.(ts|tsx)$": "babel-jest" },
   collectCoverageFrom: [
     "src/**/*.ts?(x)",
     "!src/**/__docs__/**/*",
     "!src/**/__tests__/**/*",
   ],
   coverageThreshold: {
-    global: {
-      statements: 95,
-      branches: 95,
-      functions: 95,
-      lines: 95,
-    },
+    global: { statements: 95, branches: 95, functions: 95, lines: 95 },
   },
 };

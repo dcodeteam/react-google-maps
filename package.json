@@ -10,9 +10,9 @@
     "node": ">=8.3.0"
   },
   "typings": "typings/index.d.ts",
-  "main": "./react-google-maps.cjs.js",
-  "module": "./react-google-maps.es.js",
-  "es2015": "./react-google-maps.es2015.js",
+  "main": "react-google-maps.cjs.js",
+  "module": "react-google-maps.es.js",
+  "es2015": "react-google-maps.es2015.js",
   "files": [
     "typings/**",
     "react-google-maps.es.js",
@@ -28,11 +28,10 @@
     "cover": "jest --coverage",
     "codecov": "codecov -f ./coverage/lcov.info",
     "start": "docz dev",
-    "build": "yarn build:es && yarn build:es2015 && yarn build:cjs && yarn build:docs",
+    "build": "yarn build:bundle && yarn build:typings && yarn build:docs",
     "build:docs": "docz build",
-    "build:es": "rollup -c ./config/rollup/rollup.es.js",
-    "build:cjs": "rollup -c ./config/rollup/rollup.cjs.js",
-    "build:es2015": "rollup -c ./config/rollup/rollup.es2015.js"
+    "build:bundle": "rollup -c ./config/rollup.config.js",
+    "build:typings": "rimraf typings && tsc --project tsconfig.typings.json"
   },
   "dependencies": {
     "tslib": "^1.9.0"
@@ -42,6 +41,10 @@
     "react-dom": "^16.5.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.1.0",
     "@dc0de/eslint-config": "^0.4.2",
     "@dc0de/eslint-config-base": "^0.4.0",
     "@dc0de/eslint-config-node": "^0.4.2",
@@ -53,6 +56,8 @@
     "@types/jest": "^23.3.3",
     "@types/react": "^16.4.14",
     "@types/react-dom": "^16.0.7",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
     "codecov": "^3.1.0",
     "docz": "^0.12.5",
     "enzyme": "^3.7.0",
@@ -71,11 +76,11 @@
     "prettier": "^1.14.3",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "rimraf": "^2.6.2",
     "rollup": "^0.66.4",
-    "rollup-plugin-cleaner": "^0.2.0",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-prettier": "^0.4.0",
-    "rollup-plugin-typescript2": "^0.17.1",
-    "ts-jest": "^23.10.3",
     "typescript": "^3.0.1",
     "typescript-eslint-parser": "^19.0.2"
   }
