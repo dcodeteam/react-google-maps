@@ -11,6 +11,9 @@
     // Use dom and latest ES typings.
     "lib": ["dom", "es2018"],
 
+    // Use synthetic es modules.
+    "allowSyntheticDefaultImports": true,
+
     // Strict type checks.
     "strict": true,
 

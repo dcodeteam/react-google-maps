@@ -29,7 +29,7 @@
     "start": "docz dev",
     "build": "yarn build:bundle && yarn build:typings && yarn build:docs",
     "build:docs": "docz build",
-    "build:bundle": "rollup -c ./config/rollup.config.js",
+    "build:bundle": "rollup -c rollup.config.js",
     "build:typings": "rimraf typings && tsc --project tsconfig.typings.json"
   },
   "dependencies": {
@@ -51,6 +51,7 @@
     "@dc0de/js-scripts": "^0.3.1",
     "@emotion/core": "^10.0.6",
     "@types/enzyme": "^3.1.14",
+    "@types/enzyme-adapter-react-16": "^1.0.3",
     "@types/enzyme-to-json": "^1.5.2",
     "@types/googlemaps": "^3.30.14",
     "@types/jest": "^23.3.5",

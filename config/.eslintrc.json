@@ -1,9 +1,0 @@
-{
-  "env": {
-    "jest": true
-  },
-  "extends": "@dc0de/eslint-config-node",
-  "rules": {
-    "node/no-unpublished-require": "off"
-  }
-}

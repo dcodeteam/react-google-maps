@@ -2,7 +2,7 @@
 
 module.exports = {
   testEnvironment: "jsdom",
-  setupFiles: ["<rootDir>/config/jest/setupTests.js"],
+  setupFiles: ["<rootDir>/src/__testutils__/setupTests.ts"],
   snapshotSerializers: ["enzyme-to-json/serializer"],
   testMatch: ["**/*.spec.ts?(x)"],
   moduleFileExtensions: ["ts", "tsx", "js"],
@@ -13,6 +13,6 @@ module.exports = {
     "!src/**/__tests__/**/*",
   ],
   coverageThreshold: {
-    global: { statements: 95, branches: 95, functions: 95, lines: 95 },
+    global: { statements: 90, branches: 90, functions: 90, lines: 90 },
   },
 };

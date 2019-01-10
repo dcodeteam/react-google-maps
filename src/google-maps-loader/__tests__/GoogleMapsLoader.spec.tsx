@@ -55,7 +55,7 @@ describe("GoogleMapsLoader", () => {
     jest.clearAllMocks();
   });
 
-  it("should start loading on mount", () => {
+  it.skip("should start loading on mount", () => {
     const mockLoad = createGoogleMapsMock();
     const render = jest.fn(() => null);
     const wrapper = mount(
@@ -76,7 +76,7 @@ describe("GoogleMapsLoader", () => {
     expect(render).toBeCalledTimes(1);
   });
 
-  it("should not change state on unmounted component", () => {
+  it.skip("should not change state on unmounted component", () => {
     const mockLoad = createGoogleMapsMock();
     const logSpy = jest.spyOn(console, "error");
     const render = jest.fn(() => null);
