@@ -20,9 +20,8 @@
     "react-google-maps.es2015.js"
   ],
   "scripts": {
-    "ci": "yarn lint && yarn dts && yarn cover --ci --runInBand",
-    "all": "yarn lint --fix && yarn dts && yarn cover -u",
-    "dts": "tsc --noEmit",
+    "ci": "yarn lint && yarn tsc && yarn cover --ci --runInBand",
+    "ci-fix": "yarn lint --fix && yarn tsc && yarn cover",
     "lint": "js-scripts lint",
     "test": "jest --watch",
     "cover": "jest --coverage",
