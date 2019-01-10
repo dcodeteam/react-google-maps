@@ -4,10 +4,10 @@ name: Pan To
 route: /transitions/pan-to
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { PanTo } from '../PanTo'
-import { Marker } from '../../marker/Marker'
-import { TransitionExample } from './TransitionExample'
+import { Playground, PropsTable } from "docz";
+import { PanTo } from "../PanTo";
+import { Marker } from "../../marker/Marker";
+import { TransitionExample } from "./TransitionExample";
 
 # Pan To
 
@@ -41,7 +41,9 @@ If the change is less than both the width and height of the map, the transition 
         <Marker label="C" position={{ lat: 36, lng: -122 }} />
       </>
     )}
-  />
+
+/>
+
 </Playground>
 
 <PropsTable of={PanTo} />

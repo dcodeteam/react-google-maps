@@ -4,11 +4,10 @@ name: Pan By
 route: /transitions/pan-by
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { PanBy } from '../PanBy'
-import { Marker } from '../../marker/Marker'
-import { TransitionExample } from './TransitionExample'
-
+import { Playground, PropsTable } from "docz";
+import { PanBy } from "../PanBy";
+import { Marker } from "../../marker/Marker";
+import { TransitionExample } from "./TransitionExample";
 
 # Pan By
 
@@ -24,12 +23,12 @@ If the distance is less than both the width and height of the map, the transitio
   <TransitionExample
     zoom={8}
     center={{ lat: 36, lng: -122 }}
-    initialState={{ key: 'initial', offset: { x: 0, y: 0 } }}
+    initialState={{ key: "initial", offset: { x: 0, y: 0 } }}
     onAnimateClick={({ setState }) => {
       setState({
         key: Math.random(), // Generate new key to force animation with same offset.
         offset: { x: 100, y: 100 },
-      })
+      });
     }}
     render={({ state }) => (
       <>

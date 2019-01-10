@@ -4,9 +4,9 @@ name: Map Type Control
 route: /controls/map-type
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { DocsMap } from '../../__docs__/DocsMap'
-import { MapTypeControl } from '../MapTypeControl'
+import { Playground, PropsTable } from "docz";
+import { DocsMap } from "../../__docs__/DocsMap";
+import { MapTypeControl } from "../MapTypeControl";
 
 # Zoom Control
 
@@ -20,14 +20,11 @@ Controls display options of zoom control.
 - [google.maps.MapTypeControlOptions](https://developers.google.com/maps/documentation/javascript/reference#MapTypeControlOptions)
 
 <Playground>
-  <DocsMap
-    zoom={8}
-    center={{ lat: 36, lng: -122 }}
-  >
+  <DocsMap zoom={8} center={{ lat: 36, lng: -122 }}>
     <MapTypeControl
       style="DEFAULT"
       position="TOP_CENTER"
-      mapTypeIds={['HYBRID', 'ROADMAP', 'SATELLITE', 'TERRAIN']}
+      mapTypeIds={["HYBRID", "ROADMAP", "SATELLITE", "TERRAIN"]}
     />
   </DocsMap>
 </Playground>

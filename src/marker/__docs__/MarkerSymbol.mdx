@@ -4,12 +4,12 @@ name: Marker Symbol
 route: /basic/marker/symbol
 ---
 
-import { Playground, PropsTable } from 'docz'
+import { Playground, PropsTable } from "docz";
 
-import { Marker } from '../Marker'
-import { MarkerSymbol } from '../MarkerSymbol'
-import { DocsMap } from '../../__docs__/DocsMap'
-import { path } from './marker-symbol.json'
+import { Marker } from "../Marker";
+import { MarkerSymbol } from "../MarkerSymbol";
+import { DocsMap } from "../../__docs__/DocsMap";
+import { path } from "./marker-symbol.json";
 
 # Marker Symbol
 
@@ -20,10 +20,7 @@ Defines icon options of `Marker` component.
 - [google.maps.Symbol](https://developers.google.com/maps/documentation/javascript/reference#Symbol)
 
 <Playground>
-  <DocsMap
-    zoom={8}
-    center={{ lat: 36, lng: -122 }}
-  >
+  <DocsMap zoom={8} center={{ lat: 36, lng: -122 }}>
     <Marker
       position={{ lat: 37.4419759, lng: -122.1429233 }}
       icon={

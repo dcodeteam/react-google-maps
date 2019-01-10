@@ -4,9 +4,9 @@ name: Data Polygon
 route: /data-layer/polygon
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { DataPolygon } from '../DataPolygon'
-import { DocsMap } from '../../__docs__/DocsMap'
+import { Playground, PropsTable } from "docz";
+import { DataPolygon } from "../DataPolygon";
+import { DocsMap } from "../../__docs__/DocsMap";
 
 # Data Polygon
 
@@ -16,13 +16,8 @@ Draws `google.maps.Data.Polygon`.
 
 - [google.maps.Data.Polygon](https://developers.google.com/maps/documentation/javascript/reference#Data.Polygon)
 
-
 <Playground>
-  <DocsMap
-    zoom={5}
-    style={{ height: "320px" }}
-    center={{ lat: -33, lng: 151 }}
-  >
+  <DocsMap zoom={5} style={{ height: "320px" }} center={{ lat: -33, lng: 151 }}>
     <DataPolygon
       visible={true}
       clickable={true}
@@ -36,30 +31,30 @@ Draws `google.maps.Data.Polygon`.
           { lat: -32, lng: 153 },
           { lat: -35, lng: 153 },
           { lat: -35, lng: 158 },
-          { lat: -32, lng: 158 }
+          { lat: -32, lng: 158 },
         ],
         [
           { lat: -33, lng: 154 },
           { lat: -34, lng: 154 },
           { lat: -34, lng: 155 },
-          { lat: -33, lng: 155 }
+          { lat: -33, lng: 155 },
         ],
         [
           { lat: -33, lng: 156 },
           { lat: -34, lng: 156 },
           { lat: -34, lng: 157 },
-          { lat: -33, lng: 157 }
-        ]
+          { lat: -33, lng: 157 },
+        ],
       ]}
-      onClick={(event) => {
-        alert('Checkout logs.')
-        console.log('onClick', event);
+      onClick={event => {
+        alert("Checkout logs.");
+        console.log("onClick", event);
       }}
-      onMouseOut={(event) => {
-        console.log('onMouseOut', event);
+      onMouseOut={event => {
+        console.log("onMouseOut", event);
       }}
-      onMouseOver={(event) => {
-        console.log('onMouseOver', event);
+      onMouseOver={event => {
+        console.log("onMouseOver", event);
       }}
     />
   </DocsMap>

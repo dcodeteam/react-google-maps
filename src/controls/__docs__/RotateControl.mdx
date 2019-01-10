@@ -4,9 +4,9 @@ name: Rotate Control
 route: /controls/rotate
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { DocsMap } from '../../__docs__/DocsMap'
-import { RotateControl } from '../RotateControl'
+import { Playground, PropsTable } from "docz";
+import { DocsMap } from "../../__docs__/DocsMap";
+import { RotateControl } from "../RotateControl";
 
 # Rotate Control
 
@@ -18,11 +18,7 @@ Controls display options of Rotate control.
 - [google.maps.RotateControlOptions](https://developers.google.com/maps/documentation/javascript/reference#RotateControlOptions)
 
 <Playground>
-  <DocsMap
-    zoom={18}
-    mapTypeId="SATELLITE"
-    center={{ lat: 36, lng: -122 }}
-  >
+  <DocsMap zoom={18} mapTypeId="SATELLITE" center={{ lat: 36, lng: -122 }}>
     <RotateControl position="BOTTOM_CENTER" />
   </DocsMap>
 </Playground>

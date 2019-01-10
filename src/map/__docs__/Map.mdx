@@ -5,9 +5,9 @@ name: Map
 route: /
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { Map } from '../Map'
-import { GoogleMapsLoader } from '../../google-maps-loader/GoogleMapsLoader'
+import { Playground, PropsTable } from "docz";
+import { Map } from "../Map";
+import { GoogleMapsLoader } from "../../google-maps-loader/GoogleMapsLoader";
 
 # Map
 
@@ -19,28 +19,28 @@ Draws `google.maps.Map`.
 - [google.maps.MapOptions](https://developers.google.com/maps/documentation/javascript/reference#MapOptions)
 
 <Playground>
- <GoogleMapsLoader
-   apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
-   render={maps => (
-     <Map
-       zoom={9}
-       maps={maps}
-       mapTypeId="ROADMAP"
-       clickableIcons={true}
-       disableDoubleClickZoom={false}
-       center={{ lat: 36, lng: -122 }}
-       onClick={event => {
-         console.log('onClick', event)
-       }}
-       onDoubleClick={event => {
-         console.log('onDoubleClick', event)
-       }}
-       onZoomChanged={event => {
-         console.log('onZoomChanged', event)
-       }}
-     />
-   )}
- />
+  <GoogleMapsLoader
+    apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
+    render={maps => (
+      <Map
+        zoom={9}
+        maps={maps}
+        mapTypeId="ROADMAP"
+        clickableIcons={true}
+        disableDoubleClickZoom={false}
+        center={{ lat: 36, lng: -122 }}
+        onClick={event => {
+          console.log("onClick", event);
+        }}
+        onDoubleClick={event => {
+          console.log("onDoubleClick", event);
+        }}
+        onZoomChanged={event => {
+          console.log("onZoomChanged", event);
+        }}
+      />
+    )}
+  />
 </Playground>
 
 <PropsTable of={Map} />

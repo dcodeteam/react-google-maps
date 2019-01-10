@@ -4,11 +4,10 @@ name: Fit Bounds
 route: /transitions/fit-bounds
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { FitBounds } from '../FitBounds'
-import { Marker } from '../../marker/Marker'
-import { TransitionExample } from './TransitionExample'
-
+import { Playground, PropsTable } from "docz";
+import { FitBounds } from "../FitBounds";
+import { Marker } from "../../marker/Marker";
+import { TransitionExample } from "./TransitionExample";
 
 # Fit Bounds
 
@@ -49,7 +48,9 @@ Sets the `viewport` to contain the given `bounds`.
         <Marker label="C" position={{ lat: 36, lng: -122 }} />
       </>
     )}
-  />
+
+/>
+
 </Playground>
 
 <PropsTable of={FitBounds} />

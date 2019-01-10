@@ -4,10 +4,9 @@ name: Place Autocomplete
 route: /places/place-autocomplete
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { PlaceAutocomplete } from '../PlaceAutocomplete'
-import { GoogleMapsLoader } from '../../google-maps-loader/GoogleMapsLoader'
-
+import { Playground, PropsTable } from "docz";
+import { PlaceAutocomplete } from "../PlaceAutocomplete";
+import { GoogleMapsLoader } from "../../google-maps-loader/GoogleMapsLoader";
 
 # Place Autocomplete
 
@@ -21,21 +20,19 @@ Attaches place autocomplete to input.
 - [google.maps.places.ComponentRestrictions](https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#ComponentRestrictions)
 
 <Playground>
-<GoogleMapsLoader
-  apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
-    render={(maps) => (
+  <GoogleMapsLoader
+    apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
+    render={maps => (
       <PlaceAutocomplete
         maps={maps}
         placeIdOnly={true}
         strictBounds={true}
         types={["geocode"]}
         componentRestrictions={{ country: "USA" }}
-        onPlaceChanged={(event) => {
+        onPlaceChanged={event => {
           alert(JSON.stringify(event, null, 2));
         }}
-        render={({ ref }) => (
-          <input ref={ref} type="text" />
-        )}
+        render={({ ref }) => <input ref={ref} type="text" />}
       />
     )}
   />

@@ -4,10 +4,10 @@ name: Polyline
 route: /basic/polyline
 ---
 
-import { Playground, PropsTable } from 'docz'
+import { Playground, PropsTable } from "docz";
 
-import { Polyline } from '../Polyline'
-import { DocsMap } from '../../__docs__/DocsMap'
+import { Polyline } from "../Polyline";
+import { DocsMap } from "../../__docs__/DocsMap";
 
 # Polyline
 
@@ -19,10 +19,7 @@ Draws `google.maps.Polyline`.
 - [google.maps.PolylineOptions](https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)
 
 <Playground>
-  <DocsMap
-    zoom={8}
-    center={{ lat: 36, lng: -122 }}
-  >
+  <DocsMap zoom={8} center={{ lat: 36, lng: -122 }}>
     <Polyline
       visible={true}
       clickable={true}
@@ -32,10 +29,13 @@ Draws `google.maps.Polyline`.
       strokeOpacity={1}
       path={[
         { lat: 37.33821, lng: -121.88633 },
-        { lat:37.00578, lng: -121.56826},
+        { lat: 37.00578, lng: -121.56826 },
       ]}
-      onDragEnd={(e) => {
-        alert("It's position will reset, path new 'path' to set it's new position. Position changed to: " + JSON.stringify(e.path))
+      onDragEnd={e => {
+        alert(
+          "It's position will reset, path new 'path' to set it's new position. Position changed to: " +
+            JSON.stringify(e.path),
+        );
       }}
     />
   </DocsMap>

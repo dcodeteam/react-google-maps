@@ -4,10 +4,10 @@ name: Pan To Bounds
 route: /transitions/pan-to-bounds
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { PanToBounds } from '../PanToBounds'
-import { Marker } from '../../marker/Marker'
-import { TransitionExample } from './TransitionExample'
+import { Playground, PropsTable } from "docz";
+import { PanToBounds } from "../PanToBounds";
+import { Marker } from "../../marker/Marker";
+import { TransitionExample } from "./TransitionExample";
 
 # Pan To Bounds
 
@@ -55,7 +55,9 @@ If the change in the map's position is less than both the width and height of th
         <Marker label="C" position={{ lat: 36, lng: -122 }} />
       </>
     )}
-  />
+
+/>
+
 </Playground>
 
 <PropsTable of={PanToBounds} />

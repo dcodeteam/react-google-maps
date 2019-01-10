@@ -4,9 +4,9 @@ name: Street View Control
 route: /controls/street-view
 ---
 
-import { Playground, PropsTable } from 'docz'
-import { DocsMap } from '../../__docs__/DocsMap'
-import { StreetViewControl } from '../StreetViewControl'
+import { Playground, PropsTable } from "docz";
+import { DocsMap } from "../../__docs__/DocsMap";
+import { StreetViewControl } from "../StreetViewControl";
 
 # Street View Control
 
@@ -18,10 +18,7 @@ Controls display options of Street View Pegman control.
 - [google.maps.StreetViewControlOptions](https://developers.google.com/maps/documentation/javascript/reference#StreetViewControlOptions)
 
 <Playground>
-  <DocsMap
-    zoom={18}
-    center={{ lat: 36, lng: -122 }}
-  >
+  <DocsMap zoom={18} center={{ lat: 36, lng: -122 }}>
     <StreetViewControl position="BOTTOM_CENTER" />
   </DocsMap>
 </Playground>
