@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { loadAPI } from "../internal/loadAPI";
 
 export interface UseGoogleMapsResult {

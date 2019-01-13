@@ -1,9 +1,10 @@
-import {
-  useGoogleMapsLoader,
-  UseGoogleMapsResult,
-} from "../useGoogleMapsLoader";
-import { render, cleanup, flushEffects } from "react-testing-library";
 import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
+
+import {
+  UseGoogleMapsResult,
+  useGoogleMapsLoader,
+} from "../useGoogleMapsLoader";
 
 const Container = ({
   checkAPI,
