@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 
+import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 import { SizeLiteral, createLatLng, createSize } from "../internal/MapsUtils";
 import { useChangedProps } from "../internal/useChangedProps";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { useUpdateEffect } from "../internal/useUpdateEffect";
 import { InfoWindowEvent } from "./InfoWindowEvent";
-import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface InfoWindowProps {
   /**

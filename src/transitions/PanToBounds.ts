@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
+import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 import { createLatLngBounds } from "../internal/MapsUtils";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
-import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface PanToBoundsProps {
   /**

@@ -1,10 +1,14 @@
 import React, { useEffect, useMemo, useRef } from "react";
 
+import {
+  GoogleMapMarkerContext,
+  useGoogleMap,
+  useGoogleMapsAPI,
+} from "../context/GoogleMapsContext";
 import { createLatLng } from "../internal/MapsUtils";
 import { useChangedProps } from "../internal/useChangedProps";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { MarkerEvent } from "./MarkerEvent";
-import { GoogleMapMarkerContext, useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface MarkerProps {
   /**

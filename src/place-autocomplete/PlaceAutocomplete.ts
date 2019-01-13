@@ -1,9 +1,9 @@
 import { ReactElement, RefObject, useEffect, useRef, useState } from "react";
 
+import { useGoogleMapsAPI } from "../context/GoogleMapsContext";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { PlaceAutocompleteEvent } from "./PlaceAutocompleteEvent";
-import { useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface PlaceAutocompleteRenderProps {
   ref: RefObject<HTMLInputElement>;

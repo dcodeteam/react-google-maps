@@ -27,9 +27,7 @@ function createConfig(target) {
       format: target.startsWith("es") ? "es" : target,
     },
 
-    external(id) {
-      return externals.includes(id) || id.startsWith("@babel/runtime");
-    },
+    external: id => externals.includes(id) || id.startsWith("@babel/runtime"),
 
     plugins: [
       nodeResolvePlugin({ extensions: [".ts", ".tsx"] }),
@@ -51,8 +49,11 @@ function createConfig(target) {
           "@babel/preset-typescript",
         ],
         plugins: [
-          "@babel/plugin-transform-runtime",
           "@babel/plugin-proposal-class-properties",
+          [
+            "@babel/plugin-transform-runtime",
+            { useESModules: target.startsWith("es") },
+          ],
         ],
       }),
 

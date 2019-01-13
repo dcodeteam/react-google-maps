@@ -1,11 +1,11 @@
 import React, { ComponentType } from "react";
 
-import { mockMaps } from "./mockMaps";
 import {
   GoogleMapContext,
   GoogleMapMarkerContext,
   GoogleMapsAPIContext,
 } from "../context/GoogleMapsContext";
+import { mockMaps } from "./mockMaps";
 
 interface MapMockContext {
   readonly map: google.maps.Map;

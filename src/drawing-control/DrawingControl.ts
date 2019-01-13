@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from "react";
 
+import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { useUpdateEffect } from "../internal/useUpdateEffect";
 import { DrawingControlEvent } from "./DrawingControlEvent";
-import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface DrawingControlProps {
   /**
