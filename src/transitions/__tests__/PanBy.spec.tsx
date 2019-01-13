@@ -1,39 +1,33 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { createMockMapComponent } from "../../__tests__/testUtils";
-import { PointLiteral } from "../../internal/MapsUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
 import { PanBy } from "../PanBy";
 
-describe("PanBy", () => {
-  const { map, Mock } = createMockMapComponent(PanBy);
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const [Mock, ctx] = initMapMockComponent(PanBy);
 
-  it("should pan on mount", () => {
-    mount(<Mock offset={{ x: 1, y: 2 }} />);
+it("runs animation", () => {
+  const panByMock = getFnMock(ctx.map.panBy);
+  const { rerender } = render(<Mock offset={{ x: 1, y: 2 }} />);
 
-    expect(map.panBy).toBeCalledTimes(1);
-    expect(map.panBy).lastCalledWith(1, 2);
-  });
+  flushEffects();
 
-  it("should pan on update", () => {
-    const initialOffset: PointLiteral = { x: 1, y: 2 };
-    const updatedOffset: PointLiteral = { x: 3, y: 4 };
+  expect(panByMock).toBeCalledTimes(1);
+  expect(panByMock.mock.calls[0][0]).toMatchInlineSnapshot(`1`);
 
-    const wrapper = mount(<Mock offset={initialOffset} />);
+  rerender(<Mock offset={{ x: 1, y: 2 }} />);
 
-    expect(map.panBy).toBeCalledTimes(1);
+  flushEffects();
 
-    wrapper.setProps({ offset: initialOffset });
+  expect(panByMock).toBeCalledTimes(1);
 
-    expect(map.panBy).toBeCalledTimes(1);
+  rerender(<Mock offset={{ x: 3, y: 4 }} />);
 
-    wrapper.setProps({ offset: updatedOffset });
+  flushEffects();
 
-    expect(map.panBy).toBeCalledTimes(2);
-    expect(map.panBy).lastCalledWith(updatedOffset.x, updatedOffset.y);
-  });
+  expect(panByMock).toBeCalledTimes(2);
+  expect(panByMock.mock.calls[1][0]).toMatchInlineSnapshot(`3`);
 });

@@ -1,104 +1,169 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { MapContextProvider } from "../../map/MapContext";
-import { MapTypeControl, MapTypeControlProps } from "../MapTypeControl";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
+import { MapTypeControl } from "../MapTypeControl";
 
-describe("MapTypeControl", () => {
-  const map = new google.maps.Map(null);
+const [Mock, ctx] = initMapMockComponent(MapTypeControl);
 
-  function MockMapTypeControl(props: MapTypeControlProps) {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <MapTypeControl {...props} />
-      </MapContextProvider>
-    );
-  }
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+it("sets default values on mount", () => {
+  const setValuesMock = getFnMock(ctx.map.setValues);
 
-  it("should set default values on mount", () => {
-    mount(<MockMapTypeControl />);
+  render(<Mock />);
 
-    expect(map.setValues).toBeCalledTimes(1);
-    expect(map.setValues).lastCalledWith({
-      mapTypeControl: true,
-      mapTypeControlOptions: {
-        mapTypeIds: ["HYBRID", "ROADMAP", "SATELLITE", "TERRAIN"],
-        position: "TOP_RIGHT",
-        style: "DEFAULT",
-      },
-    });
-  });
+  flushEffects();
 
-  it("should set custom values on mount", () => {
-    mount(
-      <MockMapTypeControl
-        style="DROPDOWN_MENU"
-        position="RIGHT_BOTTOM"
-        mapTypeIds={["HYBRID", "ROADMAP"]}
-      />,
-    );
+  expect(setValuesMock).toBeCalledTimes(1);
+  expect(setValuesMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "mapTypeControl": true,
+  "mapTypeControlOptions": Object {
+    "mapTypeIds": Array [
+      "HYBRID",
+      "ROADMAP",
+      "SATELLITE",
+      "TERRAIN",
+    ],
+    "position": "TOP_RIGHT",
+    "style": "DEFAULT",
+  },
+}
+`);
+});
 
-    expect(map.setValues).toBeCalledTimes(1);
-    expect(map.setValues).lastCalledWith({
-      mapTypeControl: true,
-      mapTypeControlOptions: {
-        mapTypeIds: ["HYBRID", "ROADMAP"],
-        position: "RIGHT_BOTTOM",
-        style: "DROPDOWN_MENU",
-      },
-    });
-  });
+it("sets custom values on mount", () => {
+  const setValuesMock = getFnMock(ctx.map.setValues);
 
-  it("should set custom values on update", () => {
-    const wrapper = mount(<MockMapTypeControl />);
+  render(
+    <Mock
+      style="DROPDOWN_MENU"
+      position="RIGHT_BOTTOM"
+      mapTypeIds={["HYBRID", "ROADMAP"]}
+    />,
+  );
 
-    expect(map.setValues).toBeCalledTimes(1);
+  flushEffects();
 
-    wrapper.setProps({ position: "BOTTOM_CENTER" });
+  expect(setValuesMock).toBeCalledTimes(1);
+  expect(setValuesMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "mapTypeControl": true,
+  "mapTypeControlOptions": Object {
+    "mapTypeIds": Array [
+      "HYBRID",
+      "ROADMAP",
+    ],
+    "position": "RIGHT_BOTTOM",
+    "style": "DROPDOWN_MENU",
+  },
+}
+`);
+});
 
-    expect(map.setValues).toBeCalledTimes(2);
-    expect(map.setValues).lastCalledWith({
-      mapTypeControl: true,
-      mapTypeControlOptions: {
-        mapTypeIds: ["HYBRID", "ROADMAP", "SATELLITE", "TERRAIN"],
-        position: "BOTTOM_CENTER",
-        style: "DEFAULT",
-      },
-    });
+it("updates values", () => {
+  const setValuesMock = getFnMock(ctx.map.setValues);
+  const { rerender } = render(<Mock />);
 
-    wrapper.setProps({ position: "BOTTOM_CENTER" });
+  flushEffects();
 
-    expect(map.setValues).toBeCalledTimes(2);
+  expect(setValuesMock).toBeCalledTimes(1);
+  expect(setValuesMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "mapTypeControl": true,
+  "mapTypeControlOptions": Object {
+    "mapTypeIds": Array [
+      "HYBRID",
+      "ROADMAP",
+      "SATELLITE",
+      "TERRAIN",
+    ],
+    "position": "TOP_RIGHT",
+    "style": "DEFAULT",
+  },
+}
+`);
 
-    wrapper.setProps({ position: "RIGHT_TOP" });
+  rerender(<Mock position="BOTTOM_CENTER" />);
 
-    expect(map.setValues).toBeCalledTimes(3);
+  flushEffects();
 
-    expect(map.setValues).lastCalledWith({
-      mapTypeControl: true,
-      mapTypeControlOptions: {
-        mapTypeIds: ["HYBRID", "ROADMAP", "SATELLITE", "TERRAIN"],
-        position: "RIGHT_TOP",
-        style: "DEFAULT",
-      },
-    });
-  });
+  expect(setValuesMock).toBeCalledTimes(3);
+  expect(setValuesMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+Object {
+  "mapTypeControl": false,
+  "mapTypeControlOptions": undefined,
+}
+`);
+  expect(setValuesMock.mock.calls[2][0]).toMatchInlineSnapshot(`
+Object {
+  "mapTypeControl": true,
+  "mapTypeControlOptions": Object {
+    "mapTypeIds": Array [
+      "HYBRID",
+      "ROADMAP",
+      "SATELLITE",
+      "TERRAIN",
+    ],
+    "position": "BOTTOM_CENTER",
+    "style": "DEFAULT",
+  },
+}
+`);
 
-  it("should unset values on unmount", () => {
-    const wrapper = mount(<MockMapTypeControl />);
+  rerender(<Mock position="BOTTOM_CENTER" />);
 
-    expect(map.setValues).toBeCalledTimes(1);
+  flushEffects();
 
-    wrapper.unmount();
+  expect(setValuesMock).toBeCalledTimes(3);
 
-    expect(map.setValues).toBeCalledTimes(2);
-    expect(map.setValues).lastCalledWith({
-      mapTypeControl: false,
-      mapTypeControlOptions: undefined,
-    });
-  });
+  rerender(<Mock position="RIGHT_TOP" />);
+
+  flushEffects();
+
+  expect(setValuesMock).toBeCalledTimes(5);
+  expect(setValuesMock.mock.calls[3][0]).toMatchInlineSnapshot(`
+Object {
+  "mapTypeControl": false,
+  "mapTypeControlOptions": undefined,
+}
+`);
+  expect(setValuesMock.mock.calls[4][0]).toMatchInlineSnapshot(`
+Object {
+  "mapTypeControl": true,
+  "mapTypeControlOptions": Object {
+    "mapTypeIds": Array [
+      "HYBRID",
+      "ROADMAP",
+      "SATELLITE",
+      "TERRAIN",
+    ],
+    "position": "RIGHT_TOP",
+    "style": "DEFAULT",
+  },
+}
+`);
+});
+
+it("unsets values on unmount", () => {
+  const setValuesMock = getFnMock(ctx.map.setValues);
+  const { unmount } = render(<Mock />);
+
+  flushEffects();
+
+  expect(setValuesMock).toBeCalledTimes(1);
+
+  unmount();
+
+  expect(setValuesMock).toBeCalledTimes(2);
+  expect(setValuesMock.mock.calls[1]).toMatchInlineSnapshot(`
+Array [
+  Object {
+    "mapTypeControl": false,
+    "mapTypeControlOptions": undefined,
+  },
+]
+`);
 });

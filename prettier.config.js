@@ -1,5 +1,3 @@
 "use strict";
 
-module.exports = {
-  trailingComma: "all",
-};
+module.exports = { trailingComma: "all" };

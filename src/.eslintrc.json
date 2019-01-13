@@ -3,6 +3,10 @@
   "extends": "@dc0de/eslint-config-react",
   "rules": {
     "no-use-before-define": "off",
-    "react/style-prop-object": "off"
+    "react/style-prop-object": "off",
+    "import/no-internal-modules": [
+      "error",
+      { "allow": ["jest-dom/extend-expect"] }
+    ]
   }
 }

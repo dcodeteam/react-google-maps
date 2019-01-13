@@ -1,133 +1,190 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { MapContextProvider } from "../../map/MapContext";
-import { CustomControl, CustomControlProps } from "../CustomControl";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { CustomControl } from "../CustomControl";
 
-describe("CustomControl", () => {
-  const map = new google.maps.Map(null);
+const [Mock, ctx] = initMapMockComponent(CustomControl);
 
-  function MockCustomControl(props: CustomControlProps) {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <CustomControl {...props} />
-      </MapContextProvider>
-    );
-  }
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+it("adds control", () => {
+  const { map, maps } = ctx;
+  const ref = React.createRef<HTMLDivElement>();
+  const controls = map.controls[maps.ControlPosition.TOP_LEFT];
 
-  it("should set control on mount", () => {
-    const controls = map.controls[google.maps.ControlPosition.TOP_LEFT];
-    const ref = React.createRef<HTMLDivElement>();
+  render(
+    <Mock position="TOP_LEFT">
+      <div ref={ref}>Content</div>
+    </Mock>,
+  );
 
-    mount(
-      <MockCustomControl position="TOP_LEFT">
-        <div ref={ref}>Content</div>
-      </MockCustomControl>,
-    );
+  expect(ref.current).toMatchInlineSnapshot(`
+<div>
+  Content
+</div>
+`);
 
-    expect(controls.push).toBeCalledTimes(1);
-    expect(controls.push).lastCalledWith(ref.current!.parentElement);
-  });
+  flushEffects();
 
-  it("should change control position on update", () => {
-    const topLeftControls = map.controls[google.maps.ControlPosition.TOP_LEFT];
-    const topRightControls =
-      map.controls[google.maps.ControlPosition.TOP_RIGHT];
+  expect(controls.getArray()).toMatchInlineSnapshot(`
+Array [
+  <div>
+    <div>
+      Content
+    </div>
+  </div>,
+]
+`);
+});
 
-    const wrapper = mount(
-      <MockCustomControl position="TOP_LEFT">
-        <div>Content</div>
-      </MockCustomControl>,
-    );
+it("updates control position", () => {
+  const { map, maps } = ctx;
+  const ref = React.createRef<HTMLDivElement>();
 
-    expect(wrapper.find("div").length).toBe(1);
+  const topLeftControls = map.controls[maps.ControlPosition.TOP_LEFT];
+  const topRightControls = map.controls[maps.ControlPosition.TOP_RIGHT];
 
-    expect(topLeftControls.push).toBeCalledTimes(1);
-    expect(topLeftControls.push).lastCalledWith(
-      wrapper.find("div").getDOMNode().parentElement,
-    );
+  const { rerender } = render(
+    <Mock position="TOP_LEFT">
+      <div ref={ref}>Content</div>
+    </Mock>,
+  );
 
-    expect(topLeftControls.removeAt).toBeCalledTimes(0);
-    expect(topRightControls.push).toBeCalledTimes(0);
-    expect(topRightControls.removeAt).toBeCalledTimes(0);
+  expect(ref.current).toMatchInlineSnapshot(`
+<div>
+  Content
+</div>
+`);
 
-    wrapper.setProps({ position: "TOP_LEFT" });
+  flushEffects();
 
-    expect(topLeftControls.push).toBeCalledTimes(1);
-    expect(topLeftControls.removeAt).toBeCalledTimes(0);
-    expect(topRightControls.push).toBeCalledTimes(0);
-    expect(topRightControls.removeAt).toBeCalledTimes(0);
+  expect(topLeftControls.getArray()).toMatchInlineSnapshot(`
+Array [
+  <div>
+    <div>
+      Content
+    </div>
+  </div>,
+]
+`);
+  expect(topRightControls.getArray()).toMatchInlineSnapshot(`Array []`);
 
-    wrapper.setProps({ position: "TOP_RIGHT" });
+  rerender(
+    <Mock position="TOP_LEFT">
+      <div ref={ref}>Content</div>
+    </Mock>,
+  );
 
-    expect(topLeftControls.push).toBeCalledTimes(1);
-    expect(topLeftControls.removeAt).toBeCalledTimes(1);
-    expect(topRightControls.push).toBeCalledTimes(1);
-    expect(topRightControls.push).lastCalledWith(
-      wrapper.find("div").getDOMNode().parentElement,
-    );
-    expect(topRightControls.removeAt).toBeCalledTimes(0);
-  });
+  flushEffects();
 
-  it("should change children", () => {
-    const wrapper = mount(
-      <MockCustomControl position="TOP_LEFT">
-        <div>Content</div>
-      </MockCustomControl>,
-    );
+  expect(topLeftControls.getArray()).toMatchInlineSnapshot(`
+Array [
+  <div>
+    <div>
+      Content
+    </div>
+  </div>,
+]
+`);
+  expect(topRightControls.getArray()).toMatchInlineSnapshot(`Array []`);
 
-    const initialDiv = wrapper.find("div");
+  rerender(
+    <Mock position="TOP_RIGHT">
+      <div ref={ref}>Content</div>
+    </Mock>,
+  );
 
-    expect(initialDiv.length).toBe(1);
-    expect(initialDiv.html()).toBe("<div>Content</div>");
+  flushEffects();
 
-    wrapper.setProps({ children: "Plain text" });
+  expect(topLeftControls.getArray()).toMatchInlineSnapshot(`Array []`);
+  expect(topRightControls.getArray()).toMatchInlineSnapshot(`
+Array [
+  <div>
+    <div>
+      Content
+    </div>
+  </div>,
+]
+`);
+});
 
-    expect(wrapper.find("div").length).toBe(0);
-    expect(wrapper.text()).toBe("Plain text");
-  });
+it("updates children", () => {
+  const ref = React.createRef<HTMLDivElement>();
 
-  it("should remove node on unmount", () => {
-    const topLeftControls = map.controls[google.maps.ControlPosition.TOP_LEFT];
+  const { rerender } = render(
+    <Mock position="TOP_LEFT">
+      <div ref={ref}>Content</div>
+    </Mock>,
+  );
 
-    const wrapper = mount(
-      <MockCustomControl position="TOP_LEFT">
-        <div>Content</div>
-      </MockCustomControl>,
-    );
+  expect(ref.current).not.toBeNull();
 
-    expect(topLeftControls.push).toBeCalledTimes(1);
-    expect(topLeftControls.removeAt).toBeCalledTimes(0);
+  const root = ref.current!.parentNode;
 
-    wrapper.unmount();
+  expect(root).toMatchInlineSnapshot(`
+<div>
+  <div>
+    Content
+  </div>
+</div>
+`);
 
-    expect(topLeftControls.push).toBeCalledTimes(1);
-    expect(topLeftControls.removeAt).toBeCalledTimes(1);
-  });
+  rerender(<Mock position="TOP_LEFT">Plain Text</Mock>);
 
-  it("should remove control only if it attached", () => {
-    const topLeftControls = map.controls[google.maps.ControlPosition.TOP_LEFT];
+  expect(root).toMatchInlineSnapshot(`
+<div>
+  Plain Text
+</div>
+`);
+});
 
-    topLeftControls.clear();
+it("removes node on unmount", () => {
+  const { map, maps } = ctx;
+  const topLeftControls = map.controls[maps.ControlPosition.TOP_LEFT];
 
-    const wrapper = mount(
-      <MockCustomControl position="TOP_LEFT">
-        <div>Content</div>
-      </MockCustomControl>,
-    );
+  const { unmount } = render(
+    <Mock position="TOP_LEFT">
+      <div>Content</div>
+    </Mock>,
+  );
 
-    expect(topLeftControls.push).toBeCalledTimes(1);
-    expect(topLeftControls.removeAt).toBeCalledTimes(0);
+  flushEffects();
 
-    topLeftControls.removeAt(0);
+  expect(topLeftControls.getArray()).toMatchInlineSnapshot(`
+Array [
+  <div>
+    <div>
+      Content
+    </div>
+  </div>,
+]
+`);
 
-    wrapper.unmount();
+  unmount();
 
-    expect(topLeftControls.push).toBeCalledTimes(1);
-    expect(topLeftControls.removeAt).toBeCalledTimes(1);
-  });
+  expect(topLeftControls.getArray()).toMatchInlineSnapshot(`Array []`);
+});
+
+it("should remove control only if it attached", () => {
+  const { map, maps } = ctx;
+  const topLeftControls = map.controls[maps.ControlPosition.TOP_LEFT];
+
+  const { unmount } = render(
+    <Mock position="TOP_LEFT">
+      <div>Content</div>
+    </Mock>,
+  );
+
+  flushEffects();
+
+  expect(topLeftControls.push).toBeCalledTimes(1);
+  expect(topLeftControls.removeAt).toBeCalledTimes(0);
+
+  topLeftControls.removeAt(0);
+
+  unmount();
+
+  expect(topLeftControls.push).toBeCalledTimes(1);
+  expect(topLeftControls.removeAt).toBeCalledTimes(1);
 });

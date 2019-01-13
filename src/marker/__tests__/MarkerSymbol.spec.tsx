@@ -1,127 +1,78 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { MapContextProvider } from "../../map/MapContext";
-import { MarkerContextProvider } from "../MarkerContext";
-import { MarkerSymbol, MarkerSymbolProps } from "../MarkerSymbol";
+import { initMapMarkerMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
+import { MarkerSymbol } from "../MarkerSymbol";
 
-describe("MarkerSymbol", () => {
-  const map = new google.maps.Map(null);
-  const marker = new google.maps.Marker();
+const [Mock, ctx] = initMapMarkerMockComponent(MarkerSymbol);
 
-  function MockMarkerSymbol(props: MarkerSymbolProps) {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <MarkerContextProvider value={{ marker }}>
-          <MarkerSymbol {...props} />
-        </MarkerContextProvider>
-      </MapContextProvider>
-    );
-  }
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+it("converts props to icon", () => {
+  const { marker } = ctx;
+  const setIconMock = getFnMock(marker.setIcon);
+  const { rerender } = render(
+    <Mock
+      path="svg-path"
+      scale={0.7}
+      rotation={1}
+      fillColor="black"
+      fillOpacity={0.5}
+      strokeColor="white"
+      strokeWeight={2}
+      strokeOpacity={3}
+      anchor={{ x: 10, y: 15 }}
+    />,
+  );
 
-  it("should set default marker icon options on mount", () => {
-    mount(<MockMarkerSymbol path="svg-path" />);
+  expect(setIconMock).toBeCalledTimes(0);
 
-    expect(marker.setIcon).toBeCalledTimes(1);
-    expect(marker.setIcon).lastCalledWith({
-      anchor: { x: 0, y: 0 },
-      fillColor: "black",
-      fillOpacity: 0,
-      path: "svg-path",
-      rotation: 0,
-      scale: 1,
-      strokeColor: "black",
-      strokeOpacity: 1,
-      strokeWeight: 1,
-    });
-  });
+  flushEffects();
 
-  it("should set custom marker icon options on mount", () => {
-    mount(
-      <MockMarkerSymbol
-        path="svg-path"
-        scale={0.7}
-        rotation={1}
-        fillColor="black"
-        fillOpacity={0.5}
-        strokeColor="white"
-        strokeWeight={2}
-        strokeOpacity={3}
-        anchor={{ x: 10, y: 15 }}
-      />,
-    );
+  expect(setIconMock).toBeCalledTimes(1);
+  expect(setIconMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "anchor": Point {
+    "x": 10,
+    "y": 15,
+  },
+  "fillColor": "black",
+  "fillOpacity": 0.5,
+  "path": "svg-path",
+  "rotation": 1,
+  "scale": 0.7,
+  "strokeColor": "white",
+  "strokeOpacity": 3,
+  "strokeWeight": 2,
+}
+`);
 
-    expect(marker.setIcon).toBeCalledTimes(1);
-    expect(marker.setIcon).lastCalledWith({
-      anchor: { x: 10, y: 15 },
-      fillColor: "black",
-      fillOpacity: 0.5,
-      path: "svg-path",
-      rotation: 1,
-      scale: 0.7,
-      strokeColor: "white",
-      strokeOpacity: 3,
-      strokeWeight: 2,
-    });
-  });
+  rerender(<Mock path="svg-path" />);
 
-  it("should change icon options on update", () => {
-    const wrapper = mount(<MockMarkerSymbol path="svg-path" />);
+  flushEffects();
 
-    expect(marker.setIcon).toBeCalledTimes(1);
+  expect(setIconMock).toBeCalledTimes(2);
+  expect(setIconMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+Object {
+  "anchor": Point {
+    "x": 0,
+    "y": 0,
+  },
+  "fillColor": "black",
+  "fillOpacity": 0,
+  "path": "svg-path",
+  "rotation": 0,
+  "scale": 1,
+  "strokeColor": "black",
+  "strokeOpacity": 1,
+  "strokeWeight": 1,
+}
+`);
 
-    wrapper.setProps({
-      anchor: { x: 10, y: 15 },
-      fillColor: "black",
-      fillOpacity: 0.5,
-      path: "svg-path",
-      rotation: 1,
-      scale: 0.7,
-      strokeColor: "white",
-      strokeOpacity: 3,
-      strokeWeight: 2,
-    });
+  rerender(<Mock path="svg-path" />);
 
-    expect(marker.setIcon).toBeCalledTimes(2);
-    expect(marker.setIcon).lastCalledWith({
-      anchor: { x: 10, y: 15 },
-      fillColor: "black",
-      fillOpacity: 0.5,
-      path: "svg-path",
-      rotation: 1,
-      scale: 0.7,
-      strokeColor: "white",
-      strokeOpacity: 3,
-      strokeWeight: 2,
-    });
-  });
+  flushEffects();
 
-  it("should not change with same icon options on update", () => {
-    const wrapper = mount(<MockMarkerSymbol path="svg-path" />);
-
-    expect(marker.setIcon).toBeCalledTimes(1);
-
-    wrapper.setProps({ path: "svg-path" });
-
-    expect(marker.setIcon).toBeCalledTimes(1);
-
-    wrapper.setProps({ path: "another-svg-path" });
-
-    expect(marker.setIcon).toBeCalledTimes(2);
-    expect(marker.setIcon).lastCalledWith({
-      anchor: { x: 0, y: 0 },
-      fillColor: "black",
-      fillOpacity: 0,
-      path: "another-svg-path",
-      rotation: 0,
-      scale: 1,
-      strokeColor: "black",
-      strokeOpacity: 1,
-      strokeWeight: 1,
-    });
-  });
+  expect(setIconMock).toBeCalledTimes(2);
 });

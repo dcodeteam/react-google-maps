@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 20
 menu: Basic
 name: Info Window
 route: /basic/info-window
@@ -8,7 +8,7 @@ route: /basic/info-window
 import { Playground, PropsTable } from "docz";
 
 import { InfoWindow } from "../InfoWindow";
-import { DocsMap } from "../../__docs__/DocsMap";
+import { DocsMap } from "../../__docs__/DocsComponents";
 
 # Info Window
 
@@ -20,7 +20,7 @@ Draws `google.maps.InfoWindow`.
 - [google.maps.InfoWindowOptions](https://developers.google.com/maps/documentation/javascript/reference#InfoWindowOptions)
 
 <Playground>
-  <DocsMap zoom={8} center={{ lat: 36, lng: -122 }}>
+  <DocsMap>
     <InfoWindow
       open={true}
       maxWidth={300}

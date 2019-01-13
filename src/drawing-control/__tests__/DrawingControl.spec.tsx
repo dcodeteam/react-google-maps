@@ -1,157 +1,186 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import {
-  createMockHandlers,
-  createMockMapComponent,
-  emitEvent,
-  forEachEvent,
-  getClassMockInstance,
-} from "../../__tests__/testUtils";
-import { DrawingControl, DrawingControlProps } from "../DrawingControl";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getClassMockInstance, getFnMock } from "../../__testutils__/testUtils";
+import { DrawingControl } from "../DrawingControl";
 import { DrawingControlEvent } from "../DrawingControlEvent";
 
-function getMockInstance(): google.maps.drawing.DrawingManager {
-  return getClassMockInstance(google.maps.drawing.DrawingManager);
+function getMockInstance(
+  maps: typeof google.maps,
+): google.maps.drawing.DrawingManager {
+  return getClassMockInstance(maps.drawing.DrawingManager);
 }
 
-describe("DrawingControl", () => {
-  const { map, Mock } = createMockMapComponent(DrawingControl);
+const [Mock, ctx] = initMapMockComponent(DrawingControl);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+afterEach(cleanup);
 
-  it("should create drawing manager add attach to map", () => {
-    mount(<Mock />);
+it("mounts and unmouts", () => {
+  const { map, maps } = ctx;
+  const { unmount } = render(<Mock />);
 
-    const manager = getMockInstance();
+  const control = getMockInstance(maps);
 
-    expect(manager.setMap).toBeCalledTimes(1);
-    expect(manager.setMap).lastCalledWith(map);
-  });
+  expect(control.setMap).toBeCalledTimes(0);
 
-  it("should set default options on mount", () => {
-    mount(<Mock />);
+  flushEffects();
 
-    const manager = getMockInstance();
+  expect(control.setMap).toBeCalledTimes(1);
+  expect(control.setMap).lastCalledWith(map);
 
-    expect(manager.setOptions).toBeCalledTimes(1);
-    expect(manager.setOptions).lastCalledWith({
-      drawingControl: true,
-      drawingControlOptions: {
-        drawingModes: ["CIRCLE", "MARKER", "POLYGON", "POLYLINE", "RECTANGLE"],
-        position: "TOP_LEFT",
-      },
+  unmount();
+
+  expect(control.setMap).toBeCalledTimes(2);
+  expect(control.setMap).lastCalledWith(null);
+});
+
+it("passes props", () => {
+  const { maps } = ctx;
+  const { rerender } = render(
+    <Mock position="TOP_RIGHT" drawingModes={["POLYGON", "RECTANGLE"]} />,
+  );
+  const managedMock = getFnMock(maps.drawing.DrawingManager);
+  const marker = getMockInstance(maps);
+  const setOptionsMock = getFnMock(marker.setOptions);
+
+  expect(managedMock).toBeCalledTimes(1);
+  expect(managedMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "drawingControl": true,
+  "drawingControlOptions": Object {
+    "drawingModes": Array [
+      "POLYGON",
+      "RECTANGLE",
+    ],
+    "position": "TOP_RIGHT",
+  },
+}
+`);
+
+  flushEffects();
+
+  expect(setOptionsMock).toBeCalledTimes(0);
+
+  rerender(<Mock position="TOP_RIGHT" />);
+
+  flushEffects();
+
+  expect(setOptionsMock).toBeCalledTimes(1);
+  expect(setOptionsMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "drawingControl": true,
+  "drawingControlOptions": Object {
+    "drawingModes": Array [
+      "CIRCLE",
+      "MARKER",
+      "POLYGON",
+      "POLYLINE",
+      "RECTANGLE",
+    ],
+    "position": "TOP_RIGHT",
+  },
+}
+`);
+});
+
+it("attaches handlers", () => {
+  const { maps } = ctx;
+  const events = new Map(Object.entries(DrawingControlEvent));
+  const { rerender, unmount } = render(<Mock />);
+  const marker = getMockInstance(maps);
+  const addListenerMock = getFnMock(marker.addListener);
+
+  expect(addListenerMock).toBeCalledTimes(0);
+
+  flushEffects();
+
+  expect(addListenerMock).toBeCalledTimes(events.size);
+
+  expect(() => {
+    events.forEach(eventName => {
+      maps.event.trigger(marker, eventName, { overlay: { setMap: jest.fn() } });
     });
+  }).not.toThrow();
+
+  const handlers = {
+    onCircleComplete: jest.fn(),
+    onMarkerComplete: jest.fn(),
+    onOverlayComplete: jest.fn(),
+    onPolygonComplete: jest.fn(),
+    onPolylineComplete: jest.fn(),
+    onRectangleComplete: jest.fn(),
+  };
+
+  rerender(<Mock {...handlers} />);
+
+  flushEffects();
+
+  expect(addListenerMock).toBeCalledTimes(events.size);
+
+  const listeners = addListenerMock.mock.calls.reduce(
+    (acc, [event, fn]) => acc.set(event, fn),
+    new Map(),
+  );
+
+  expect(listeners.size).toBe(events.size);
+
+  events.forEach((eventName, handlerName) => {
+    const handler = handlers[handlerName as keyof typeof handlers];
+    const listener = listeners.get(eventName);
+    const payload = { handlerName, eventName, overlay: { setMap: jest.fn() } };
+
+    expect(handler).toBeCalledTimes(0);
+
+    listener(payload);
+
+    expect(handler).toBeCalledTimes(1);
+    expect(handler).lastCalledWith(payload);
   });
 
-  it("should set custom options on mount", () => {
-    mount(
-      <Mock position="TOP_RIGHT" drawingModes={["POLYGON", "RECTANGLE"]} />,
-    );
+  events.forEach((_, handlerName) => {
+    const handler = handlers[handlerName as keyof typeof handlers];
 
-    const manager = getMockInstance();
-
-    expect(manager.setOptions).toBeCalledTimes(1);
-    expect(manager.setOptions).lastCalledWith({
-      drawingControl: true,
-      drawingControlOptions: {
-        drawingModes: ["POLYGON", "RECTANGLE"],
-        position: "TOP_RIGHT",
-      },
-    });
+    expect(handler).toBeCalledTimes(1);
   });
 
-  it("should add listeners without handlers on mount", () => {
-    mount(<Mock />);
+  unmount();
 
-    const manager = getMockInstance();
-
-    const customEvents = 1;
-    const instanceEvents = Object.keys(DrawingControlEvent).length;
-
-    expect(manager.addListener).toBeCalledTimes(customEvents + instanceEvents);
+  addListenerMock.mock.results.forEach(x => {
+    expect(x.value.remove).toBeCalledTimes(1);
   });
+});
 
-  it("should add listeners with handlers on mount", () => {
-    const handlers = createMockHandlers(DrawingControlEvent);
+it("unsets map from overlay onOverlayComplete", () => {
+  const { maps } = ctx;
 
-    mount(<Mock {...handlers} />);
+  const setMapMock = jest.fn();
 
-    const manager = getMockInstance();
+  const { rerender } = render(<Mock />);
 
-    forEachEvent(DrawingControlEvent, (key, event) => {
-      const handler = handlers[key];
-      const payload = { key, event, overlay: { setMap: jest.fn() } };
+  const manager = getMockInstance(maps);
+  const event = { overlay: { setMap: setMapMock } };
 
-      expect(handler).toBeCalledTimes(0);
+  flushEffects();
 
-      emitEvent(manager, event, payload);
+  expect(() => {
+    maps.event.trigger(manager, DrawingControlEvent.onOverlayComplete, event);
+  }).not.toThrow();
 
-      expect(handler).toBeCalledTimes(1);
-      expect(handler).lastCalledWith(payload);
-    });
-  });
+  expect(setMapMock).toBeCalledTimes(1);
+  expect(setMapMock).lastCalledWith(null);
 
-  it("should remove overlay from map on complete", () => {
-    const onOverlayComplete = jest.fn();
+  const onOverlayCompleteMock = jest.fn();
 
-    mount(<Mock onOverlayComplete={onOverlayComplete} />);
+  rerender(<Mock onOverlayComplete={onOverlayCompleteMock} />);
 
-    const manager = getMockInstance();
-    const overlay = { setMap: jest.fn() };
+  expect(() => {
+    maps.event.trigger(manager, DrawingControlEvent.onOverlayComplete, event);
+  }).not.toThrow();
 
-    emitEvent(manager, DrawingControlEvent.onOverlayComplete, { overlay });
+  expect(setMapMock).toBeCalledTimes(2);
+  expect(setMapMock).lastCalledWith(null);
 
-    expect(overlay.setMap).toBeCalledTimes(1);
-    expect(overlay.setMap).lastCalledWith(null);
-  });
-
-  it("should change options on update", () => {
-    const initialProps: DrawingControlProps = {
-      position: "BOTTOM_CENTER",
-      drawingModes: ["CIRCLE"],
-    };
-    const updatedProps: DrawingControlProps = {
-      position: "TOP_CENTER",
-      drawingModes: ["MARKER", "POLYGON"],
-    };
-
-    const wrapper = mount(<Mock {...initialProps} />);
-    const manager = getMockInstance();
-
-    expect(manager.setOptions).toBeCalledTimes(1);
-
-    wrapper.setProps({
-      position: initialProps.position,
-      drawingModes: initialProps.drawingModes,
-    });
-
-    expect(manager.setOptions).toBeCalledTimes(1);
-
-    wrapper.setProps({
-      position: updatedProps.position,
-      drawingModes: updatedProps.drawingModes,
-    });
-
-    expect(manager.setOptions).toBeCalledTimes(2);
-    expect(manager.setOptions).lastCalledWith({
-      drawingControl: true,
-      drawingControlOptions: updatedProps,
-    });
-  });
-
-  it("should remove drawing manager from map on unmount", () => {
-    const wrapper = mount(<Mock />);
-    const manager = getMockInstance();
-
-    expect(manager.setMap).toHaveBeenCalledTimes(1);
-    expect(manager.setMap).toHaveBeenLastCalledWith(map);
-
-    wrapper.unmount();
-
-    expect(manager.setMap).toHaveBeenCalledTimes(2);
-    expect(manager.setMap).toHaveBeenLastCalledWith(null);
-  });
+  expect(onOverlayCompleteMock).toBeCalledTimes(1);
+  expect(onOverlayCompleteMock).lastCalledWith(event);
 });

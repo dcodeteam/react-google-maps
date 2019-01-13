@@ -42,8 +42,8 @@ export function createLatLngBounds(
   bounds: google.maps.LatLngBoundsLiteral,
 ) {
   return new maps.LatLngBounds(
-    createLatLng(maps, { lat: bounds.south, lng: bounds.west }),
-    createLatLng(maps, { lat: bounds.north, lng: bounds.east }),
+    { lat: bounds.south, lng: bounds.west },
+    { lat: bounds.north, lng: bounds.east },
   );
 }
 

@@ -1,309 +1,236 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import {
-  createMockMapComponent,
-  emitEvent,
-  getClassMockInstance,
-} from "../../__tests__/testUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getClassMockInstance, getFnMock } from "../../__testutils__/testUtils";
 import { InfoWindow } from "../InfoWindow";
 import { InfoWindowEvent } from "../InfoWindowEvent";
 
-function getMockInstance(): google.maps.InfoWindow {
-  return getClassMockInstance(google.maps.InfoWindow);
+function getMockInstance(maps: typeof google.maps): google.maps.InfoWindow {
+  return getClassMockInstance(maps.InfoWindow);
 }
 
-describe("InfoWindow", () => {
-  const { map, Mock } = createMockMapComponent(InfoWindow);
-
-  const customEvents = 1;
-  const instanceEvents = Object.keys(InfoWindowEvent).length;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("should set default options on mount", () => {
-    mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
-
-    const infoWindow = getMockInstance();
-
-    expect(infoWindow.setOptions).toBeCalledTimes(1);
-    expect(infoWindow.setOptions).lastCalledWith({
-      disableAutoPan: false,
-      maxWidth: undefined,
-      pixelOffset: undefined,
-      position: { lat: 0, lng: 1 },
-      zIndex: undefined,
-    });
+const [Mock, ctx] = initMapMockComponent(InfoWindow);
+
+afterEach(cleanup);
+
+it("mounts and unmounts", () => {
+  const { map, maps } = ctx;
+  const { unmount } = render(
+    <Mock position={{ lat: 0, lng: 1 }}>Content</Mock>,
+  );
+
+  const infoWindow = getMockInstance(maps);
+
+  expect(infoWindow.open).toBeCalledTimes(0);
+  expect(infoWindow.close).toBeCalledTimes(0);
+
+  flushEffects();
+
+  expect(infoWindow.open).toBeCalledTimes(1);
+  expect(infoWindow.open).lastCalledWith(map);
+  expect(infoWindow.close).toBeCalledTimes(0);
+
+  unmount();
+
+  expect(infoWindow.open).toBeCalledTimes(1);
+  expect(infoWindow.close).toBeCalledTimes(1);
+});
+
+it("passes props", () => {
+  const { rerender } = render(
+    <Mock position={{ lat: 0, lng: 1 }}>Content</Mock>,
+  );
+
+  const infoWindow = getMockInstance(ctx.maps);
+  const infoWindowMock = getFnMock(ctx.maps.InfoWindow);
+  const setOptionsMock = getFnMock(infoWindow.setOptions);
+
+  expect(infoWindowMock).toBeCalledTimes(1);
+  expect(infoWindowMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "content": "Content",
+  "disableAutoPan": false,
+  "maxWidth": undefined,
+  "pixelOffset": undefined,
+  "position": LatLng {
+    "latitude": 0,
+    "longitude": 1,
+  },
+  "zIndex": undefined,
+}
+`);
+
+  rerender(
+    <Mock
+      maxWidth={120}
+      zIndex={10}
+      disableAutoPan={true}
+      position={{ lat: 0, lng: 1 }}
+      pixelOffset={{ width: 0, height: 1 }}
+    >
+      Another Content
+    </Mock>,
+  );
+
+  flushEffects();
 
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.open).lastCalledWith(map);
+  expect(setOptionsMock).toBeCalledTimes(1);
+  expect(setOptionsMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "content": "Another Content",
+  "disableAutoPan": true,
+  "maxWidth": 120,
+  "pixelOffset": Size {
+    "height": 1,
+    "width": 0,
+  },
+  "zIndex": 10,
+}
+`);
+});
 
-    expect(infoWindow.close).toBeCalledTimes(0);
+it("re-triggers open on maxWidth change", () => {
+  const { rerender } = render(
+    <Mock position={{ lat: 0, lng: 1 }}>Content</Mock>,
+  );
 
-    expect(infoWindow.setOptions).toBeCalledTimes(1);
-    expect(infoWindow.setOptions).lastCalledWith({
-      disableAutoPan: false,
-      position: { lat: 0, lng: 1 },
-    });
-  });
+  const infoWindow = getMockInstance(ctx.maps);
 
-  it("should open info window by default on mount", () => {
-    mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
+  flushEffects();
 
-    const infoWindow = getMockInstance();
+  expect(infoWindow.open).toBeCalledTimes(1);
 
-    expect(infoWindow.close).toBeCalledTimes(0);
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.open).lastCalledWith(map);
-  });
+  rerender(
+    <Mock position={{ lat: 0, lng: 1 }} maxWidth={200}>
+      Content
+    </Mock>,
+  );
 
-  it("should NOT open info window on mount if open is 'false'", () => {
-    mount(
-      <Mock open={false} position={{ lat: 0, lng: 1 }}>
-        Content
-      </Mock>,
-    );
+  flushEffects();
+
+  expect(infoWindow.open).toBeCalledTimes(2);
 
-    const infoWindow = getMockInstance();
+  rerender(
+    <Mock position={{ lat: 0, lng: 1 }} maxWidth={200}>
+      Content
+    </Mock>,
+  );
 
-    expect(infoWindow.open).toBeCalledTimes(0);
-    expect(infoWindow.close).toBeCalledTimes(0);
-  });
+  flushEffects();
 
-  it("should set custom options on mount", () => {
-    mount(
-      <Mock
-        open={false}
-        maxWidth={120}
-        zIndex={10}
-        disableAutoPan={true}
-        position={{ lat: 0, lng: 1 }}
-        pixelOffset={{ width: 0, height: 1 }}
-      >
-        Content
-      </Mock>,
-    );
+  expect(infoWindow.open).toBeCalledTimes(2);
 
-    const infoWindow = getMockInstance();
+  rerender(
+    <Mock position={{ lat: 0, lng: 1 }} maxWidth={300}>
+      Content
+    </Mock>,
+  );
 
-    expect(infoWindow.setOptions).toBeCalledTimes(1);
-    expect(infoWindow.setOptions).lastCalledWith({
-      disableAutoPan: true,
-      maxWidth: 120,
-      pixelOffset: { height: 1, width: 0 },
-      position: { lat: 0, lng: 1 },
-      zIndex: 10,
-    });
-  });
+  flushEffects();
 
-  it("should change options on update", () => {
-    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
+  expect(infoWindow.open).toBeCalledTimes(3);
+  expect(infoWindow.close).toBeCalledTimes(0);
+});
 
-    const infoWindow = getMockInstance();
+it("attaches handlers", () => {
+  const { maps } = ctx;
+  const { rerender, unmount } = render(
+    <Mock position={{ lat: 0, lng: 1 }}>Content</Mock>,
+  );
 
-    expect(infoWindow.setOptions).toBeCalledTimes(1);
-    expect(infoWindow.setOptions).lastCalledWith({
-      disableAutoPan: false,
-      position: { lat: 0, lng: 1 },
-    });
+  const infoWindow = getMockInstance(ctx.maps);
+  const addListenerMock = getFnMock(infoWindow.addListener);
 
-    wrapper.setProps({ zIndex: 10 });
+  flushEffects();
 
-    expect(infoWindow.setOptions).toBeCalledTimes(2);
-    expect(infoWindow.setOptions).lastCalledWith({ zIndex: 10 });
+  expect(addListenerMock).toBeCalledTimes(1);
 
-    wrapper.setProps({ zIndex: 10 });
+  expect(() => {
+    maps.event.trigger(infoWindow, InfoWindowEvent.onCloseClick);
+  }).not.toThrow();
 
-    expect(infoWindow.setOptions).toBeCalledTimes(2);
+  const onCloseClick = jest.fn();
 
-    wrapper.setProps({ zIndex: 20 });
+  rerender(
+    <Mock position={{ lat: 0, lng: 1 }} onCloseClick={onCloseClick}>
+      Content
+    </Mock>,
+  );
 
-    expect(infoWindow.setOptions).lastCalledWith({ zIndex: 20 });
-  });
+  maps.event.trigger(infoWindow, InfoWindowEvent.onCloseClick);
 
-  it("should change visibility on update", () => {
-    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
+  expect(onCloseClick).toBeCalledTimes(1);
+  expect(addListenerMock).toBeCalledTimes(1);
 
-    const infoWindow = getMockInstance();
+  unmount();
 
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.close).toBeCalledTimes(0);
+  expect(addListenerMock.mock.results[0].value.remove).toBeCalledTimes(1);
+});
 
-    wrapper.setProps({ open: false });
+it("reopens on close click", () => {
+  const { maps } = ctx;
 
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.close).toBeCalledTimes(1);
+  render(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
 
-    wrapper.setProps({ open: false });
+  const infoWindow = getMockInstance(ctx.maps);
 
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.close).toBeCalledTimes(1);
+  flushEffects();
 
-    wrapper.setProps({ open: true });
+  expect(infoWindow.open).toBeCalledTimes(1);
 
-    expect(infoWindow.open).toBeCalledTimes(2);
-    expect(infoWindow.open).lastCalledWith(map);
+  maps.event.trigger(infoWindow, InfoWindowEvent.onCloseClick);
 
-    expect(infoWindow.close).toBeCalledTimes(1);
-  });
+  expect(infoWindow.open).toBeCalledTimes(2);
+});
 
-  it("should reopen window when it's opened and 'maxWidth' has changed", () => {
-    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
+it("renders portal when react element passed as children", () => {
+  const { maps } = ctx;
+  const ref = React.createRef<HTMLDivElement>();
+  const { rerender } = render(
+    <Mock position={{ lat: 0, lng: 1 }}>
+      <div ref={ref}>HTML Content</div>
+    </Mock>,
+  );
 
-    const infoWindow = getMockInstance();
+  const infoWindow = getMockInstance(maps);
 
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.open).lastCalledWith(map);
+  expect(infoWindow.getContent()).toMatchInlineSnapshot(`
+<div>
+  <div>
+    HTML Content
+  </div>
+</div>
+`);
 
-    wrapper.setProps({ maxWidth: 300 });
+  rerender(
+    <Mock position={{ lat: 0, lng: 1 }}>
+      <div ref={ref}>Another HTML Content</div>
+    </Mock>,
+  );
 
-    expect(infoWindow.open).toBeCalledTimes(2);
-    expect(infoWindow.open).lastCalledWith(map);
+  expect(infoWindow.getContent()).toMatchInlineSnapshot(`
+<div>
+  <div>
+    Another HTML Content
+  </div>
+</div>
+`);
+});
 
-    wrapper.setProps({ maxWidth: 300 });
+it("cleans up on unmount", () => {
+  const { maps } = ctx;
+  const { unmount } = render(
+    <Mock position={{ lat: 0, lng: 1 }}>Content</Mock>,
+  );
 
-    expect(infoWindow.open).toBeCalledTimes(2);
+  const infoWindow = getMockInstance(maps);
 
-    wrapper.setProps({ maxWidth: 200 });
+  flushEffects();
 
-    expect(infoWindow.open).toBeCalledTimes(3);
-    expect(infoWindow.open).lastCalledWith(map);
+  expect(infoWindow.close).toBeCalledTimes(0);
 
-    expect(infoWindow.close).toBeCalledTimes(0);
-  });
+  unmount();
 
-  it("should NOT reopen window when it's closed and 'maxWidth' has changed", () => {
-    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
-
-    const infoWindow = getMockInstance();
-
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.open).lastCalledWith(map);
-
-    wrapper.setProps({ open: false, maxWidth: 300 });
-
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.close).toBeCalledTimes(1);
-
-    wrapper.setProps({ maxWidth: 300 });
-
-    expect(infoWindow.open).toBeCalledTimes(1);
-
-    wrapper.setProps({ maxWidth: 200 });
-
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.close).toBeCalledTimes(1);
-  });
-
-  it("should attach listeners without handlers", () => {
-    mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
-
-    const infoWindow = getMockInstance();
-
-    expect(infoWindow.addListener).toBeCalledTimes(
-      customEvents + instanceEvents,
-    );
-  });
-
-  it("should attach listeners with handlers", () => {
-    const onCloseClick = jest.fn();
-
-    mount(
-      <Mock position={{ lat: 0, lng: 1 }} onCloseClick={onCloseClick}>
-        Content
-      </Mock>,
-    );
-
-    const infoWindow = getMockInstance();
-
-    expect(onCloseClick).toBeCalledTimes(0);
-
-    emitEvent(infoWindow, InfoWindowEvent.onCloseClick);
-
-    expect(onCloseClick).toBeCalledTimes(1);
-  });
-
-  it("should reopen info window on close when it should be open", () => {
-    mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
-
-    const infoWindow = getMockInstance();
-
-    expect(infoWindow.open).toBeCalledTimes(1);
-    expect(infoWindow.open).lastCalledWith(map);
-
-    emitEvent(infoWindow, InfoWindowEvent.onCloseClick);
-
-    expect(infoWindow.open).toBeCalledTimes(2);
-    expect(infoWindow.open).lastCalledWith(map);
-  });
-
-  it("should render string content", () => {
-    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
-
-    const infoWindow = getMockInstance();
-
-    expect(infoWindow.setContent).toBeCalledTimes(1);
-    expect(infoWindow.setContent).lastCalledWith("Content");
-
-    wrapper.setProps({ children: "Another Content" });
-
-    expect(infoWindow.setContent).toBeCalledTimes(2);
-    expect(infoWindow.setContent).lastCalledWith("Another Content");
-
-    wrapper.setProps({ children: "Another Content" });
-
-    expect(infoWindow.setContent).toBeCalledTimes(2);
-
-    wrapper.setProps({ children: "Content" });
-
-    expect(infoWindow.setContent).toBeCalledTimes(3);
-    expect(infoWindow.setContent).lastCalledWith("Content");
-  });
-
-  it("should render react portal if child is react element", () => {
-    const ref = React.createRef<HTMLDivElement>();
-
-    const wrapper = mount(
-      <Mock position={{ lat: 0, lng: 1 }}>
-        <div ref={ref}>React Element</div>
-      </Mock>,
-    );
-
-    const infoWindow = getMockInstance();
-
-    expect(infoWindow.setContent).toBeCalledTimes(1);
-    expect(infoWindow.setContent).lastCalledWith(ref.current!.parentElement);
-
-    wrapper.setProps({ children: <div ref={ref}>Another React Element</div> });
-
-    expect(infoWindow.setContent).toBeCalledTimes(2);
-    expect(infoWindow.setContent).lastCalledWith(ref.current!.parentElement);
-  });
-
-  it("should unmount portal on close", () => {
-    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }}>Content</Mock>);
-
-    const infoWindow = getMockInstance();
-
-    expect(infoWindow.close).toBeCalledTimes(0);
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
-
-    const {
-      mock: { results },
-    } = infoWindow.addListener as jest.Mock;
-
-    expect(results.length).toBe(customEvents + instanceEvents);
-
-    wrapper.unmount();
-
-    results.forEach(({ value }) => {
-      expect(value.remove).toBeCalled();
-    });
-
-    expect(infoWindow.close).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).lastCalledWith(infoWindow);
-  });
+  expect(infoWindow.close).toBeCalledTimes(1);
 });

@@ -1,6 +1,6 @@
-import * as React from "react";
+import React from "react";
 
-import { DocsMap } from "../../__docs__/DocsMap";
+import { DocsMap } from "../../__docs__/DocsComponents";
 import { CustomControl } from "../..";
 
 interface Api<S> {

@@ -5,7 +5,7 @@ route: /controls/custom-control
 ---
 
 import { Playground, PropsTable } from "docz";
-import { DocsMap } from "../../__docs__/DocsMap";
+import { DocsMap } from "../../__docs__/DocsComponents";
 import { CustomControl } from "../CustomControl";
 
 # Custom Control
@@ -18,7 +18,7 @@ Controls display options of custom control.
 - [google.maps.ControlPosition](https://developers.google.com/maps/documentation/javascript/reference#ControlPosition)
 
 <Playground>
-  <DocsMap zoom={8} center={{ lat: 36, lng: -122 }}>
+  <DocsMap>
     <CustomControl position="BOTTOM_CENTER">
       <button
         type="button"

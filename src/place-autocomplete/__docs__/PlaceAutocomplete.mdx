@@ -6,7 +6,7 @@ route: /places/place-autocomplete
 
 import { Playground, PropsTable } from "docz";
 import { PlaceAutocomplete } from "../PlaceAutocomplete";
-import { GoogleMapsLoader } from "../../google-maps-loader/GoogleMapsLoader";
+import { DocsAPIProvider } from "../../__docs__/DocsComponents";
 
 # Place Autocomplete
 
@@ -20,22 +20,18 @@ Attaches place autocomplete to input.
 - [google.maps.places.ComponentRestrictions](https://developers.google.com/maps/documentation/javascript/reference/places-autocomplete-service#ComponentRestrictions)
 
 <Playground>
-  <GoogleMapsLoader
-    apiKey="AIzaSyA-jxUCmizaZ0lFsWk8HS5-MzEkXH7atPk"
-    render={maps => (
-      <PlaceAutocomplete
-        maps={maps}
-        placeIdOnly={true}
-        strictBounds={true}
-        types={["geocode"]}
-        componentRestrictions={{ country: "USA" }}
-        onPlaceChanged={event => {
-          alert(JSON.stringify(event, null, 2));
-        }}
-        render={({ ref }) => <input ref={ref} type="text" />}
-      />
-    )}
-  />
+  <DocsAPIProvider>
+    <PlaceAutocomplete
+      placeIdOnly={true}
+      strictBounds={true}
+      types={["geocode"]}
+      componentRestrictions={{ country: "USA" }}
+      onPlaceChanged={event => {
+        alert(JSON.stringify(event, null, 2));
+      }}
+      render={({ ref }) => <input ref={ref} type="text" />}
+    />
+  </DocsAPIProvider>
 </Playground>
 
 <PropsTable of={PlaceAutocomplete} />

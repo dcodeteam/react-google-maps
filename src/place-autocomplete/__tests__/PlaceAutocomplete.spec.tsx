@@ -1,161 +1,164 @@
-import { mount, shallow } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { flushEffects, render } from "react-testing-library";
 
-import { emitEvent, getClassMockInstance } from "../../__tests__/testUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getClassMockInstance, getFnMock } from "../../__testutils__/testUtils";
 import { PlaceAutocomplete } from "../PlaceAutocomplete";
 import { PlaceAutocompleteEvent } from "../PlaceAutocompleteEvent";
 
-function getMockInstance(): google.maps.places.Autocomplete {
-  return getClassMockInstance(google.maps.places.Autocomplete);
+function getMockInstance(
+  maps: typeof google.maps,
+): google.maps.places.Autocomplete {
+  return getClassMockInstance(maps.places.Autocomplete);
 }
 
-describe("PlaceAutocomplete", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const [Mock, ctx] = initMapMockComponent(PlaceAutocomplete);
 
-  it("should connect to rendered input", () => {
-    const wrapper = mount(
-      <PlaceAutocomplete
-        maps={google.maps}
-        render={({ ref }) => <input ref={ref} type="text" />}
-      />,
-    );
+it("connects to rendered input", () => {
+  const { maps } = ctx;
+  const { getByTestId } = render(
+    <Mock
+      render={({ ref }) => <input ref={ref} type="text" data-testid="input" />}
+    />,
+  );
 
-    const inputWrapper = wrapper.find("input");
+  flushEffects();
 
-    const autocomplete = getMockInstance();
+  const autocomplete = getMockInstance(maps);
+  const input = getByTestId("input");
 
-    expect(inputWrapper.length).toBe(1);
-    expect(autocomplete.get("input")).toBe(inputWrapper.getDOMNode());
-  });
+  expect(autocomplete.get("input")).toBe(input);
+});
 
-  it("should set default options on mount", () => {
-    shallow(
-      <PlaceAutocomplete
-        maps={google.maps}
-        render={({ ref }) => <input ref={ref} type="text" />}
-      />,
-    );
+it("passes props", () => {
+  const { maps } = ctx;
+  const { rerender } = render(
+    <Mock
+      placeIdOnly={true}
+      strictBounds={true}
+      types={["geocode"]}
+      componentRestrictions={{ country: "USA" }}
+      bounds={{ east: -96, north: 37, south: 31, west: -112 }}
+      render={({ ref }) => <input ref={ref} type="text" />}
+    />,
+  );
 
-    const autocomplete = getMockInstance();
+  flushEffects();
 
-    expect(autocomplete.setValues).toBeCalledTimes(1);
-    expect(autocomplete.setValues).lastCalledWith({
-      componentRestrictions: undefined,
-      placeIdOnly: false,
-      strictBounds: false,
-      types: undefined,
-    });
-  });
+  const autocomplete = getMockInstance(maps);
+  const setValuesMock = getFnMock(autocomplete.setValues);
 
-  it("should set custom options on mount", () => {
-    shallow(
-      <PlaceAutocomplete
-        maps={google.maps}
-        placeIdOnly={true}
-        strictBounds={true}
-        types={["geocode"]}
-        componentRestrictions={{ country: "USA" }}
-        bounds={{ east: -96, north: 37, south: 31, west: -112 }}
-        render={({ ref }) => <input ref={ref} type="text" />}
-      />,
-    );
+  expect(setValuesMock).toBeCalledTimes(1);
+  expect(setValuesMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "bounds": Object {
+    "east": -96,
+    "north": 37,
+    "south": 31,
+    "west": -112,
+  },
+  "componentRestrictions": Object {
+    "country": "USA",
+  },
+  "placeIdOnly": true,
+  "strictBounds": true,
+  "types": Array [
+    "geocode",
+  ],
+}
+`);
 
-    const autocomplete = getMockInstance();
+  rerender(
+    <Mock
+      placeIdOnly={true}
+      render={({ ref }) => <input ref={ref} type="text" />}
+    />,
+  );
 
-    expect(autocomplete.setValues).toBeCalledTimes(1);
-    expect(autocomplete.setValues).lastCalledWith({
-      bounds: { east: -96, north: 37, south: 31, west: -112 },
-      componentRestrictions: { country: "USA" },
-      placeIdOnly: true,
-      strictBounds: true,
-      types: ["geocode"],
-    });
-  });
+  flushEffects();
 
-  it("should add listeners without handlers", () => {
-    shallow(
-      <PlaceAutocomplete
-        maps={google.maps}
-        render={({ ref }) => <input ref={ref} type="text" />}
-      />,
-    );
+  expect(setValuesMock).toBeCalledTimes(2);
+  expect(setValuesMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+Object {
+  "bounds": undefined,
+  "componentRestrictions": undefined,
+  "placeIdOnly": true,
+  "strictBounds": false,
+  "types": undefined,
+}
+`);
 
-    const autocomplete = getMockInstance();
+  rerender(
+    <Mock
+      placeIdOnly={true}
+      render={({ ref }) => <input ref={ref} type="text" />}
+    />,
+  );
 
-    expect(autocomplete.addListener).toBeCalledTimes(1);
+  flushEffects();
 
-    expect(() => {
-      emitEvent(autocomplete, PlaceAutocompleteEvent.onPlaceChanged);
-    }).not.toThrow();
-  });
+  expect(setValuesMock).toBeCalledTimes(2);
 
-  it("should add listeners with handlers", () => {
-    const onPlaceChanged = jest.fn();
+  rerender(<Mock render={({ ref }) => <input ref={ref} type="text" />} />);
 
-    shallow(
-      <PlaceAutocomplete
-        maps={google.maps}
-        onPlaceChanged={onPlaceChanged}
-        render={({ ref }) => <input ref={ref} type="text" />}
-      />,
-    );
+  flushEffects();
 
-    const place = {};
-    const autocomplete = getMockInstance();
+  expect(setValuesMock).toBeCalledTimes(3);
+  expect(setValuesMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+Object {
+  "bounds": undefined,
+  "componentRestrictions": undefined,
+  "placeIdOnly": true,
+  "strictBounds": false,
+  "types": undefined,
+}
+`);
+});
 
-    expect(autocomplete.addListener).toBeCalledTimes(1);
+it("attaches handlers", () => {
+  const { maps } = ctx;
+  const onPlaceChanged = jest.fn();
+  const { rerender, unmount } = render(
+    <Mock render={({ ref }) => <input ref={ref} type="text" />} />,
+  );
 
-    expect(onPlaceChanged).toBeCalledTimes(0);
+  flushEffects();
 
-    autocomplete.set("place", place);
+  const autocomplete = getMockInstance(maps);
+  const addListenerMock = getFnMock(autocomplete.addListener);
 
-    emitEvent(autocomplete, PlaceAutocompleteEvent.onPlaceChanged);
+  expect(addListenerMock).toBeCalledTimes(1);
 
-    expect(onPlaceChanged).toBeCalledTimes(1);
-    expect(onPlaceChanged).lastCalledWith(place);
-  });
+  expect(() => {
+    maps.event.trigger(autocomplete, PlaceAutocompleteEvent.onPlaceChanged);
+  }).not.toThrow();
 
-  it("should change options on update", () => {
-    const wrapper = shallow(
-      <PlaceAutocomplete
-        maps={google.maps}
-        render={({ ref }) => <input ref={ref} type="text" />}
-      />,
-    );
+  rerender(
+    <Mock
+      onPlaceChanged={onPlaceChanged}
+      render={({ ref }) => <input ref={ref} type="text" />}
+    />,
+  );
 
-    const autocomplete = getMockInstance();
+  flushEffects();
 
-    expect(autocomplete.setValues).toBeCalledTimes(1);
+  expect(onPlaceChanged).toBeCalledTimes(0);
 
-    wrapper.setProps({ placeIdOnly: false });
+  maps.event.trigger(autocomplete, PlaceAutocompleteEvent.onPlaceChanged);
 
-    expect(autocomplete.setValues).toBeCalledTimes(1);
+  expect(onPlaceChanged).toBeCalledTimes(1);
 
-    wrapper.setProps({ placeIdOnly: true });
+  rerender(<Mock render={({ ref }) => <input ref={ref} type="text" />} />);
 
-    expect(autocomplete.setValues).toBeCalledTimes(2);
-    expect(autocomplete.setValues).lastCalledWith({ placeIdOnly: true });
-  });
+  flushEffects();
 
-  it("should clear all listeners on unmount", () => {
-    const wrapper = shallow(
-      <PlaceAutocomplete
-        maps={google.maps}
-        render={({ ref }) => <input ref={ref} type="text" />}
-      />,
-    );
+  maps.event.trigger(autocomplete, PlaceAutocompleteEvent.onPlaceChanged);
 
-    const autocomplete = getMockInstance();
+  expect(onPlaceChanged).toBeCalledTimes(1);
 
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
+  unmount();
 
-    wrapper.unmount();
+  expect(addListenerMock.mock.results[0].value.remove).toBeCalledTimes(1);
 
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).lastCalledWith(
-      autocomplete,
-    );
-  });
+  expect(addListenerMock).toBeCalledTimes(1);
 });
