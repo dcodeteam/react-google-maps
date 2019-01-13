@@ -6,8 +6,8 @@ notifications:
   email: false
 
 node_js:
-  - "8"
   - "10"
+  - "11"
 
 install:
   - yarn
@@ -28,7 +28,7 @@ deploy:
     script: yarn codecov
     on:
       tags: false
-      node_js: "8"
+      node_js: "10"
       branch: master
       repo: dcodeteam/react-google-maps
 
@@ -38,7 +38,7 @@ deploy:
     api_key: $NPM_TOKEN
     on:
       tags: true
-      node_js: "8"
+      node_js: "10"
       branch: master
       repo: dcodeteam/react-google-maps
 
@@ -48,6 +48,6 @@ deploy:
     github-token: $GITHUB_TOKEN
     on:
       tags: true
-      node_js: "8"
+      node_js: "10"
       branch: master
       repo: dcodeteam/react-google-maps
