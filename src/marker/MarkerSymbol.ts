@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { PointLiteral, createPoint } from "../internal/MapsUtils";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
-import { useGoogleMapMarker, useGoogleMapsAPI } from "..";
+import { useGoogleMapMarker, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface MarkerSymbolProps {
   /**

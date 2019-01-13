@@ -6,7 +6,7 @@ import { useChangedProps } from "../internal/useChangedProps";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { useUpdateEffect } from "../internal/useUpdateEffect";
 import { InfoWindowEvent } from "./InfoWindowEvent";
-import { useGoogleMap, useGoogleMapsAPI } from "..";
+import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface InfoWindowProps {
   /**

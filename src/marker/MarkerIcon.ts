@@ -7,7 +7,7 @@ import {
   createSize,
 } from "../internal/MapsUtils";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
-import { useGoogleMapMarker, useGoogleMapsAPI } from "..";
+import { useGoogleMapMarker, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface MarkerIconProps {
   /**

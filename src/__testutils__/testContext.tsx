@@ -5,7 +5,7 @@ import {
   GoogleMapContext,
   GoogleMapMarkerContext,
   GoogleMapsAPIContext,
-} from "..";
+} from "../context/GoogleMapsContext";
 
 interface MapMockContext {
   readonly map: google.maps.Map;

@@ -3,7 +3,7 @@ import { ReactElement, RefObject, useEffect, useRef, useState } from "react";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { PlaceAutocompleteEvent } from "./PlaceAutocompleteEvent";
-import { useGoogleMapsAPI } from "..";
+import { useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface PlaceAutocompleteRenderProps {
   ref: RefObject<HTMLInputElement>;

@@ -1,34 +1,34 @@
 {
   "./react-google-maps.es.js": {
-    "bundled": 49790,
-    "minified": 26690,
-    "gzipped": 5921,
+    "bundled": 33435,
+    "minified": 17566,
+    "gzipped": 4930,
     "treeshaked": {
       "rollup": {
-        "code": 2407,
-        "import_statements": 689
+        "code": 1846,
+        "import_statements": 185
       },
       "webpack": {
-        "code": 6113
+        "code": 3006
       }
     }
   },
   "./react-google-maps.cjs.js": {
-    "bundled": 51046,
-    "minified": 27805,
-    "gzipped": 6085
+    "bundled": 34515,
+    "minified": 18535,
+    "gzipped": 5063
   },
   "./react-google-maps.es2015.js": {
-    "bundled": 42254,
-    "minified": 22832,
-    "gzipped": 5673,
+    "bundled": 31065,
+    "minified": 16688,
+    "gzipped": 4889,
     "treeshaked": {
       "rollup": {
-        "code": 1954,
-        "import_statements": 240
+        "code": 1762,
+        "import_statements": 101
       },
       "webpack": {
-        "code": 3141
+        "code": 2860
       }
     }
   }

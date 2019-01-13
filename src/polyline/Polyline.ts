@@ -4,7 +4,7 @@ import { createLatLng, createMVCArray } from "../internal/MapsUtils";
 import { useChangedProps } from "../internal/useChangedProps";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { PolylineEvent } from "./PolylineEvent";
-import { useGoogleMap, useGoogleMapsAPI } from "..";
+import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 export interface PolylineProps extends PolylineHandlers {
   /**

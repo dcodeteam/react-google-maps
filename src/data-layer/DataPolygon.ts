@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { DataLayerEvent } from "./DataLayerEvent";
-import { useGoogleMap, useGoogleMapsAPI } from "..";
+import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 
 interface DataPolygonHandlerEvent {
   feature: google.maps.Data.Feature;
