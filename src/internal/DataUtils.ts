@@ -38,6 +38,7 @@ function isEqualWith<T>(
   const aTag = getObjectTag(a);
   const bTag = getObjectTag(b);
 
+  /* istanbul ignore next */
   if (aTag !== bTag) {
     return false;
   }
@@ -70,6 +71,27 @@ export function isDeepEqual<T>(a: T, b: T): boolean {
   return isEqualWith(a, b, isDeepEqual);
 }
 
-export function isShallowEqual<T>(a: T, b: T): boolean {
-  return isEqualWith(a, b, isStrictEqual);
+export function pickChangedProps<T extends object>(
+  prevProps: T,
+  nextProps: T,
+): null | Partial<T> {
+  if (prevProps === nextProps) {
+    return null;
+  }
+
+  const keys = Object.keys(nextProps) as Array<keyof T>;
+  const diff: Partial<T> = {};
+  let hasChanged = false;
+
+  keys.forEach(key => {
+    const prevValue = prevProps[key];
+    const nextValue = nextProps[key];
+
+    if (!isDeepEqual(prevValue, nextValue)) {
+      hasChanged = true;
+      diff[key] = nextValue;
+    }
+  });
+
+  return hasChanged ? diff : null;
 }

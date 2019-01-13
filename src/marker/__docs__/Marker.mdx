@@ -7,7 +7,7 @@ route: /basic/marker
 import { Playground, PropsTable } from "docz";
 
 import { Marker } from "../Marker";
-import { DocsMap } from "../../__docs__/DocsMap";
+import { DocsMap } from "../../__docs__/DocsComponents";
 
 # Marker
 
@@ -19,7 +19,7 @@ Draws `google.maps.Marker`.
 - [google.maps.MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions)
 
 <Playground>
-  <DocsMap zoom={8} center={{ lat: 36, lng: -122 }}>
+  <DocsMap>
     <Marker
       animation="BOUNCE"
       draggable={true}

@@ -1,55 +1,74 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { createMockMapComponent } from "../../__tests__/testUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
 import { PanToBounds } from "../PanToBounds";
 
-describe("PanToBounds", () => {
-  const { map, Mock } = createMockMapComponent(PanToBounds);
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const [Mock, ctx] = initMapMockComponent(PanToBounds);
 
-  it("should pan to bounds on mount", () => {
-    const bounds: google.maps.LatLngBoundsLiteral = {
-      north: 1,
-      east: 1,
-      south: 2,
-      west: 2,
-    };
+it("runs animation", () => {
+  const panToBoundsMock = getFnMock(ctx.map.panToBounds);
+  const { rerender } = render(
+    <Mock
+      bounds={{
+        north: 1,
+        east: 1,
+        south: 2,
+        west: 2,
+      }}
+    />,
+  );
 
-    mount(<Mock bounds={bounds} />);
+  flushEffects();
 
-    expect(map.panToBounds).toBeCalledTimes(1);
-    expect(map.panToBounds).lastCalledWith(bounds);
-  });
+  expect(panToBoundsMock).toBeCalledTimes(1);
+  expect(panToBoundsMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+LatLngBounds {
+  "east": 1,
+  "north": 1,
+  "south": 2,
+  "west": 2,
+}
+`);
 
-  it("should fit bounds on mount", () => {
-    const initialBounds: google.maps.LatLngBoundsLiteral = {
-      north: 1,
-      east: 1,
-      south: 2,
-      west: 2,
-    };
-    const updatedBounds: google.maps.LatLngBoundsLiteral = {
-      north: 3,
-      east: 3,
-      south: 4,
-      west: 4,
-    };
+  rerender(
+    <Mock
+      bounds={{
+        north: 1,
+        east: 1,
+        south: 2,
+        west: 2,
+      }}
+    />,
+  );
 
-    const wrapper = mount(<Mock bounds={initialBounds} />);
+  flushEffects();
 
-    expect(map.panToBounds).toBeCalledTimes(1);
+  expect(panToBoundsMock).toBeCalledTimes(1);
 
-    wrapper.setProps({ bounds: initialBounds });
+  rerender(
+    <Mock
+      bounds={{
+        north: 3,
+        east: 3,
+        south: 4,
+        west: 4,
+      }}
+    />,
+  );
 
-    expect(map.panToBounds).toBeCalledTimes(1);
+  flushEffects();
 
-    wrapper.setProps({ bounds: updatedBounds });
-
-    expect(map.panToBounds).toBeCalledTimes(2);
-    expect(map.panToBounds).lastCalledWith(updatedBounds);
-  });
+  expect(panToBoundsMock).toBeCalledTimes(2);
+  expect(panToBoundsMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+LatLngBounds {
+  "east": 3,
+  "north": 3,
+  "south": 4,
+  "west": 4,
+}
+`);
 });

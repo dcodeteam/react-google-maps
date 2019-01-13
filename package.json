@@ -36,8 +36,8 @@
     "@babel/runtime": "^7.0.0"
   },
   "peerDependencies": {
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "react": "16.8.0-alpha.0",
+    "react-dom": "16.8.0-alpha.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.1.0",
@@ -49,9 +49,6 @@
     "@dc0de/eslint-config-node": "^0.4.8",
     "@dc0de/eslint-config-react": "^0.4.9",
     "@emotion/core": "^10.0.6",
-    "@types/enzyme": "^3.1.14",
-    "@types/enzyme-adapter-react-16": "^1.0.3",
-    "@types/enzyme-to-json": "^1.5.2",
     "@types/googlemaps": "^3.30.14",
     "@types/jest": "^23.3.5",
     "@types/react": "^16.4.16",
@@ -61,9 +58,6 @@
     "codecov": "^3.1.0",
     "docz": "^0.13.7",
     "docz-theme-default": "^0.13.7",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.6.0",
-    "enzyme-to-json": "^3.3.4",
     "eslint": "^5.3.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -77,9 +71,11 @@
     "import-sort-parser-typescript": "^5.0.0",
     "import-sort-style-module": "^5.0.0",
     "jest": "^23.0.0",
+    "jest-dom": "^3.0.0",
     "prettier": "^1.15.0",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
+    "react": "16.8.0-alpha.0",
+    "react-dom": "16.8.0-alpha.0",
+    "react-testing-library": "^5.4.4",
     "rimraf": "^2.6.2",
     "rollup": "^1.1.0",
     "rollup-plugin-babel": "^4.0.3",

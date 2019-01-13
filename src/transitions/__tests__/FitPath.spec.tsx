@@ -1,66 +1,111 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { createMockMapComponent } from "../../__tests__/testUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
 import { FitPath } from "../FitPath";
 
-describe("FitPath", () => {
-  const { map, Mock } = createMockMapComponent(FitPath);
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const [Mock, ctx] = initMapMockComponent(FitPath);
 
-  it("should fit bounds on mount", () => {
-    const path: google.maps.LatLngLiteral[] = [
-      { lat: -2, lng: -2 },
-      { lat: -1, lng: -1 },
-      { lat: 1, lng: 1 },
-      { lat: 2, lng: 2 },
-    ];
+it("runs animation", () => {
+  const fitBoundsMock = getFnMock(ctx.map.fitBounds);
 
-    mount(<Mock path={path} />);
+  const { rerender } = render(
+    <Mock
+      path={[
+        { lat: -2, lng: -2 },
+        { lat: -1, lng: -1 },
+        { lat: 1, lng: 1 },
+        { lat: 2, lng: 2 },
+      ]}
+    />,
+  );
 
-    expect(map.fitBounds).toBeCalledTimes(1);
-    expect(map.fitBounds).lastCalledWith({
-      east: 2,
-      north: 2,
-      south: -2,
-      west: -2,
-    });
-  });
+  flushEffects();
 
-  it("should fit bounds on update", () => {
-    const initialPath: google.maps.LatLngLiteral[] = [
-      { lat: -2, lng: -2 },
-      { lat: -1, lng: -1 },
-      { lat: 1, lng: 1 },
-      { lat: 2, lng: 2 },
-    ];
+  expect(fitBoundsMock).toBeCalledTimes(1);
+  expect(fitBoundsMock).toMatchInlineSnapshot(`
+[MockFunction] {
+  "calls": Array [
+    Array [
+      LatLngBounds {
+        "east": 2,
+        "north": 2,
+        "south": -2,
+        "west": -2,
+      },
+    ],
+  ],
+  "results": Array [
+    Object {
+      "isThrow": false,
+      "value": undefined,
+    },
+  ],
+}
+`);
 
-    const updatedPath: google.maps.LatLngLiteral[] = [
-      { lat: -3, lng: -3 },
-      { lat: -2, lng: -2 },
-      { lat: 2, lng: 2 },
-      { lat: 3, lng: 3 },
-    ];
+  rerender(
+    <Mock
+      path={[
+        { lat: -2, lng: -2 },
+        { lat: -1, lng: -1 },
+        { lat: 1, lng: 1 },
+        { lat: 2, lng: 2 },
+      ]}
+    />,
+  );
 
-    const wrapper = mount(<Mock path={initialPath} />);
+  flushEffects();
 
-    expect(map.fitBounds).toBeCalledTimes(1);
+  expect(fitBoundsMock).toBeCalledTimes(1);
 
-    wrapper.setProps({ path: initialPath });
+  rerender(
+    <Mock
+      path={[
+        { lat: -3, lng: -3 },
+        { lat: -2, lng: -2 },
+        { lat: 2, lng: 2 },
+        { lat: 3, lng: 3 },
+      ]}
+    />,
+  );
 
-    expect(map.fitBounds).toBeCalledTimes(1);
+  flushEffects();
 
-    wrapper.setProps({ path: updatedPath });
-
-    expect(map.fitBounds).toBeCalledTimes(2);
-    expect(map.fitBounds).lastCalledWith({
-      east: 3,
-      north: 3,
-      south: -3,
-      west: -3,
-    });
-  });
+  expect(fitBoundsMock).toBeCalledTimes(2);
+  expect(fitBoundsMock).toMatchInlineSnapshot(`
+[MockFunction] {
+  "calls": Array [
+    Array [
+      LatLngBounds {
+        "east": 2,
+        "north": 2,
+        "south": -2,
+        "west": -2,
+      },
+    ],
+    Array [
+      LatLngBounds {
+        "east": 3,
+        "north": 3,
+        "south": -3,
+        "west": -3,
+      },
+    ],
+  ],
+  "results": Array [
+    Object {
+      "isThrow": false,
+      "value": undefined,
+    },
+    Object {
+      "isThrow": false,
+      "value": undefined,
+    },
+  ],
+}
+`);
 });

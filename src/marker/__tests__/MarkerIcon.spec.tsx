@@ -1,97 +1,81 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { MapContextProvider } from "../../map/MapContext";
-import { MarkerContextProvider } from "../MarkerContext";
-import { MarkerIcon, MarkerIconProps } from "../MarkerIcon";
+import { initMapMarkerMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
+import { MarkerIcon } from "../MarkerIcon";
 
-describe("MarkerIcon", () => {
-  const map = new google.maps.Map(null);
-  const marker = new google.maps.Marker();
+const [Mock, ctx] = initMapMarkerMockComponent(MarkerIcon);
 
-  function MockMarkerIcon(props: MarkerIconProps) {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <MarkerContextProvider value={{ marker }}>
-          <MarkerIcon {...props} />
-        </MarkerContextProvider>
-      </MapContextProvider>
-    );
-  }
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+it("converts props to icon", () => {
+  const { marker } = ctx;
+  const setIconMock = getFnMock(marker.setIcon);
+  const { rerender } = render(
+    <Mock
+      url="https://url.to/icon.png"
+      anchor={{ x: 1, y: 2 }}
+      origin={{ x: 3, y: 4 }}
+      labelOrigin={{ x: 5, y: 6 }}
+      size={{ width: 7, height: 8 }}
+      scaledSize={{ width: 9, height: 10 }}
+    />,
+  );
 
-  it("should set default marker icon options on mount", () => {
-    mount(<MockMarkerIcon url="https://url.to/icon.png" />);
+  expect(setIconMock).toBeCalledTimes(0);
 
-    expect(marker.setIcon).toBeCalledTimes(1);
-    expect(marker.setIcon).lastCalledWith({
-      anchor: undefined,
-      labelOrigin: undefined,
-      origin: { x: 0, y: 0 },
-      scaledSize: undefined,
-      size: undefined,
-      url: "https://url.to/icon.png",
-    });
-  });
+  flushEffects();
 
-  it("should set custom marker icon options on mount", () => {
-    mount(
-      <MockMarkerIcon
-        url="https://url.to/icon.png"
-        anchor={{ x: 1, y: 2 }}
-        origin={{ x: 3, y: 4 }}
-        labelOrigin={{ x: 5, y: 6 }}
-        size={{ width: 7, height: 8 }}
-        scaledSize={{ width: 9, height: 10 }}
-      />,
-    );
+  expect(setIconMock).toBeCalledTimes(1);
+  expect(setIconMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "anchor": Point {
+    "x": 1,
+    "y": 2,
+  },
+  "labelOrigin": Point {
+    "x": 5,
+    "y": 6,
+  },
+  "origin": Point {
+    "x": 3,
+    "y": 4,
+  },
+  "scaledSize": Size {
+    "height": 10,
+    "width": 9,
+  },
+  "size": Size {
+    "height": 8,
+    "width": 7,
+  },
+  "url": "https://url.to/icon.png",
+}
+`);
 
-    expect(marker.setIcon).toBeCalledTimes(1);
-    expect(marker.setIcon).lastCalledWith({
-      anchor: { x: 1, y: 2 },
-      labelOrigin: { x: 5, y: 6 },
-      origin: { x: 3, y: 4 },
-      scaledSize: { height: 10, width: 9 },
-      size: { height: 8, width: 7 },
-      url: "https://url.to/icon.png",
-    });
-  });
+  rerender(<Mock url="https://url.to/icon.png" />);
 
-  it("should update icon only if on options change", () => {
-    const wrapper = mount(<MockMarkerIcon url="https://url.to/icon.png" />);
+  flushEffects();
 
-    expect(marker.setIcon).toBeCalledTimes(1);
+  expect(setIconMock).toBeCalledTimes(2);
+  expect(setIconMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+Object {
+  "anchor": undefined,
+  "labelOrigin": undefined,
+  "origin": Point {
+    "x": 0,
+    "y": 0,
+  },
+  "scaledSize": undefined,
+  "size": undefined,
+  "url": "https://url.to/icon.png",
+}
+`);
 
-    wrapper.setProps({ url: "https://url.to/another-icon.png" });
+  rerender(<Mock url="https://url.to/icon.png" />);
 
-    expect(marker.setIcon).toBeCalledTimes(2);
-    expect(marker.setIcon).lastCalledWith({
-      anchor: undefined,
-      labelOrigin: undefined,
-      origin: { x: 0, y: 0 },
-      scaledSize: undefined,
-      size: undefined,
-      url: "https://url.to/another-icon.png",
-    });
+  flushEffects();
 
-    wrapper.setProps({ origin: { x: 0, y: 0 } });
-
-    expect(marker.setIcon).toBeCalledTimes(2);
-
-    wrapper.setProps({ origin: { x: 1, y: 2 } });
-
-    expect(marker.setIcon).toBeCalledTimes(3);
-
-    expect(marker.setIcon).lastCalledWith({
-      anchor: undefined,
-      labelOrigin: undefined,
-      origin: { x: 1, y: 2 },
-      scaledSize: undefined,
-      size: undefined,
-      url: "https://url.to/another-icon.png",
-    });
-  });
+  expect(setIconMock).toBeCalledTimes(2);
 });

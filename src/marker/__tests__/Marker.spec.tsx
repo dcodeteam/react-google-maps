@@ -1,206 +1,253 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import {
-  createMockHandlers,
-  createMockMapComponent,
-  emitEvent,
-  forEachEvent,
-  getClassMockInstance,
-} from "../../__tests__/testUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getClassMockInstance, getFnMock } from "../../__testutils__/testUtils";
+import { GoogleMapMarkerContext } from "../../context/GoogleMapsContext";
 import { Marker } from "../Marker";
-import { MarkerContextConsumer } from "../MarkerContext";
 import { MarkerEvent } from "../MarkerEvent";
 
-export function getMockInstance(): google.maps.Marker {
-  return getClassMockInstance(google.maps.Marker);
+export function getMockInstance(maps: typeof google.maps): google.maps.Marker {
+  return getClassMockInstance(maps.Marker);
 }
 
-describe("Marker", () => {
-  const { map, Mock } = createMockMapComponent(Marker);
+const [Mock, ctx] = initMapMockComponent(Marker);
 
-  const customEvents = 2;
-  const instanceEvents = Object.keys(MarkerEvent).length;
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+it("mounts and unmouts", () => {
+  const { map, maps } = ctx;
+  const { unmount } = render(<Mock position={{ lat: 1, lng: 2 }} />);
+
+  const marker = getMockInstance(maps);
+
+  expect(marker.setMap).toBeCalledTimes(0);
+
+  flushEffects();
+
+  expect(marker.setMap).toBeCalledTimes(1);
+  expect(marker.setMap).lastCalledWith(map);
+
+  unmount();
+
+  expect(marker.setMap).toBeCalledTimes(2);
+  expect(marker.setMap).lastCalledWith(null);
+});
+
+it("passes props to marker", () => {
+  const { maps } = ctx;
+  const { rerender } = render(
+    <Mock
+      animation="BOUNCE"
+      clickable={true}
+      cursor="pointer"
+      draggable={true}
+      icon="https://url.to/icon.png"
+      label="A"
+      opacity={0.5}
+      optimized={false}
+      position={{ lat: 0, lng: 1 }}
+      shape={{ type: "foo" }}
+      title="Foo"
+      visible={false}
+      zIndex={1000}
+    />,
+  );
+  const markerMock = getFnMock(maps.Marker);
+  const marker = getMockInstance(maps);
+  const setOptionsMock = getFnMock(marker.setOptions);
+
+  expect(markerMock).toBeCalledTimes(1);
+  expect(markerMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "animation": "BOUNCE",
+  "clickable": true,
+  "cursor": "pointer",
+  "draggable": true,
+  "icon": "https://url.to/icon.png",
+  "label": "A",
+  "opacity": 0.5,
+  "optimized": false,
+  "position": LatLng {
+    "latitude": 0,
+    "longitude": 1,
+  },
+  "shape": Object {
+    "type": "foo",
+  },
+  "title": "Foo",
+  "visible": false,
+  "zIndex": 1000,
+}
+`);
+
+  flushEffects();
+
+  expect(setOptionsMock).toBeCalledTimes(0);
+
+  rerender(<Mock position={{ lat: 2, lng: 3 }} title="Bar" />);
+
+  flushEffects();
+
+  expect(setOptionsMock).toBeCalledTimes(1);
+  expect(setOptionsMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "animation": undefined,
+  "clickable": undefined,
+  "cursor": undefined,
+  "draggable": undefined,
+  "label": undefined,
+  "opacity": undefined,
+  "optimized": undefined,
+  "position": LatLng {
+    "latitude": 2,
+    "longitude": 3,
+  },
+  "shape": undefined,
+  "title": "Bar",
+  "visible": undefined,
+  "zIndex": undefined,
+}
+`);
+});
+
+it("attaches handlers", () => {
+  const { maps } = ctx;
+  const events = new Map(Object.entries(MarkerEvent));
+  const { rerender, unmount } = render(<Mock position={{ lat: 1, lng: 2 }} />);
+  const marker = getMockInstance(maps);
+  const addListenerMock = getFnMock(marker.addListener);
+
+  expect(addListenerMock).toBeCalledTimes(0);
+
+  flushEffects();
+
+  expect(addListenerMock).toBeCalledTimes(events.size);
+
+  const handlerProps = {
+    onClick: jest.fn(),
+    onDoubleClick: jest.fn(),
+    onRightClick: jest.fn(),
+    onMouseOut: jest.fn(),
+    onMouseOver: jest.fn(),
+    onMouseDown: jest.fn(),
+    onMouseUp: jest.fn(),
+    onDrag: jest.fn(),
+    onDragStart: jest.fn(),
+    onDragEnd: jest.fn(),
+    onPositionChanged: jest.fn(),
+  };
+  const handlerMap = new Map(Object.entries(handlerProps));
+
+  rerender(<Mock position={{ lat: 1, lng: 2 }} {...handlerProps} />);
+
+  flushEffects();
+
+  expect(addListenerMock).toBeCalledTimes(events.size);
+
+  events.forEach((eventName, handlerName) => {
+    const handler = handlerMap.get(handlerName);
+
+    expect(handler).toBeCalledTimes(0);
+
+    maps.event.trigger(marker, eventName);
+
+    expect(handler).toBeCalledTimes(1);
   });
 
-  it("should create marker and attach it to map on mount", () => {
-    mount(<Mock position={{ lat: 0, lng: 1 }} />);
+  rerender(<Mock position={{ lat: 1, lng: 2 }} />);
 
-    const marker = getMockInstance();
+  events.forEach((eventName, handlerName) => {
+    const handler = handlerMap.get(handlerName);
 
-    expect(marker.setMap).toBeCalledTimes(1);
-    expect(marker.setMap).toHaveBeenLastCalledWith(map);
+    maps.event.trigger(marker, eventName);
+
+    expect(handler).toBeCalledTimes(1);
   });
 
-  it("should set default options on mount", () => {
-    mount(<Mock position={{ lat: 0, lng: 1 }} />);
+  unmount();
 
-    const marker = getMockInstance();
-
-    expect(marker.setOptions).toBeCalledTimes(1);
-    expect(marker.setOptions).lastCalledWith({ position: { lat: 0, lng: 1 } });
+  addListenerMock.mock.results.forEach(x => {
+    expect(x.value.remove).toBeCalledTimes(1);
   });
+});
 
-  it("should set custom options on mount", () => {
-    mount(
-      <Mock
-        animation="BOUNCE"
-        clickable={true}
-        cursor="pointer"
-        draggable={true}
-        icon="https://url.to/icon.png"
-        label="A"
-        opacity={0.5}
-        optimized={false}
-        position={{ lat: 0, lng: 1 }}
-        shape={{ type: "foo" }}
-        title="Foo"
-        visible={false}
-        zIndex={1000}
-      />,
-    );
+it("resets marker position after drag", () => {
+  const { maps } = ctx;
+  const onDragEnd = jest.fn();
 
-    const marker = getMockInstance();
+  render(<Mock position={{ lat: 0, lng: 1 }} onDragEnd={onDragEnd} />);
 
-    expect(marker.setOptions).toBeCalledTimes(1);
-    expect(marker.setOptions).lastCalledWith({
-      animation: "BOUNCE",
-      clickable: true,
-      cursor: "pointer",
-      draggable: true,
-      icon: "https://url.to/icon.png",
-      label: "A",
-      opacity: 0.5,
-      optimized: false,
-      position: { lat: 0, lng: 1 },
-      shape: { type: "foo" },
-      title: "Foo",
-      visible: false,
-      zIndex: 1000,
-    });
-  });
+  const marker = getMockInstance(maps);
 
-  it("should add listeners without handlers", () => {
-    mount(<Mock position={{ lat: 0, lng: 1 }} />);
+  flushEffects();
 
-    const marker = getMockInstance();
+  expect(onDragEnd).toHaveBeenCalledTimes(0);
+  expect(marker.setPosition).toHaveBeenCalledTimes(0);
 
-    expect(marker.addListener).toBeCalledTimes(customEvents + instanceEvents);
-  });
+  const position = marker.getPosition();
 
-  it("should add listeners with handlers", () => {
-    const handlers = createMockHandlers(MarkerEvent);
+  maps.event.trigger(marker, MarkerEvent.onDragEnd);
 
-    mount(<Mock position={{ lat: 0, lng: 1 }} {...handlers} />);
+  expect(onDragEnd).toHaveBeenCalledTimes(1);
 
-    const marker = getMockInstance();
+  expect(marker.setPosition).toHaveBeenCalledTimes(1);
+  expect(marker.setPosition).toHaveBeenLastCalledWith(position);
+});
 
-    forEachEvent(MarkerEvent, (key, event) => {
-      const handler = handlers[key];
-      const payload = { key, event };
+it("renders icon when it's react element", () => {
+  const { maps } = ctx;
+  const { container } = render(
+    <Mock position={{ lat: 0, lng: 1 }} icon={<div>Foo</div>} />,
+  );
+  const markerMock = getFnMock(maps.Marker);
 
-      expect(handler).toBeCalledTimes(0);
+  expect(container).toMatchInlineSnapshot(`
+<div>
+  <div>
+    Foo
+  </div>
+</div>
+`);
+  expect(markerMock).toBeCalledTimes(1);
+  expect(markerMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "animation": undefined,
+  "clickable": undefined,
+  "cursor": undefined,
+  "draggable": undefined,
+  "label": undefined,
+  "opacity": undefined,
+  "optimized": undefined,
+  "position": LatLng {
+    "latitude": 0,
+    "longitude": 1,
+  },
+  "shape": undefined,
+  "title": undefined,
+  "visible": undefined,
+  "zIndex": undefined,
+}
+`);
+});
 
-      emitEvent(marker, event, payload);
+it("passes 'GoogleMapMarkerContext'", () => {
+  const { maps } = ctx;
+  const consumer = jest.fn();
 
-      expect(handler).toBeCalledTimes(1);
-      expect(handler).lastCalledWith(payload);
-    });
-  });
+  render(
+    <Mock
+      position={{ lat: 0, lng: 1 }}
+      icon={
+        <GoogleMapMarkerContext.Consumer>
+          {consumer}
+        </GoogleMapMarkerContext.Consumer>
+      }
+    />,
+  );
 
-  it("should render icon if its valid react element", () => {
-    const wrapper = mount(
-      <Mock position={{ lat: 0, lng: 1 }} icon={<div>Foo</div>} />,
-    );
+  const marker = getMockInstance(maps);
 
-    const divWrapper = wrapper.find("div");
-
-    expect(divWrapper.length).toBe(1);
-    expect(divWrapper.html()).toBe("<div>Foo</div>");
-  });
-
-  it("should pass `MarkerContext` to children", () => {
-    const consumer = jest.fn();
-
-    mount(
-      <Mock
-        position={{ lat: 0, lng: 1 }}
-        icon={<MarkerContextConsumer>{consumer}</MarkerContextConsumer>}
-      />,
-    );
-
-    const marker = getMockInstance();
-
-    expect(consumer).toBeCalledTimes(1);
-    expect(consumer).lastCalledWith({ marker });
-  });
-
-  it("should reset position on drag end", () => {
-    const onDragEnd = jest.fn();
-    const position = { lat: 0, lng: 1 };
-
-    mount(<Mock position={position} onDragEnd={onDragEnd} />);
-
-    const marker = getMockInstance();
-
-    expect(onDragEnd).toHaveBeenCalledTimes(0);
-    expect(marker.setPosition).toHaveBeenCalledTimes(0);
-
-    emitEvent(marker, MarkerEvent.onDragEnd);
-
-    expect(onDragEnd).toHaveBeenCalledTimes(1);
-    expect(marker.setPosition).toHaveBeenCalledTimes(1);
-    expect(marker.setPosition).toHaveBeenLastCalledWith(position);
-  });
-
-  it("should update only changed options on props update", () => {
-    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }} />);
-    const marker = getMockInstance();
-
-    expect(marker.setOptions).toBeCalledTimes(1);
-
-    wrapper.setProps({ clickable: true });
-
-    expect(marker.setOptions).toBeCalledTimes(2);
-    expect(marker.setOptions).lastCalledWith({ clickable: true });
-
-    wrapper.setProps({ clickable: true });
-
-    expect(marker.setOptions).toBeCalledTimes(2);
-
-    wrapper.setProps({ clickable: false });
-
-    expect(marker.setOptions).toBeCalledTimes(3);
-    expect(marker.setOptions).lastCalledWith({ clickable: false });
-  });
-
-  it("should remove from map on unmount", () => {
-    const wrapper = mount(<Mock position={{ lat: 0, lng: 1 }} />);
-
-    const marker = getMockInstance();
-
-    expect(marker.setMap).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(0);
-
-    wrapper.unmount();
-
-    const {
-      mock: { results },
-    } = marker.addListener as jest.Mock;
-
-    expect(results.length).toBe(customEvents + instanceEvents);
-
-    results.forEach(({ value }) => {
-      expect(value.remove).toBeCalled();
-    });
-
-    expect(marker.setMap).toBeCalledTimes(2);
-    expect(marker.setMap).lastCalledWith(null);
-
-    expect(google.maps.event.clearInstanceListeners).toBeCalledTimes(1);
-    expect(google.maps.event.clearInstanceListeners).nthCalledWith(1, marker);
-  });
+  expect(consumer).toBeCalledTimes(1);
+  expect(consumer).lastCalledWith(marker);
 });

@@ -1,55 +1,49 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { createMockMapComponent } from "../../__tests__/testUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
 import { FitBounds } from "../FitBounds";
 
-describe("FitBounds", () => {
-  const { map, Mock } = createMockMapComponent(FitBounds);
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const [Mock, ctx] = initMapMockComponent(FitBounds);
 
-  it("should fit bounds on mount", () => {
-    const bounds: google.maps.LatLngBoundsLiteral = {
-      east: 1,
-      north: 2,
-      south: 3,
-      west: 4,
-    };
+it("runs animation", () => {
+  const fitBoundsMock = getFnMock(ctx.map.fitBounds);
+  const { rerender } = render(
+    <Mock bounds={{ east: 1, north: 2, south: 3, west: 4 }} />,
+  );
 
-    mount(<Mock bounds={bounds} />);
+  flushEffects();
 
-    expect(map.fitBounds).toBeCalledTimes(1);
-    expect(map.fitBounds).lastCalledWith(bounds);
-  });
+  expect(fitBoundsMock).toBeCalledTimes(1);
+  expect(fitBoundsMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+LatLngBounds {
+  "east": 1,
+  "north": 2,
+  "south": 3,
+  "west": 4,
+}
+`);
 
-  it("should fit bounds on update", () => {
-    const initialBounds: google.maps.LatLngBoundsLiteral = {
-      east: 1,
-      north: 2,
-      south: 3,
-      west: 4,
-    };
-    const updatedBounds: google.maps.LatLngBoundsLiteral = {
-      east: 5,
-      north: 6,
-      south: 7,
-      west: 8,
-    };
+  rerender(<Mock bounds={{ east: 1, north: 2, south: 3, west: 4 }} />);
 
-    const wrapper = mount(<Mock bounds={initialBounds} />);
+  flushEffects();
 
-    expect(map.fitBounds).toBeCalledTimes(1);
+  expect(fitBoundsMock).toBeCalledTimes(1);
 
-    wrapper.setProps({ bounds: initialBounds });
+  rerender(<Mock bounds={{ east: 5, north: 6, south: 7, west: 8 }} />);
 
-    expect(map.fitBounds).toBeCalledTimes(1);
+  flushEffects();
 
-    wrapper.setProps({ bounds: updatedBounds });
-
-    expect(map.fitBounds).toBeCalledTimes(2);
-    expect(map.fitBounds).lastCalledWith(updatedBounds);
-  });
+  expect(fitBoundsMock).toBeCalledTimes(2);
+  expect(fitBoundsMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+LatLngBounds {
+  "east": 5,
+  "north": 6,
+  "south": 7,
+  "west": 8,
+}
+`);
 });

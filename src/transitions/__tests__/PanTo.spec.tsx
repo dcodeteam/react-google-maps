@@ -1,40 +1,43 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { createMockMapComponent } from "../../__tests__/testUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
 import { PanTo } from "../PanTo";
 
-describe("PanTo", () => {
-  const { map, Mock } = createMockMapComponent(PanTo);
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const [Mock, ctx] = initMapMockComponent(PanTo);
 
-  it("should pan on mount", () => {
-    const position: google.maps.LatLngLiteral = { lat: 1, lng: 2 };
+it("runs animation", () => {
+  const panToMock = getFnMock(ctx.map.panTo);
+  const { rerender } = render(<Mock position={{ lat: 1, lng: 2 }} />);
 
-    mount(<Mock position={position} />);
+  flushEffects();
 
-    expect(map.panTo).toBeCalledTimes(1);
-    expect(map.panTo).lastCalledWith(position);
-  });
+  expect(panToMock).toBeCalledTimes(1);
+  expect(panToMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+LatLng {
+  "latitude": 1,
+  "longitude": 2,
+}
+`);
 
-  it("should pan on update", () => {
-    const initialPosition: google.maps.LatLngLiteral = { lat: 1, lng: 2 };
-    const updatedPosition: google.maps.LatLngLiteral = { lat: 3, lng: 4 };
+  rerender(<Mock position={{ lat: 1, lng: 2 }} />);
 
-    const wrapper = mount(<Mock position={initialPosition} />);
+  flushEffects();
 
-    expect(map.panTo).toBeCalledTimes(1);
+  expect(panToMock).toBeCalledTimes(1);
 
-    wrapper.setProps({ position: initialPosition });
+  rerender(<Mock position={{ lat: 3, lng: 4 }} />);
 
-    expect(map.panTo).toBeCalledTimes(1);
+  flushEffects();
 
-    wrapper.setProps({ position: updatedPosition });
-
-    expect(map.panTo).toBeCalledTimes(2);
-    expect(map.panTo).lastCalledWith(updatedPosition);
-  });
+  expect(panToMock).toBeCalledTimes(2);
+  expect(panToMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+LatLng {
+  "latitude": 3,
+  "longitude": 4,
+}
+`);
 });

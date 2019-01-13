@@ -1,179 +1,236 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import {
-  createMockHandlers,
-  createMockMapComponent,
-  emitEvent,
-  forEachEvent,
-  getClassMockInstance,
-} from "../../__tests__/testUtils";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getClassMockInstance, getFnMock } from "../../__testutils__/testUtils";
 import { DataLayerEvent } from "../DataLayerEvent";
 import { DataPolygon } from "../DataPolygon";
 
-function getMockInstance(): google.maps.Data.Feature {
-  return getClassMockInstance(google.maps.Data.Feature);
+function getMockInstance(maps: typeof google.maps): google.maps.Data.Feature {
+  return getClassMockInstance(maps.Data.Feature);
 }
 
-describe("DataPolygon", () => {
-  const { map, Mock } = createMockMapComponent(DataPolygon);
-  const instanceEvents = Object.keys(DataLayerEvent).length;
+const [Mock, ctx] = initMapMockComponent(DataPolygon);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+afterEach(cleanup);
 
-  it("should create feature on mount", () => {
-    mount(<Mock geometry={[]} />);
+it("mounts and unmounts", () => {
+  const { map, maps } = ctx;
+  const { unmount } = render(<Mock geometry={[]} />);
+  const feature = getMockInstance(maps);
+  const addMock = getFnMock(map.data.add);
+  const removeMock = getFnMock(map.data.remove);
 
-    const feature = getMockInstance();
+  expect(addMock).toBeCalledTimes(0);
+  expect(removeMock).toBeCalledTimes(0);
 
-    expect(map.data.add).toBeCalledTimes(1);
-    expect(map.data.add).lastCalledWith(feature);
-  });
+  flushEffects();
 
-  it("should set polygon to feature on mount", () => {
-    mount(<Mock geometry={[[{ lat: 1, lng: 2 }]]} />);
+  expect(addMock).toBeCalledTimes(1);
+  expect(addMock).lastCalledWith(feature);
+  expect(removeMock).toBeCalledTimes(0);
 
-    const feature = getMockInstance();
+  unmount();
 
-    expect(feature.setGeometry).toBeCalledTimes(1);
+  expect(addMock).toBeCalledTimes(1);
+  expect(removeMock).toBeCalledTimes(1);
+  expect(removeMock).lastCalledWith(feature);
+});
 
-    const polygon = feature.getGeometry() as google.maps.Data.Polygon;
+it("passes 'polygon'", () => {
+  const { maps } = ctx;
+  const { rerender } = render(<Mock geometry={[[{ lat: 1, lng: 2 }]]} />);
+  const feature = getMockInstance(maps);
+  const setGeometryMock = getFnMock(feature.setGeometry);
 
-    expect(polygon.getArray()).toEqual([[{ lat: 1, lng: 2 }]]);
-  });
+  expect(setGeometryMock).toBeCalledTimes(0);
 
-  it("should set default style on mount", () => {
-    mount(<Mock geometry={[]} />);
+  flushEffects();
 
-    const feature = getMockInstance();
+  expect(setGeometryMock).toBeCalledTimes(1);
+  expect(setGeometryMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+DataPolygon {
+  "values": Object {
+    "array": Array [
+      Array [
+        Object {
+          "lat": 1,
+          "lng": 2,
+        },
+      ],
+    ],
+  },
+}
+`);
 
-    expect(map.data.overrideStyle).toBeCalledTimes(1);
-    expect(map.data.overrideStyle).lastCalledWith(feature, {
-      clickable: true,
+  rerender(<Mock geometry={[[{ lat: 1, lng: 2 }, { lat: 3, lng: 4 }]]} />);
+
+  flushEffects();
+
+  expect(setGeometryMock).toBeCalledTimes(2);
+  expect(setGeometryMock.mock.calls[1][0]).toMatchInlineSnapshot(`
+DataPolygon {
+  "values": Object {
+    "array": Array [
+      Array [
+        Object {
+          "lat": 1,
+          "lng": 2,
+        },
+        Object {
+          "lat": 3,
+          "lng": 4,
+        },
+      ],
+    ],
+  },
+}
+`);
+
+  rerender(<Mock geometry={[[{ lat: 1, lng: 2 }, { lat: 3, lng: 4 }]]} />);
+
+  flushEffects();
+
+  expect(setGeometryMock).toBeCalledTimes(2);
+
+  rerender(<Mock geometry={[[{ lat: 3, lng: 4 }, { lat: 5, lng: 6 }]]} />);
+
+  flushEffects();
+
+  expect(setGeometryMock).toBeCalledTimes(3);
+  expect(setGeometryMock.mock.calls[2][0]).toMatchInlineSnapshot(`
+DataPolygon {
+  "values": Object {
+    "array": Array [
+      Array [
+        Object {
+          "lat": 3,
+          "lng": 4,
+        },
+        Object {
+          "lat": 5,
+          "lng": 6,
+        },
+      ],
+    ],
+  },
+}
+`);
+});
+
+it("passes style props", () => {
+  const { map, maps } = ctx;
+  const overrideStyleMock = getFnMock(map.data.overrideStyle);
+  const { rerender } = render(
+    <Mock
+      geometry={[]}
+      clickable={false}
+      fillColor="#000000"
+      fillOpacity={0.4}
+      strokeColor="#000000"
+      strokeOpacity={1}
+      strokeWeight={3}
+    />,
+  );
+
+  const feature = getMockInstance(maps);
+
+  expect(overrideStyleMock).toBeCalledTimes(0);
+
+  flushEffects();
+
+  expect(overrideStyleMock).toBeCalledTimes(1);
+  expect(overrideStyleMock.mock.calls[0][0]).toBe(feature);
+  expect(overrideStyleMock.mock.calls[0][1]).toMatchInlineSnapshot(`
+Object {
+  "clickable": false,
+  "fillColor": "#000000",
+  "fillOpacity": 0.4,
+  "strokeColor": "#000000",
+  "strokeOpacity": 1,
+  "strokeWeight": 3,
+  "zIndex": undefined,
+}
+`);
+
+  rerender(<Mock geometry={[]} />);
+
+  flushEffects();
+
+  expect(overrideStyleMock).toBeCalledTimes(2);
+  expect(overrideStyleMock.mock.calls[1][0]).toBe(feature);
+  expect(overrideStyleMock.mock.calls[1][1]).toMatchInlineSnapshot(`
+Object {
+  "clickable": true,
+  "fillColor": undefined,
+  "fillOpacity": undefined,
+  "strokeColor": undefined,
+  "strokeOpacity": undefined,
+  "strokeWeight": undefined,
+  "zIndex": undefined,
+}
+`);
+});
+
+it("attaches handlers", () => {
+  const { map, maps } = ctx;
+  const events = new Map(Object.entries(DataLayerEvent));
+  const { rerender, unmount } = render(<Mock geometry={[]} />);
+  const feature = getMockInstance(maps);
+  const addListenerMock = getFnMock(map.data.addListener);
+
+  expect(addListenerMock).toBeCalledTimes(0);
+
+  flushEffects();
+
+  expect(addListenerMock).toBeCalledTimes(events.size);
+
+  expect(() => {
+    events.forEach(eventName => {
+      maps.event.trigger(map.data, eventName, { feature });
     });
+  }).not.toThrow();
+
+  const handlers = {
+    onClick: jest.fn(),
+    onDoubleClick: jest.fn(),
+    onRightClick: jest.fn(),
+    onMouseOut: jest.fn(),
+    onMouseOver: jest.fn(),
+    onMouseDown: jest.fn(),
+    onMouseUp: jest.fn(),
+  };
+
+  rerender(<Mock {...handlers} geometry={[]} />);
+
+  flushEffects();
+
+  expect(addListenerMock).toBeCalledTimes(events.size);
+
+  events.forEach((eventName, handlerName) => {
+    const handler = handlers[handlerName as keyof typeof handlers];
+
+    expect(handler).toBeCalledTimes(0);
+
+    maps.event.trigger(map.data, eventName, { feature: {} });
+
+    expect(handler).toBeCalledTimes(0);
+
+    maps.event.trigger(map.data, eventName, { feature });
+
+    expect(handler).toBeCalledTimes(1);
+    expect(handler).lastCalledWith({ feature });
   });
 
-  it("should set custom style on mount", () => {
-    mount(
-      <Mock
-        geometry={[]}
-        clickable={false}
-        fillColor="#000000"
-        fillOpacity={0.4}
-        strokeColor="#000000"
-        strokeOpacity={1}
-        strokeWeight={3}
-      />,
-    );
+  events.forEach((_, handlerName) => {
+    const handler = handlers[handlerName as keyof typeof handlers];
 
-    const feature = getMockInstance();
-
-    expect(map.data.overrideStyle).toBeCalledTimes(1);
-    expect(map.data.overrideStyle).lastCalledWith(feature, {
-      clickable: false,
-      fillColor: "#000000",
-      fillOpacity: 0.4,
-      strokeColor: "#000000",
-      strokeOpacity: 1,
-      strokeWeight: 3,
-      zIndex: undefined,
-    });
+    expect(handler).toBeCalledTimes(1);
   });
 
-  it("should change feature style on update", () => {
-    const wrapper = mount(<Mock geometry={[]} />);
+  unmount();
 
-    const feature = getMockInstance();
-
-    expect(map.data.overrideStyle).toBeCalledTimes(1);
-
-    wrapper.setProps({ clickable: true });
-
-    expect(map.data.overrideStyle).toBeCalledTimes(1);
-
-    wrapper.setProps({
-      clickable: false,
-      fillColor: "#000000",
-      fillOpacity: 0.4,
-      strokeColor: "#000000",
-      strokeOpacity: 1,
-      strokeWeight: 3,
-    });
-
-    expect(map.data.overrideStyle).toBeCalledTimes(2);
-    expect(map.data.overrideStyle).lastCalledWith(feature, {
-      clickable: false,
-      fillColor: "#000000",
-      fillOpacity: 0.4,
-      strokeColor: "#000000",
-      strokeOpacity: 1,
-      strokeWeight: 3,
-    });
-  });
-
-  it("should add listeners without handlers on mount", () => {
-    mount(<Mock geometry={[]} />);
-
-    expect(map.data.addListener).toBeCalledTimes(instanceEvents);
-  });
-
-  it("should add listeners with handlers on mount", () => {
-    const handlers = createMockHandlers(DataLayerEvent);
-
-    mount(<Mock {...handlers} geometry={[]} />);
-
-    const feature = getMockInstance();
-
-    forEachEvent(DataLayerEvent, (key, event) => {
-      const handler = handlers[key];
-
-      expect(handler).toBeCalledTimes(0);
-
-      emitEvent(map.data, event, { feature: {} });
-
-      expect(handler).toBeCalledTimes(0);
-
-      emitEvent(map.data, event, { feature });
-
-      expect(handler).toBeCalledTimes(1);
-      expect(handler).lastCalledWith({ feature });
-    });
-  });
-
-  it("should remove feature on unmount", () => {
-    const wrapper = mount(<Mock geometry={[]} />);
-
-    const feature = getMockInstance();
-
-    expect(map.data.add).toBeCalledTimes(1);
-    expect(map.data.remove).toBeCalledTimes(0);
-
-    wrapper.unmount();
-
-    expect(map.data.add).toBeCalledTimes(1);
-    expect(map.data.remove).toBeCalledTimes(1);
-    expect(map.data.remove).lastCalledWith(feature);
-  });
-
-  it("should remove listeners on unmount", () => {
-    const wrapper = mount(<Mock geometry={[]} />);
-
-    expect(map.data.addListener).toBeCalledTimes(instanceEvents);
-
-    const {
-      mock: { results },
-    } = map.data.addListener as jest.Mock;
-
-    results.forEach(({ value }) => {
-      expect(value.remove).not.toBeCalled();
-    });
-
-    wrapper.unmount();
-
-    results.forEach(({ value }) => {
-      expect(value.remove).toBeCalled();
-    });
+  addListenerMock.mock.results.forEach(x => {
+    expect(x.value.remove).toBeCalledTimes(1);
   });
 });

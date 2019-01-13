@@ -1,45 +1,47 @@
-import { mount } from "enzyme";
-import * as React from "react";
+import React from "react";
+import { cleanup, flushEffects, render } from "react-testing-library";
 
-import { MapContextProvider } from "../../map/MapContext";
+import { initMapMockComponent } from "../../__testutils__/testContext";
+import { getFnMock } from "../../__testutils__/testUtils";
 import { ScaleControl } from "../ScaleControl";
 
-describe("ScaleControl", () => {
-  const map = new google.maps.Map(null);
+const [Mock, ctx] = initMapMockComponent(ScaleControl);
 
-  function MockScaleControl() {
-    return (
-      <MapContextProvider value={{ map, maps: google.maps }}>
-        <ScaleControl />
-      </MapContextProvider>
-    );
-  }
+afterEach(cleanup);
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+it("sets values on mount", () => {
+  const setValuesMock = getFnMock(ctx.map.setValues);
 
-  it("should set default values on mount", () => {
-    mount(<MockScaleControl />);
+  render(<Mock />);
 
-    expect(map.setValues).toBeCalledTimes(1);
-    expect(map.setValues).lastCalledWith({
-      scaleControl: true,
-      scaleControlOptions: undefined,
-    });
-  });
+  flushEffects();
 
-  it("should unset values on unmount", () => {
-    const wrapper = mount(<MockScaleControl />);
+  expect(setValuesMock).toBeCalledTimes(1);
+  expect(setValuesMock.mock.calls[0][0]).toMatchInlineSnapshot(`
+Object {
+  "scaleControl": true,
+  "scaleControlOptions": Object {},
+}
+`);
+});
 
-    expect(map.setValues).toBeCalledTimes(1);
+it("unsets values on unmount", () => {
+  const setValuesMock = getFnMock(ctx.map.setValues);
+  const { unmount } = render(<Mock />);
 
-    wrapper.unmount();
+  flushEffects();
 
-    expect(map.setValues).toBeCalledTimes(2);
-    expect(map.setValues).lastCalledWith({
-      scaleControl: false,
-      scaleControlOptions: undefined,
-    });
-  });
+  expect(setValuesMock).toBeCalledTimes(1);
+
+  unmount();
+
+  expect(setValuesMock).toBeCalledTimes(2);
+  expect(setValuesMock.mock.calls[1]).toMatchInlineSnapshot(`
+Array [
+  Object {
+    "scaleControl": false,
+    "scaleControlOptions": undefined,
+  },
+]
+`);
 });

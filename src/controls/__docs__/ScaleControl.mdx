@@ -5,7 +5,7 @@ route: /controls/scale
 ---
 
 import { Playground, PropsTable } from "docz";
-import { DocsMap } from "../../__docs__/DocsMap";
+import { DocsMap } from "../../__docs__/DocsComponents";
 import { ScaleControl } from "../ScaleControl";
 
 # Scale Control
@@ -17,7 +17,7 @@ Controls display options of Scale control.
 - [google.maps.ControlPosition](https://developers.google.com/maps/documentation/javascript/reference#ControlPosition)
 
 <Playground>
-  <DocsMap zoom={8} center={{ lat: 36, lng: -122 }}>
+  <DocsMap>
     <ScaleControl />
   </DocsMap>
 </Playground>

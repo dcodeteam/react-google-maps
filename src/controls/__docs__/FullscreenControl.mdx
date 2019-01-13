@@ -5,7 +5,7 @@ route: /controls/fullscreen
 ---
 
 import { Playground, PropsTable } from "docz";
-import { DocsMap } from "../../__docs__/DocsMap";
+import { DocsMap } from "../../__docs__/DocsComponents";
 import { FullscreenControl } from "../FullscreenControl";
 
 # Fullscreen Control
@@ -18,7 +18,7 @@ Controls display options of fullscreen control.
 - [google.maps.FullscreenControlOptions](https://developers.google.com/maps/documentation/javascript/reference#FullscreenControlOptions)
 
 <Playground>
-  <DocsMap zoom={8} center={{ lat: 36, lng: -122 }}>
+  <DocsMap>
     <FullscreenControl position="BOTTOM_CENTER" />
   </DocsMap>
 </Playground>
