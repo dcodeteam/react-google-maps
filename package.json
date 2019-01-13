@@ -81,10 +81,11 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "rimraf": "^2.6.2",
-    "rollup": "^1.1.0",
+    "rollup": "0.68.2",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-prettier": "^0.5.0",
+    "rollup-plugin-size-snapshot": "^0.7.0",
     "stylotron": "^0.0.12",
     "typescript": "*",
     "typescript-eslint-parser": "^21.0.1"

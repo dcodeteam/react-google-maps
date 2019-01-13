@@ -1,8 +1,9 @@
 "use strict";
 
-const babel = require("rollup-plugin-babel");
-const prettier = require("rollup-plugin-prettier");
-const nodeResolve = require("rollup-plugin-node-resolve");
+const babelPlugin = require("rollup-plugin-babel");
+const prettierPlugin = require("rollup-plugin-prettier");
+const nodeResolvePlugin = require("rollup-plugin-node-resolve");
+const { sizeSnapshot } = require("rollup-plugin-size-snapshot");
 
 const pkg = require("./package");
 
@@ -31,9 +32,9 @@ function createConfig(target) {
     },
 
     plugins: [
-      nodeResolve({ extensions: [".ts", ".tsx"] }),
+      nodeResolvePlugin({ extensions: [".ts", ".tsx"] }),
 
-      babel({
+      babelPlugin({
         babelrc: false,
         runtimeHelpers: true,
         extensions: [".ts", ".tsx"],
@@ -55,7 +56,9 @@ function createConfig(target) {
         ],
       }),
 
-      prettier({ parser: "babylon" }),
+      prettierPlugin({ parser: "babylon" }),
+
+      sizeSnapshot({ matchSnapshot: process.env.CI === "true" }),
     ],
   };
 }
