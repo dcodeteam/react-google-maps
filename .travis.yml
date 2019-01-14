@@ -52,7 +52,7 @@ deploy:
     skip-cleanup: true
     github-token: $GITHUB_TOKEN
     on:
-      tags: true
+      tags: false
       node_js: "10"
       branch: master
       repo: dcodeteam/react-google-maps
