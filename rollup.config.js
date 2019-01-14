@@ -39,6 +39,7 @@ function createConfig(target) {
           [
             "@babel/preset-env",
             {
+              loose: true,
               modules: false,
               forceAllTransforms: target !== "es2015",
               targets: { esmodules: target === "es2015" },
@@ -48,7 +49,6 @@ function createConfig(target) {
           "@babel/preset-typescript",
         ],
         plugins: [
-          "@babel/plugin-proposal-class-properties",
           [
             "@babel/plugin-transform-runtime",
             { useESModules: target.startsWith("es") },
