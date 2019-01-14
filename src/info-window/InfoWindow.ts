@@ -12,7 +12,7 @@ export interface InfoWindowProps {
   /**
    * This handler is called when the close button was clicked.
    */
-  onCloseClick?: () => void;
+  onCloseClick?(): void;
 
   /**
    * The LatLng at which to display this `InfoWindow`.
@@ -106,7 +106,7 @@ export function InfoWindow({
   );
 
   useEventHandlers(infoWindow, InfoWindowEvent, {
-    onCloseClick: () => {
+    onCloseClick() {
       infoWindow.open(map);
 
       if (onCloseClick) {

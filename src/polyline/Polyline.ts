@@ -69,60 +69,60 @@ interface PolylineHandlers {
   /**
    * This handler is fired when the DOM `click` handlers is fired on the `Polyline`.
    */
-  onClick?: () => void;
+  onClick?(): void;
 
   /**
    * This handler is fired when the DOM `dblclick` handlers is fired on the `Polyline`.
    */
-  onDoubleClick?: () => void;
+  onDoubleClick?(): void;
 
   /**
    * This handler is fired when the `Polyline` is right-clicked on.
    */
-  onRightClick?: () => void;
+  onRightClick?(): void;
 
   /**
    * This handler is fired on `mouseout` handlers is fired on `Polyline`.
    */
-  onMouseOut?: () => void;
+  onMouseOut?(): void;
 
   /**
    * This handler is fired on `mouseover` handlers is fired on `Polyline`.
    */
-  onMouseOver?: () => void;
+  onMouseOver?(): void;
 
   /**
    * This handler is fired when the DOM `mousemove` handlers is fired
    * on `Polyline`.
    */
-  onMouseMove?: () => void;
+  onMouseMove?(): void;
 
   /**
    * This handler is fired when the DOM `mousedown` handlers is fired
    * on `Polyline`.
    */
-  onMouseDown?: () => void;
+  onMouseDown?(): void;
 
   /**
    * This handler is fired when the DOM `mouseup` handlers is fired
    * on `Polyline`.
    */
-  onMouseUp?: () => void;
+  onMouseUp?(): void;
 
   /**
    * This handler is repeatedly fired while the user drags the `Polyline`.
    */
-  onDrag?: () => void;
+  onDrag?(): void;
 
   /**
    * This handler is fired when the user starts dragging the `Polyline`.
    */
-  onDragStart?: () => void;
+  onDragStart?(): void;
 
   /**
    * This handler is fired when the user stops dragging the `Polyline`.
    */
-  onDragEnd?: (event?: { path: google.maps.LatLng[] }) => void;
+  onDragEnd?(event?: { path: google.maps.LatLng[] }): void;
 }
 
 export function Polyline({
@@ -193,14 +193,14 @@ export function Polyline({
     onMouseDown,
     onMouseUp,
     onDrag,
-    onDragStart: () => {
+    onDragStart() {
       pathRef.current = polyline.getPath();
 
       if (onDragStart) {
         onDragStart();
       }
     },
-    onDragEnd: event => {
+    onDragEnd(event) {
       if (event) {
         Object.assign(event, { path: polyline.getPath().getArray() });
       }

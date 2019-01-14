@@ -1,8 +1,8 @@
 {
   "./react-google-maps.es.js": {
-    "bundled": 32796,
+    "bundled": 32800,
     "minified": 17038,
-    "gzipped": 4782,
+    "gzipped": 4775,
     "treeshaked": {
       "rollup": {
         "code": 1717,
@@ -14,14 +14,14 @@
     }
   },
   "./react-google-maps.cjs.js": {
-    "bundled": 33915,
+    "bundled": 33919,
     "minified": 18061,
-    "gzipped": 4935
+    "gzipped": 4928
   },
   "./react-google-maps.es2015.js": {
-    "bundled": 30649,
-    "minified": 16390,
-    "gzipped": 4783,
+    "bundled": 28611,
+    "minified": 15485,
+    "gzipped": 4722,
     "treeshaked": {
       "rollup": {
         "code": 1717,

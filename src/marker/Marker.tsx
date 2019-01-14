@@ -94,50 +94,50 @@ export interface MarkerProps {
   /**
    * This handlers is called when the marker icon was clicked.
    */
-  onClick?: () => void;
+  onClick?(): void;
   /**
    * This handlers is called when the marker icon was double clicked.
    */
-  onDoubleClick?: () => void;
+  onDoubleClick?(): void;
   /**
    * This handlers is called when the marker icon was clicked.
    */
-  onRightClick?: () => void;
+  onRightClick?(): void;
 
   /**
    * This handlers is called for a mouse down on the marker.
    */
-  onMouseDown?: () => void;
+  onMouseDown?(): void;
   /**
    * This handlers is called when the mouse leaves the area of the marker icon.
    */
-  onMouseOut?: () => void;
+  onMouseOut?(): void;
   /**
    * This handlers is called when the mouse enters the area of the marker icon.
    */
-  onMouseOver?: () => void;
+  onMouseOver?(): void;
   /**
    * This handlers is called when for a mouse up on the marker.
    */
-  onMouseUp?: () => void;
+  onMouseUp?(): void;
 
   /**
    * This handlers is called when the marker icon was clicked.
    */
-  onDrag?: () => void;
+  onDrag?(): void;
   /**
    * This handlers is called when the marker icon was clicked.
    */
-  onDragStart?: () => void;
+  onDragStart?(): void;
   /**
    * This handlers is called when the marker icon was clicked.
    */
-  onDragEnd?: () => void;
+  onDragEnd?(): void;
 
   /**
    * This handlers is called when the marker `position` property changes.
    */
-  onPositionChanged?: () => void;
+  onPositionChanged?(): void;
 }
 
 export function Marker({
@@ -220,14 +220,14 @@ export function Marker({
     onMouseDown,
     onMouseUp,
     onDrag,
-    onDragStart: () => {
+    onDragStart() {
       positionRef.current = marker.getPosition();
 
       if (onDragStart) {
         onDragStart();
       }
     },
-    onDragEnd: () => {
+    onDragEnd() {
       marker.setPosition(positionRef.current);
 
       if (onDragEnd) {

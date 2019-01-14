@@ -53,14 +53,14 @@ export interface PlaceAutocompleteProps {
    * request fails, the PlaceResult contains the user input in the name
    * property, with no other properties defined.
    */
-  onPlaceChanged?: (result: google.maps.places.PlaceResult) => void;
+  onPlaceChanged?(result: google.maps.places.PlaceResult): void;
 
   /**
    * Renders child component with provided input.
    */
-  render: (
+  render(
     renderProps: PlaceAutocompleteRenderProps,
-  ) => null | ReactElement<object>;
+  ): null | ReactElement<object>;
 }
 
 type Handlers = Pick<PlaceAutocompleteProps, "onPlaceChanged">;
@@ -106,7 +106,7 @@ export function PlaceAutocomplete({
   );
 
   useEventHandlers<Handlers>(autocomplete, PlaceAutocompleteEvent, {
-    onPlaceChanged: () => {
+    onPlaceChanged() {
       if (onPlaceChanged) {
         onPlaceChanged(autocomplete!.getPlace());
       }

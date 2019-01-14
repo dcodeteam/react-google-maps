@@ -67,37 +67,37 @@ export interface DataPolygonProps {
   /**
    * This handler is called for a click on the geometry.
    */
-  onClick?: (event: DataPolygonHandlerEvent) => void;
+  onClick?(event: DataPolygonHandlerEvent): void;
 
   /**
    * This handler is called for a double click on the geometry.
    */
-  onDoubleClick?: (event: DataPolygonHandlerEvent) => void;
+  onDoubleClick?(event: DataPolygonHandlerEvent): void;
 
   /**
    * This handler is called for a right click on the geometry.
    */
-  onRightClick?: (event: DataPolygonHandlerEvent) => void;
+  onRightClick?(event: DataPolygonHandlerEvent): void;
 
   /**
    * This handler is called when the mouse leaves the area of the geometry.
    */
-  onMouseOut?: (event: DataPolygonHandlerEvent) => void;
+  onMouseOut?(event: DataPolygonHandlerEvent): void;
 
   /**
    * This handler is called when the mouse enters the area of the geometry.
    */
-  onMouseOver?: (event: DataPolygonHandlerEvent) => void;
+  onMouseOver?(event: DataPolygonHandlerEvent): void;
 
   /**
    * This handler is called for a mouse down on the geometry.
    */
-  onMouseDown?: (event: DataPolygonHandlerEvent) => void;
+  onMouseDown?(event: DataPolygonHandlerEvent): void;
 
   /**
    * This handler is called for a mouse up on the geometry.
    */
-  onMouseUp?: (event: DataPolygonHandlerEvent) => void;
+  onMouseUp?(event: DataPolygonHandlerEvent): void;
 }
 
 type HandlerProps = Pick<

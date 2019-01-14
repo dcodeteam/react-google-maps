@@ -26,33 +26,33 @@ export interface DrawingControlProps {
   /**
    * This handler is called when the user has finished drawing a `circle`.
    */
-  onCircleComplete?: () => void;
+  onCircleComplete?(): void;
 
   /**
    * This handler is called when the user has finished drawing a `marker`.
    */
-  onMarkerComplete?: () => void;
+  onMarkerComplete?(): void;
 
   /**
    * This handler is called when the user has finished drawing an `overlay`
    * of any type.
    */
-  onOverlayComplete?: (event: google.maps.drawing.OverlayCompleteEvent) => void;
+  onOverlayComplete?(event: google.maps.drawing.OverlayCompleteEvent): void;
 
   /**
    * This handler is called when the user has finished drawing a `polygon`.
    */
-  onPolygonComplete?: () => void;
+  onPolygonComplete?(): void;
 
   /**
    * This handler is called when the user has finished drawing a `polyline`.
    */
-  onPolylineComplete?: () => void;
+  onPolylineComplete?(): void;
 
   /**
    * This handler is called when the user has finished drawing a `rectangle`.
    */
-  onRectangleComplete?: () => void;
+  onRectangleComplete?(): void;
 }
 
 type Handlers = Pick<
@@ -111,16 +111,17 @@ export function DrawingControl({
   useEventHandlers<Handlers>(manager, DrawingControlEvent, {
     onCircleComplete,
     onMarkerComplete,
-    onOverlayComplete: event => {
+    onPolygonComplete,
+    onPolylineComplete,
+    onRectangleComplete,
+
+    onOverlayComplete(event) {
       event.overlay.setMap(null);
 
       if (onOverlayComplete) {
         onOverlayComplete(event);
       }
     },
-    onPolygonComplete,
-    onPolylineComplete,
-    onRectangleComplete,
   });
 
   return null;

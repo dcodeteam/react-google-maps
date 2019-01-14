@@ -70,9 +70,7 @@ export interface MapProps {
    *
    * An `MouseEvent` with properties for the clicked location is returned unless a place icon was clicked, in which case an `IconMouseEvent` with a `placeid` is returned.
    */
-  onClick?: (
-    event: google.maps.MouseEvent | google.maps.IconMouseEvent,
-  ) => void;
+  onClick?(event: google.maps.MouseEvent | google.maps.IconMouseEvent): void;
 
   /**
    * This handler is called when the user double-clicks on the map.
@@ -80,95 +78,95 @@ export interface MapProps {
    * Note that the `onClick` handler will be also called,
    * right before this one.
    */
-  onDoubleClick?: (
+  onDoubleClick?(
     event: google.maps.MouseEvent | google.maps.IconMouseEvent,
-  ) => void;
+  ): void;
 
   /**
    * This handler is called when the DOM context menu event is
    * fired on the map container.
    */
-  onRightClick?: (
+  onRightClick?(
     event: google.maps.MouseEvent | google.maps.IconMouseEvent,
-  ) => void;
+  ): void;
 
   /**
    * This handler is called whenever the user's mouse moves over
    * the map container.
    */
-  onMouseMove?: () => void;
+  onMouseMove?(): void;
 
   /**
    * This handler is called when the user's mouse exits the map container.
    */
-  onMouseOut?: () => void;
+  onMouseOut?(): void;
 
   /**
    * This handler is called when the user's mouse enters the map container.
    */
-  onMouseOver?: () => void;
+  onMouseOver?(): void;
 
   /**
    * This handler is repeatedly called while the user drags the map.
    */
-  onDrag?: () => void;
+  onDrag?(): void;
 
   /**
    * This handler is called when the user stops dragging the map.
    */
-  onDragEnd?: () => void;
+  onDragEnd?(): void;
 
   /**
    * This handler is called when the user starts dragging the map.
    */
-  onDragStart?: () => void;
+  onDragStart?(): void;
 
   /**
    * This handler is called when the map becomes idle after panning or zooming.
    */
-  onIdle?: () => void;
+  onIdle?(): void;
 
   /**
    * This handler is called when the visible tiles have finished loading.
    */
-  onTilesLoaded?: () => void;
+  onTilesLoaded?(): void;
 
   /**
    * This handler is called when the map `tilt` property changes.
    */
-  onTiltChanged?: () => void;
+  onTiltChanged?(): void;
 
   /**
    * This event is fired when the map `zoom` property changes.
    */
-  onZoomChanged?: (event: { zoom: number }) => void;
+  onZoomChanged?(event: { zoom: number }): void;
 
   /**
    * This handler is called when the viewport bounds have changed.
    */
-  onBoundsChanged?: (
-    event: { bounds: null | undefined | google.maps.LatLngBoundsLiteral },
-  ) => void;
+  onBoundsChanged?(event: {
+    bounds: null | undefined | google.maps.LatLngBoundsLiteral;
+  }): void;
 
   /**
    * This handler is called when the map `center` property changes.
    */
-  onCenterChanged?: () => void;
+  onCenterChanged?(): void;
 
   /**
    * This handler is called when the map `heading` property changes.
    */
-  onHeadingChanged?: () => void;
+  onHeadingChanged?(): void;
 
   /**
    * This handler is called when the `mapTypeId` property changes.
    */
-  onMapTypeIdChanged?: () => void;
+  onMapTypeIdChanged?(): void;
 
   /**
    * This handler is called when the `projection` has changed.
    */
-  onProjectionChanged?: () => void;
+  onProjectionChanged?(): void;
 }
 
 type Handlers = Pick<
@@ -276,7 +274,7 @@ export function Map({
     MapEvent,
     !mounted
       ? {
-          onBoundsChanged: () => {
+          onBoundsChanged() {
             setMounted(true);
           },
         }
@@ -299,13 +297,13 @@ export function Map({
           onMapTypeIdChanged,
           onProjectionChanged,
 
-          onZoomChanged: () => {
+          onZoomChanged() {
             if (onZoomChanged) {
               onZoomChanged({ zoom: map!.getZoom() });
             }
           },
 
-          onBoundsChanged: () => {
+          onBoundsChanged() {
             if (onBoundsChanged) {
               const bounds = map!.getBounds();
 

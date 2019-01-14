@@ -5,7 +5,7 @@ import { CustomControl } from "../..";
 
 interface Api<S> {
   state: S;
-  setState: (nextState: Pick<S, keyof S>) => void;
+  setState(nextState: Pick<S, keyof S>): void;
 }
 
 interface Props<S> {
@@ -13,8 +13,8 @@ interface Props<S> {
   initialState: S;
 
   center: google.maps.LatLngLiteral;
-  render: (api: Api<S>) => React.ReactNode;
-  onAnimateClick: (api: Api<S>) => void;
+  render(api: Api<S>): React.ReactNode;
+  onAnimateClick(api: Api<S>): void;
 }
 
 function createState<S>({ initialState }: Props<S>): S {

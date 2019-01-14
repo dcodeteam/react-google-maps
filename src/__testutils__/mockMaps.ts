@@ -38,10 +38,7 @@ export function mockMaps(): typeof google.maps {
 
   class MVCObject extends ValueContainer {
     public listeners = new Proxy<
-      Record<
-        string,
-        Array<{ fn: (...args: unknown[]) => void; remove: () => void }>
-      >
+      Record<string, Array<{ fn(...args: unknown[]): void; remove(): void }>>
     >(
       {},
       {
@@ -430,7 +427,7 @@ export function mockMaps(): typeof google.maps {
         if (instance.listeners) {
           const listeners = instance.listeners[event];
 
-          listeners.forEach((x: { fn: (...args: unknown[]) => void }) => {
+          listeners.forEach((x: { fn(...args: unknown[]): void }) => {
             x.fn(...args);
           });
         }

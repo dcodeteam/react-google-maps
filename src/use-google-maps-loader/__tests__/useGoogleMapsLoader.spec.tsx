@@ -9,7 +9,7 @@ import {
 const Container = ({
   checkAPI,
 }: {
-  checkAPI: (api: UseGoogleMapsResult) => void;
+  checkAPI(api: UseGoogleMapsResult): void;
 }) => {
   const api = useGoogleMapsLoader("secret-key");
 
