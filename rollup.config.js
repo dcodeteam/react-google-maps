@@ -1,7 +1,6 @@
 "use strict";
 
 const babelPlugin = require("rollup-plugin-babel");
-const prettierPlugin = require("rollup-plugin-prettier");
 const nodeResolvePlugin = require("rollup-plugin-node-resolve");
 const { sizeSnapshot } = require("rollup-plugin-size-snapshot");
 
@@ -56,8 +55,6 @@ function createConfig(target) {
           ],
         ],
       }),
-
-      prettierPlugin({ parser: "babylon" }),
 
       sizeSnapshot({ matchSnapshot: process.env.CI === "true" }),
     ],
