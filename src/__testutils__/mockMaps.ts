@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function mockMaps(): typeof google.maps {
   const EnumMirror = new Proxy({}, { get: (_, key) => key });
 
@@ -23,22 +24,25 @@ export function mockMaps(): typeof google.maps {
       });
     }
 
-    public get(key: string) {
+    public get(key: string): unknown {
       return this.values[key];
     }
 
-    public set(key: string, value: unknown) {
+    public set(key: string, value: unknown): void {
       this.values[key] = value;
     }
 
-    public setValues(nextValues: Record<string, unknown>) {
+    public setValues(nextValues: Record<string, unknown>): void {
       Object.assign(this.values, nextValues);
     }
   }
 
   class MVCObject extends ValueContainer {
     public listeners = new Proxy<
-      Record<string, Array<{ fn(...args: unknown[]): void; remove(): void }>>
+      Record<
+        string,
+        Array<{ fn(...args: Array<unknown>): void; remove(): void }>
+      >
     >(
       {},
       {
@@ -97,11 +101,11 @@ export function mockMaps(): typeof google.maps {
   }
 
   class MVCArray<T> {
-    public values: T[] = [];
+    public values: Array<T> = [];
 
     public constructor(values?: unknown) {
-      if (values && (values as T[]).forEach) {
-        (values as T[]).forEach(x => this.values.push(x));
+      if (values && (values as Array<T>).forEach) {
+        (values as Array<T>).forEach(x => this.values.push(x));
       }
 
       Object.defineProperties(this, {
@@ -247,7 +251,7 @@ export function mockMaps(): typeof google.maps {
   }
 
   class DataPolygon extends ValueContainer {
-    public constructor(values: unknown[]) {
+    public constructor(values: Array<unknown>) {
       super({ array: values });
 
       Object.defineProperties(this, {
@@ -301,11 +305,11 @@ export function mockMaps(): typeof google.maps {
       this.longitude = longitude;
     }
 
-    public lat() {
+    public lat(): number {
       return this.latitude;
     }
 
-    public lng() {
+    public lng(): number {
       return this.longitude;
     }
 
@@ -393,7 +397,6 @@ export function mockMaps(): typeof google.maps {
     }
   }
 
-  /* eslint-disable typescript/no-explicit-any */
   return {
     Animation: EnumMirror,
     MapTypeId: EnumMirror,
@@ -427,7 +430,7 @@ export function mockMaps(): typeof google.maps {
         if (instance.listeners) {
           const listeners = instance.listeners[event];
 
-          listeners.forEach((x: { fn(...args: unknown[]): void }) => {
+          listeners.forEach((x: { fn(...args: Array<unknown>): void }) => {
             x.fn(...args);
           });
         }
@@ -487,5 +490,4 @@ export function mockMaps(): typeof google.maps {
         .mockImplementation(options => new DataFeature(options)),
     },
   } as any;
-  /* eslint-enable typescript/no-explicit-any */
 }

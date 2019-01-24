@@ -10,17 +10,14 @@ export interface PanToProps {
   position: google.maps.LatLngLiteral;
 }
 
-export function PanTo({ position: { lat, lng } }: PanToProps) {
+export function PanTo({ position: { lat, lng } }: PanToProps): null {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const latLng = createLatLng(maps, { lat, lng });
 
-  useEffect(
-    () => {
-      map.panTo(latLng);
-    },
-    [latLng.lat(), latLng.lng()],
-  );
+  useEffect(() => {
+    map.panTo(latLng);
+  }, [latLng.lat(), latLng.lng()]);
 
   return null;
 }

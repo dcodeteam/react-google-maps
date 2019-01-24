@@ -11,7 +11,7 @@ export interface PanToBoundsProps {
   bounds: google.maps.LatLngBoundsLiteral;
 }
 
-export function PanToBounds({ bounds }: PanToBoundsProps) {
+export function PanToBounds({ bounds }: PanToBoundsProps): null {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const latLngBounds = useDeepCompareMemo(
@@ -19,12 +19,9 @@ export function PanToBounds({ bounds }: PanToBoundsProps) {
     [bounds],
   );
 
-  useEffect(
-    () => {
-      map.panToBounds(latLngBounds);
-    },
-    [latLngBounds],
-  );
+  useEffect(() => {
+    map.panToBounds(latLngBounds);
+  }, [latLngBounds]);
 
   return null;
 }

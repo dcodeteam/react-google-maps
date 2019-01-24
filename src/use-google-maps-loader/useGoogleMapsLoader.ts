@@ -17,18 +17,15 @@ export function useGoogleMapsLoader(apiKey: string): UseGoogleMapsResult {
     maps: getGlobalMaps(),
   });
 
-  useEffect(
-    () => {
-      if (state.maps) {
-        return;
-      }
+  useEffect(() => {
+    if (state.maps) {
+      return;
+    }
 
-      return loadAPI(apiKey, () => {
-        setState({ error: false, maps: getGlobalMaps() });
-      });
-    },
-    [state.maps],
-  );
+    return loadAPI(apiKey, () => {
+      setState({ error: false, maps: getGlobalMaps() });
+    });
+  }, [state.maps]);
 
   return state;
 }

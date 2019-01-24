@@ -6,7 +6,7 @@
     "react/style-prop-object": "off",
     "import/no-internal-modules": [
       "error",
-      { "allow": ["jest-dom/extend-expect"] }
+      { "allow": ["**/src/**", "jest-dom/extend-expect"] }
     ]
   }
 }

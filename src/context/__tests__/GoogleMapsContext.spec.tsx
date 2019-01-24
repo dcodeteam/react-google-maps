@@ -9,7 +9,7 @@ import {
 
 describe("useGoogleMapsAPI", () => {
   it("throws when context not provided", () => {
-    const Component = () => {
+    const Component = (): null => {
       useGoogleMapsAPI();
 
       return null;
@@ -40,7 +40,7 @@ Visit https://fb.me/react-error-boundaries to learn more about error boundaries.
 
 describe("useGoogleMap", () => {
   it("throws when context not provided", () => {
-    const Component = () => {
+    const Component = (): null => {
       useGoogleMap();
 
       return null;
@@ -71,7 +71,7 @@ Visit https://fb.me/react-error-boundaries to learn more about error boundaries.
 
 describe("useGoogleMapMarker", () => {
   it("throws when context not provided", () => {
-    const Component = () => {
+    const Component = (): null => {
       useGoogleMapMarker();
 
       return null;

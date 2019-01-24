@@ -1,4 +1,4 @@
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type Omit<T, TKey extends keyof T> = Pick<T, Exclude<keyof T, TKey>>;
 
 function isObjectLike(value: unknown): value is object {
   return value != null && typeof value === "object";

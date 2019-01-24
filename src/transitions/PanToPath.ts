@@ -8,10 +8,10 @@ export interface PanToPathProps {
   /**
    * Array of positions that will be used to generate `LatLngBounds` object.
    */
-  path: google.maps.LatLngLiteral[];
+  path: Array<google.maps.LatLngLiteral>;
 }
 
-export function PanToPath({ path }: PanToPathProps) {
+export function PanToPath({ path }: PanToPathProps): null {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const latLngBounds = useDeepCompareMemo(
@@ -19,12 +19,9 @@ export function PanToPath({ path }: PanToPathProps) {
     [path],
   );
 
-  useEffect(
-    () => {
-      map.panToBounds(latLngBounds);
-    },
-    [latLngBounds],
-  );
+  useEffect(() => {
+    map.panToBounds(latLngBounds);
+  }, [latLngBounds]);
 
   return null;
 }

@@ -64,7 +64,7 @@ export function MarkerIcon({
   scaledSize,
 
   origin = { x: 0, y: 0 },
-}: MarkerIconProps) {
+}: MarkerIconProps): null {
   const maps = useGoogleMapsAPI();
   const marker = useGoogleMapMarker();
   const options = useDeepCompareMemo(
@@ -81,12 +81,9 @@ export function MarkerIcon({
     [url, anchor, labelOrigin, size, scaledSize, origin],
   );
 
-  useEffect(
-    () => {
-      marker.setIcon(options);
-    },
-    [options],
-  );
+  useEffect(() => {
+    marker.setIcon(options);
+  }, [options]);
 
   return null;
 }

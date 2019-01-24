@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react";
+import React, { ComponentType, ReactElement } from "react";
 
 import {
   GoogleMapContext,
@@ -18,12 +18,12 @@ function createMapMockContext(): MapMockContext {
   return { maps, map: new maps.Map(null) };
 }
 
-export function initMapMockComponent<P>(
-  Component: ComponentType<P>,
-): [ComponentType<P>, MapMockContext] {
+export function initMapMockComponent<TProps>(
+  Component: ComponentType<TProps>,
+): [ComponentType<TProps>, MapMockContext] {
   const ctx = createMapMockContext();
 
-  function Mock(props: P) {
+  function Mock(props: TProps): ReactElement<object> {
     return (
       <GoogleMapsAPIContext.Provider value={ctx.maps}>
         <GoogleMapContext.Provider value={ctx.map}>
@@ -50,12 +50,12 @@ function creatMarkerMockContext(): MarkerMockContext {
   return { maps, map: new maps.Map(null), marker: new maps.Marker() };
 }
 
-export function initMapMarkerMockComponent<P>(
-  Component: ComponentType<P>,
-): [ComponentType<P>, MarkerMockContext] {
+export function initMapMarkerMockComponent<TProps>(
+  Component: ComponentType<TProps>,
+): [ComponentType<TProps>, MarkerMockContext] {
   const ctx = creatMarkerMockContext();
 
-  function Mock(props: P) {
+  function Mock(props: TProps): ReactElement<object> {
     return (
       <GoogleMapsAPIContext.Provider value={ctx.maps}>
         <GoogleMapContext.Provider value={ctx.map}>

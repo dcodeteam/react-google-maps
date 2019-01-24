@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 
 import {
   GoogleMapContext,
@@ -224,7 +224,7 @@ export function Map({
   mapTypeId = "ROADMAP",
   clickableIcons = true,
   disableDoubleClickZoom = false,
-}: MapProps) {
+}: MapProps): ReactElement<object> {
   const maps = useGoogleMapsAPI();
   const node = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -260,14 +260,11 @@ export function Map({
     };
   }, []);
 
-  useEffect(
-    () => {
-      if (map && changedOptions) {
-        map.setOptions(changedOptions);
-      }
-    },
-    [changedOptions],
-  );
+  useEffect(() => {
+    if (map && changedOptions) {
+      map.setOptions(changedOptions);
+    }
+  }, [changedOptions]);
 
   useEventHandlers<Handlers>(
     map,

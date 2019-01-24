@@ -21,7 +21,7 @@ export function MapTypeControl({
   position = "TOP_RIGHT",
   style = "DEFAULT",
   mapTypeIds = ["HYBRID", "ROADMAP", "SATELLITE", "TERRAIN"],
-}: MapTypeControlProps) {
+}: MapTypeControlProps): null {
   useMapControl(maps => ({
     name: "mapTypeControl",
     options: {

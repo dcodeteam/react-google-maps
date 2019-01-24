@@ -11,7 +11,7 @@ export interface FitBoundsProps {
   bounds: google.maps.LatLngBoundsLiteral;
 }
 
-export function FitBounds({ bounds }: FitBoundsProps) {
+export function FitBounds({ bounds }: FitBoundsProps): null {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const latLngBounds = useDeepCompareMemo(
@@ -19,12 +19,9 @@ export function FitBounds({ bounds }: FitBoundsProps) {
     [bounds],
   );
 
-  useEffect(
-    () => {
-      map.fitBounds(latLngBounds);
-    },
-    [latLngBounds],
-  );
+  useEffect(() => {
+    map.fitBounds(latLngBounds);
+  }, [latLngBounds]);
 
   return null;
 }

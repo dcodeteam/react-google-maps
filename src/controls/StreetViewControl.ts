@@ -14,7 +14,7 @@ export interface StreetViewControlProps {
 
 export function StreetViewControl({
   position = "TOP_LEFT",
-}: StreetViewControlProps) {
+}: StreetViewControlProps): null {
   useMapControl(maps => ({
     name: "streetViewControl",
     options: { position: position && maps.ControlPosition[position] },

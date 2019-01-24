@@ -37,7 +37,7 @@ export interface PolylineProps extends PolylineHandlers {
   /**
    * The ordered sequence of coordinates of the `Polyline`.
    */
-  path: google.maps.LatLngLiteral[];
+  path: Array<google.maps.LatLngLiteral>;
 
   //
   // Style
@@ -123,7 +123,7 @@ interface PolylineHandlers {
   /**
    * This handler is fired when the user stops dragging the `Polyline`.
    */
-  onDragEnd?(event?: { path: google.maps.LatLng[] }): void;
+  onDragEnd?(event?: { path: Array<google.maps.LatLng> }): void;
 }
 
 export function Polyline({
@@ -149,7 +149,7 @@ export function Polyline({
   onDrag,
   onDragStart,
   onDragEnd,
-}: PolylineProps) {
+}: PolylineProps): null {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const options = {
@@ -175,14 +175,11 @@ export function Polyline({
     };
   }, []);
 
-  useEffect(
-    () => {
-      if (changedOptions) {
-        polyline.setOptions(changedOptions);
-      }
-    },
-    [changedOptions],
-  );
+  useEffect(() => {
+    if (changedOptions) {
+      polyline.setOptions(changedOptions);
+    }
+  }, [changedOptions]);
 
   useEventHandlers<PolylineHandlers>(polyline, PolylineEvent, {
     onClick,

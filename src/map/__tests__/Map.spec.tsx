@@ -1,4 +1,4 @@
-import React, { MutableRefObject, createRef } from "react";
+import React, { MutableRefObject, ReactElement, createRef } from "react";
 import { cleanup, flushEffects, render } from "react-testing-library";
 
 import { mockMaps } from "../../__testutils__/mockMaps";
@@ -26,7 +26,7 @@ function MapWrapper({
   zoom = 0,
   center = { lat: 0, lng: 1 },
   ...props
-}: MapWrapperProps) {
+}: MapWrapperProps): ReactElement<object> {
   return (
     <GoogleMapsAPIContext.Provider value={maps}>
       <Map zoom={zoom} center={center} {...props} />
@@ -356,7 +356,7 @@ it("passes map in context", () => {
     mapRef,
   }: {
     mapRef: MutableRefObject<null | google.maps.Map>;
-  }) {
+  }): null {
     // eslint-disable-next-line no-param-reassign
     mapRef.current = useGoogleMap();
 

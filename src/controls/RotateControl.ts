@@ -7,7 +7,9 @@ export interface RotateControlProps {
   position?: keyof typeof google.maps.ControlPosition;
 }
 
-export function RotateControl({ position = "TOP_LEFT" }: RotateControlProps) {
+export function RotateControl({
+  position = "TOP_LEFT",
+}: RotateControlProps): null {
   useMapControl(maps => ({
     name: "rotateControl",
     options: { position: position && maps.ControlPosition[position] },

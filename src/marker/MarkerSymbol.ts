@@ -73,7 +73,7 @@ export function MarkerSymbol({
   strokeWeight = 1,
 
   anchor = { x: 0, y: 0 },
-}: MarkerSymbolProps) {
+}: MarkerSymbolProps): null {
   const maps = useGoogleMapsAPI();
   const marker = useGoogleMapMarker();
   const symbol = useDeepCompareMemo(
@@ -102,12 +102,9 @@ export function MarkerSymbol({
     ],
   );
 
-  useEffect(
-    () => {
-      marker.setIcon(symbol);
-    },
-    [symbol],
-  );
+  useEffect(() => {
+    marker.setIcon(symbol);
+  }, [symbol]);
 
   return null;
 }

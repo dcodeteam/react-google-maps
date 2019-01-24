@@ -44,7 +44,7 @@ export interface PlaceAutocompleteProps {
    * safely mix the 'geocode' and 'establishment' types, but note that this
    * will have the same effect as specifying no types.
    */
-  types?: string[];
+  types?: Array<string>;
 
   /**
    * This event is fired when a PlaceResult is made available for a Place the
@@ -74,7 +74,7 @@ export function PlaceAutocomplete({
   strictBounds = false,
 
   onPlaceChanged,
-}: PlaceAutocompleteProps) {
+}: PlaceAutocompleteProps): null | ReactElement<object> {
   const maps = useGoogleMapsAPI();
   const inputRef = useRef<HTMLInputElement>(null);
   const [
@@ -96,14 +96,11 @@ export function PlaceAutocomplete({
     setAutocomplete(new maps.places.Autocomplete(inputRef.current!));
   }, []);
 
-  useEffect(
-    () => {
-      if (autocomplete) {
-        autocomplete.setValues(options);
-      }
-    },
-    [autocomplete, options],
-  );
+  useEffect(() => {
+    if (autocomplete) {
+      autocomplete.setValues(options);
+    }
+  }, [autocomplete, options]);
 
   useEventHandlers<Handlers>(autocomplete, PlaceAutocompleteEvent, {
     onPlaceChanged() {

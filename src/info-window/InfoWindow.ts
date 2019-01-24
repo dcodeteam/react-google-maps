@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { createPortal } from "react-dom";
 
 import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
@@ -64,7 +64,7 @@ export function InfoWindow({
   disableAutoPan = false,
 
   onCloseClick,
-}: InfoWindowProps) {
+}: InfoWindowProps): null | ReactElement<object> {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const node = useMemoOnce(() => document.createElement("div"));
@@ -90,21 +90,15 @@ export function InfoWindow({
     };
   }, []);
 
-  useUpdateEffect(
-    () => {
-      infoWindow.open(map);
-    },
-    [maxWidth],
-  );
+  useUpdateEffect(() => {
+    infoWindow.open(map);
+  }, [maxWidth]);
 
-  useEffect(
-    () => {
-      if (changedOptions) {
-        infoWindow.setOptions(changedOptions);
-      }
-    },
-    [changedOptions],
-  );
+  useEffect(() => {
+    if (changedOptions) {
+      infoWindow.setOptions(changedOptions);
+    }
+  }, [changedOptions]);
 
   useEventHandlers(infoWindow, InfoWindowEvent, {
     onCloseClick() {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { ReactElement, useEffect, useRef } from "react";
 
 import {
   GoogleMapMarkerContext,
@@ -168,7 +168,7 @@ export function Marker({
   onDragStart,
   onDragEnd,
   onPositionChanged,
-}: MarkerProps) {
+}: MarkerProps): null | ReactElement<object> {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const options: google.maps.MarkerOptions = {
@@ -203,14 +203,11 @@ export function Marker({
     };
   }, []);
 
-  useEffect(
-    () => {
-      if (changedOptions) {
-        marker.setOptions(changedOptions as google.maps.MarkerOptions);
-      }
-    },
-    [changedOptions],
-  );
+  useEffect(() => {
+    if (changedOptions) {
+      marker.setOptions(changedOptions as google.maps.MarkerOptions);
+    }
+  }, [changedOptions]);
 
   useEventHandlers(marker, MarkerEvent, {
     onClick,

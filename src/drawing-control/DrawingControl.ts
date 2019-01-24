@@ -75,7 +75,7 @@ export function DrawingControl({
   onPolygonComplete,
   onPolylineComplete,
   onRectangleComplete,
-}: DrawingControlProps) {
+}: DrawingControlProps): null {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const options = useDeepCompareMemo(
@@ -101,12 +101,9 @@ export function DrawingControl({
     };
   }, []);
 
-  useUpdateEffect(
-    () => {
-      manager.setOptions(options);
-    },
-    [options],
-  );
+  useUpdateEffect(() => {
+    manager.setOptions(options);
+  }, [options]);
 
   useEventHandlers<Handlers>(manager, DrawingControlEvent, {
     onCircleComplete,

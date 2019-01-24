@@ -10,7 +10,7 @@ const Container = ({
   checkAPI,
 }: {
   checkAPI(api: UseGoogleMapsResult): void;
-}) => {
+}): null => {
   const api = useGoogleMapsLoader("secret-key");
 
   checkAPI(api);

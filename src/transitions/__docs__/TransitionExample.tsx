@@ -1,38 +1,41 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import { DocsMap } from "../../__docs__/DocsComponents";
 import { CustomControl } from "../..";
 
-interface Api<S> {
-  state: S;
-  setState(nextState: Pick<S, keyof S>): void;
+interface Api<TState> {
+  state: TState;
+  setState(nextState: Pick<TState, keyof TState>): void;
 }
 
-interface Props<S> {
+interface Props<TState> {
   zoom: number;
-  initialState: S;
+  initialState: TState;
 
   center: google.maps.LatLngLiteral;
-  render(api: Api<S>): React.ReactNode;
-  onAnimateClick(api: Api<S>): void;
+  render(api: Api<TState>): React.ReactNode;
+  onAnimateClick(api: Api<TState>): void;
 }
 
-function createState<S>({ initialState }: Props<S>): S {
+function createState<TState>({ initialState }: Props<TState>): TState {
   return initialState;
 }
 
-export class TransitionExample<S> extends React.Component<Props<S>, S> {
-  public state: S = createState(this.props);
+export class TransitionExample<TState> extends React.Component<
+  Props<TState>,
+  TState
+> {
+  public state: TState = createState(this.props);
 
-  private updateState = (nextState: Pick<S, keyof S>) => {
+  private updateState = (nextState: Pick<TState, keyof TState>) => {
     this.setState(nextState);
   };
 
-  private createApi(): Api<S> {
+  private createApi(): Api<TState> {
     return { state: this.state, setState: this.updateState };
   }
 
-  public render() {
+  public render(): ReactNode {
     const { zoom, center, render, onAnimateClick } = this.props;
 
     return (

@@ -10,15 +10,12 @@ export interface PanByProps {
   offset: PointLiteral;
 }
 
-export function PanBy({ offset: { x, y } }: PanByProps) {
+export function PanBy({ offset: { x, y } }: PanByProps): null {
   const map = useGoogleMap();
 
-  useEffect(
-    () => {
-      map.panBy(x, y);
-    },
-    [x, y],
-  );
+  useEffect(() => {
+    map.panBy(x, y);
+  }, [x, y]);
 
   return null;
 }

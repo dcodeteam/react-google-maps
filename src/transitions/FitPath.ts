@@ -8,10 +8,10 @@ export interface FitPathProps {
   /**
    * Array of positions that will be used to generate `LatLngBounds` object.
    */
-  path: google.maps.LatLngLiteral[];
+  path: Array<google.maps.LatLngLiteral>;
 }
 
-export function FitPath({ path }: FitPathProps) {
+export function FitPath({ path }: FitPathProps): null {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const latLngBounds = useDeepCompareMemo(
@@ -19,12 +19,9 @@ export function FitPath({ path }: FitPathProps) {
     [path],
   );
 
-  useEffect(
-    () => {
-      map.fitBounds(latLngBounds);
-    },
-    [latLngBounds],
-  );
+  useEffect(() => {
+    map.fitBounds(latLngBounds);
+  }, [latLngBounds]);
 
   return null;
 }

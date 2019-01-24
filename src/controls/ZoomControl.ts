@@ -7,7 +7,7 @@ export interface ZoomControlProps {
   position?: keyof typeof google.maps.ControlPosition;
 }
 
-export function ZoomControl({ position = "TOP_LEFT" }: ZoomControlProps) {
+export function ZoomControl({ position = "TOP_LEFT" }: ZoomControlProps): null {
   useMapControl(maps => ({
     name: "zoomControl",
     options: { position: position && maps.ControlPosition[position] },

@@ -15,7 +15,7 @@ export interface DataPolygonProps {
    * Array of array of positions.
    */
 
-  geometry: google.maps.LatLngLiteral[][];
+  geometry: Array<Array<google.maps.LatLngLiteral>>;
 
   //
   // Style
@@ -141,7 +141,7 @@ export function DataPolygon({
   onMouseOver,
   onMouseDown,
   onMouseUp,
-}: DataPolygonProps) {
+}: DataPolygonProps): null {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
   const feature = useMemoOnce(() => new maps.Data.Feature());
@@ -177,19 +177,13 @@ export function DataPolygon({
     };
   }, []);
 
-  useEffect(
-    () => {
-      feature.setGeometry(polygon);
-    },
-    [polygon],
-  );
+  useEffect(() => {
+    feature.setGeometry(polygon);
+  }, [polygon]);
 
-  useEffect(
-    () => {
-      map.data.overrideStyle(feature, style);
-    },
-    [style],
-  );
+  useEffect(() => {
+    map.data.overrideStyle(feature, style);
+  }, [style]);
 
   useEventHandlers<HandlerProps>(map.data, DataLayerEvent, {
     onClick: enhanceDataPolygonHandler(feature, onClick),

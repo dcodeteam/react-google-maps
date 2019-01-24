@@ -9,7 +9,7 @@ export interface FullscreenControlProps {
 
 export function FullscreenControl({
   position = "RIGHT_TOP",
-}: FullscreenControlProps) {
+}: FullscreenControlProps): null {
   useMapControl(maps => ({
     name: "fullscreenControl",
     options: { position: maps.ControlPosition[position] },

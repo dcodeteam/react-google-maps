@@ -23,7 +23,7 @@ function getStack(): Set<() => void> {
   return global[CALLBACK_STACK];
 }
 
-function ensureCallback() {
+function ensureCallback(): void {
   // eslint-disable-next-line
   const global = window as any;
 
