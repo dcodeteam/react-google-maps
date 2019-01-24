@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 import { SizeLiteral, createLatLng, createSize } from "../internal/MapsUtils";
 import { useChangedProps } from "../internal/useChangedProps";
 import { useEventHandlers } from "../internal/useEventHandlers";
+import { useMemoOnce } from "../internal/useMemoOnce";
 import { useUpdateEffect } from "../internal/useUpdateEffect";
 import { InfoWindowEvent } from "./InfoWindowEvent";
 
@@ -66,7 +67,7 @@ export function InfoWindow({
 }: InfoWindowProps) {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
-  const node = useMemo(() => document.createElement("div"), []);
+  const node = useMemoOnce(() => document.createElement("div"));
   const options = {
     maxWidth,
     zIndex,
@@ -76,7 +77,7 @@ export function InfoWindow({
     content: typeof children === "string" ? children : node,
     pixelOffset: pixelOffset && createSize(maps, pixelOffset),
   };
-  const infoWindow = useMemo(() => new maps.InfoWindow(options), []);
+  const infoWindow = useMemoOnce(() => new maps.InfoWindow(options));
   const changedOptions = useChangedProps<google.maps.InfoWindowOptions>(
     options,
   );

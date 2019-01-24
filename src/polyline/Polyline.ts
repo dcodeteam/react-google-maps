@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 import { createLatLng, createMVCArray } from "../internal/MapsUtils";
 import { useChangedProps } from "../internal/useChangedProps";
 import { useEventHandlers } from "../internal/useEventHandlers";
+import { useMemoOnce } from "../internal/useMemoOnce";
 import { PolylineEvent } from "./PolylineEvent";
 
 export interface PolylineProps extends PolylineHandlers {
@@ -162,7 +163,7 @@ export function Polyline({
     strokeOpacity,
     path: createMVCArray(maps, path, x => createLatLng(maps, x)),
   };
-  const polyline = useMemo(() => new maps.Polyline(options), []);
+  const polyline = useMemoOnce(() => new maps.Polyline(options));
   const changedOptions = useChangedProps(options);
   const pathRef = useRef(polyline.getPath());
 

@@ -3,6 +3,7 @@ import { useEffect, useMemo } from "react";
 import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
 import { useEventHandlers } from "../internal/useEventHandlers";
+import { useMemoOnce } from "../internal/useMemoOnce";
 import { DataLayerEvent } from "./DataLayerEvent";
 
 interface DataPolygonHandlerEvent {
@@ -143,7 +144,7 @@ export function DataPolygon({
 }: DataPolygonProps) {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
-  const feature = useMemo(() => new maps.Data.Feature(), []);
+  const feature = useMemoOnce(() => new maps.Data.Feature());
   const polygon = useDeepCompareMemo(() => new maps.Data.Polygon(geometry), [
     geometry,
   ]);

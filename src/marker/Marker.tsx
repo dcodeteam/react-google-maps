@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import {
   GoogleMapMarkerContext,
@@ -8,6 +8,7 @@ import {
 import { createLatLng } from "../internal/MapsUtils";
 import { useChangedProps } from "../internal/useChangedProps";
 import { useEventHandlers } from "../internal/useEventHandlers";
+import { useMemoOnce } from "../internal/useMemoOnce";
 import { MarkerEvent } from "./MarkerEvent";
 
 export interface MarkerProps {
@@ -191,7 +192,7 @@ export function Marker({
   }
 
   const changedOptions = useChangedProps(options);
-  const marker = useMemo(() => new maps.Marker(options), []);
+  const marker = useMemoOnce(() => new maps.Marker(options));
   const positionRef = useRef(marker.getPosition());
 
   useEffect(() => {
