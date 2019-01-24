@@ -9,7 +9,7 @@ export function mockMaps(): typeof google.maps {
   }
 
   class ValueContainer {
-    public values: Record<string, unknown> = {};
+    public values: Record<string, unknown>;
 
     public constructor(values: Record<string, unknown> = {}) {
       this.values = values;
@@ -38,26 +38,31 @@ export function mockMaps(): typeof google.maps {
   }
 
   class MVCObject extends ValueContainer {
-    public listeners = new Proxy<
-      Record<
-        string,
-        Array<{ fn(...args: Array<unknown>): void; remove(): void }>
-      >
-    >(
-      {},
-      {
-        get: (acc, key: string) => {
-          if (!acc[key]) {
-            acc[key] = [];
-          }
-
-          return acc[key];
-        },
-      },
-    );
+    public listeners: Record<
+      string,
+      Array<{ fn(...args: Array<unknown>): void; remove(): void }>
+    >;
 
     public constructor(values?: Record<string, unknown>) {
       super(values);
+
+      this.listeners = new Proxy<
+        Record<
+          string,
+          Array<{ fn(...args: Array<unknown>): void; remove(): void }>
+        >
+      >(
+        {},
+        {
+          get: (acc, key: string) => {
+            if (!acc[key]) {
+              acc[key] = [];
+            }
+
+            return acc[key];
+          },
+        },
+      );
 
       Object.defineProperties(this, {
         emit: {
@@ -101,9 +106,11 @@ export function mockMaps(): typeof google.maps {
   }
 
   class MVCArray<T> {
-    public values: Array<T> = [];
+    public values: Array<T>;
 
     public constructor(values?: unknown) {
+      this.values = [];
+
       if (values && (values as Array<T>).forEach) {
         (values as Array<T>).forEach(x => this.values.push(x));
       }
@@ -124,25 +131,29 @@ export function mockMaps(): typeof google.maps {
   }
 
   class GoogleMap extends MVCObject {
-    public controls = new Proxy<Record<string, MVCArray<unknown>>>(
-      {},
-      {
-        // eslint-disable-next-line no-return-assign
-        get: (ctx, key: string) => ctx[key] || (ctx[key] = new MVCArray()),
-      },
-    );
+    public readonly controls: Record<string, MVCArray<unknown>>;
 
-    public data = Object.defineProperties(new MVCObject(), {
-      add: { enumerable: false, value: jest.fn() },
-      remove: { enumerable: false, value: jest.fn() },
-      overrideStyle: { enumerable: false, value: jest.fn() },
-    });
+    public readonly data: MVCObject;
 
     public constructor(node: Node, options: google.maps.MapOptions) {
       super({
         ...options,
         node,
         bounds: { east: 0, north: 0, south: 0, west: 0 },
+      });
+
+      this.controls = new Proxy<Record<string, MVCArray<unknown>>>(
+        {},
+        {
+          // eslint-disable-next-line no-return-assign
+          get: (ctx, key: string) => ctx[key] || (ctx[key] = new MVCArray()),
+        },
+      );
+
+      this.data = Object.defineProperties(new MVCObject(), {
+        add: { enumerable: false, value: jest.fn() },
+        remove: { enumerable: false, value: jest.fn() },
+        overrideStyle: { enumerable: false, value: jest.fn() },
       });
 
       Object.defineProperties(this, {
