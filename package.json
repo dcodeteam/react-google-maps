@@ -33,8 +33,8 @@
     "build:typings": "rimraf typings && tsc --project tsconfig.typings.json"
   },
   "peerDependencies": {
-    "react": "16.8.0-alpha.0",
-    "react-dom": "16.8.0-alpha.0"
+    "react": "^16.8.0-alpha.0",
+    "react-dom": "^16.8.0-alpha.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
