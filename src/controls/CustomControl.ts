@@ -1,7 +1,8 @@
-import React, { ReactPortal, useEffect, useRef } from "react";
+import React, { ReactPortal, useEffect } from "react";
 import { createPortal } from "react-dom";
 
 import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
+import { useMemoOnce } from "../internal/useMemoOnce";
 
 export interface CustomControlProps {
   /**
@@ -21,16 +22,16 @@ export function CustomControl({
 }: CustomControlProps): ReactPortal {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
-  const node = useRef(document.createElement("div"));
+  const node = useMemoOnce(() => document.createElement("div"));
   const controlPosition = maps.ControlPosition[position];
 
   useEffect(() => {
     const controls = map.controls[controlPosition];
 
-    controls.push(node.current);
+    controls.push(node);
 
     return () => {
-      const idx = controls.getArray().indexOf(node.current);
+      const idx = controls.getArray().indexOf(node);
 
       if (idx !== -1) {
         controls.removeAt(idx);
@@ -38,5 +39,5 @@ export function CustomControl({
     };
   }, [controlPosition]);
 
-  return createPortal(children, node.current);
+  return createPortal(children, node);
 }

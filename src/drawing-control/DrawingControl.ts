@@ -1,8 +1,9 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 import { useGoogleMap, useGoogleMapsAPI } from "../context/GoogleMapsContext";
 import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
 import { useEventHandlers } from "../internal/useEventHandlers";
+import { useMemoOnce } from "../internal/useMemoOnce";
 import { useUpdateEffect } from "../internal/useUpdateEffect";
 import { DrawingControlEvent } from "./DrawingControlEvent";
 
@@ -88,9 +89,8 @@ export function DrawingControl({
     }),
     [position, drawingModes],
   );
-  const manager = useMemo<google.maps.drawing.DrawingManager>(
+  const manager = useMemoOnce<google.maps.drawing.DrawingManager>(
     () => new maps.drawing.DrawingManager(options),
-    [],
   );
 
   useEffect(() => {
