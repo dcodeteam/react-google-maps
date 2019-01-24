@@ -29,8 +29,6 @@ function createConfig(target) {
       nodeResolvePlugin({ extensions: [".ts", ".tsx"] }),
 
       babelPlugin({
-        babelrc: false,
-        runtimeHelpers: false,
         extensions: [".ts", ".tsx"],
         presets: [
           [
@@ -42,8 +40,6 @@ function createConfig(target) {
               targets: { esmodules: target === "es2015" },
             },
           ],
-          "@babel/react",
-          "@babel/preset-typescript",
         ],
       }),
 

@@ -5,13 +5,11 @@ module.exports = api => {
 
   api.cache(() => JSON.stringify({ isTest }));
 
-  return {
-    presets: !isTest
-      ? []
-      : [
-          "@babel/react",
-          "@babel/typescript",
-          ["@babel/env", { targets: { node: true } }],
-        ],
-  };
+  const presets = ["@babel/react", "@babel/typescript"];
+
+  if (isTest) {
+    presets.push(["@babel/env", { targets: { node: true } }]);
+  }
+
+  return { presets };
 };
