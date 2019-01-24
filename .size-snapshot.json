@@ -1,5 +1,10 @@
 {
-  "./react-google-maps.es.js": {
+  "index.js": {
+    "bundled": 34034,
+    "minified": 18118,
+    "gzipped": 4943
+  },
+  "index.es.js": {
     "bundled": 32951,
     "minified": 17131,
     "gzipped": 4788,
@@ -13,12 +18,7 @@
       }
     }
   },
-  "./react-google-maps.cjs.js": {
-    "bundled": 34034,
-    "minified": 18118,
-    "gzipped": 4943
-  },
-  "./react-google-maps.es2015.js": {
+  "index.es2015.js": {
     "bundled": 28740,
     "minified": 15565,
     "gzipped": 4731,

@@ -6,22 +6,23 @@ const { sizeSnapshot } = require("rollup-plugin-size-snapshot");
 
 const pkg = require("./package");
 
+const externals = Object.keys(pkg.peerDependencies);
+
 module.exports = [
-  createConfig("es"),
-  createConfig("cjs"),
-  createConfig("es2015"),
+  createConfig("cjs", pkg.main),
+  createConfig("es", pkg.module),
+  createConfig("es2015", pkg.es2015),
 ];
 
-function createConfig(target) {
-  const externals = Object.keys(pkg.peerDependencies);
+function createConfig(target, file) {
+  const isES = target.startsWith("es");
+  const isES2015 = target === "es2015";
+  const isCI = process.env.CI === "true";
 
   return {
     input: "./src/index.ts",
 
-    output: {
-      file: `./react-google-maps.${target}.js`,
-      format: target.startsWith("es") ? "es" : target,
-    },
+    output: { file, format: isES ? "es" : target },
 
     external: id => externals.includes(id),
 
@@ -36,14 +37,14 @@ function createConfig(target) {
             {
               loose: true,
               modules: false,
-              forceAllTransforms: target !== "es2015",
-              targets: { esmodules: target === "es2015" },
+              forceAllTransforms: !isES2015,
+              targets: { esmodules: isES2015 },
             },
           ],
         ],
       }),
 
-      sizeSnapshot({ matchSnapshot: process.env.CI === "true" }),
+      sizeSnapshot({ matchSnapshot: isCI }),
     ],
   };
 }
