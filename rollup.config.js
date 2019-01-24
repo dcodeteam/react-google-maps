@@ -13,10 +13,7 @@ module.exports = [
 ];
 
 function createConfig(target) {
-  const externals = [
-    ...Object.keys(pkg.dependencies),
-    ...Object.keys(pkg.peerDependencies),
-  ];
+  const externals = Object.keys(pkg.peerDependencies);
 
   return {
     input: "./src/index.ts",
@@ -26,14 +23,14 @@ function createConfig(target) {
       format: target.startsWith("es") ? "es" : target,
     },
 
-    external: id => externals.includes(id) || id.startsWith("@babel/runtime"),
+    external: id => externals.includes(id),
 
     plugins: [
       nodeResolvePlugin({ extensions: [".ts", ".tsx"] }),
 
       babelPlugin({
         babelrc: false,
-        runtimeHelpers: true,
+        runtimeHelpers: false,
         extensions: [".ts", ".tsx"],
         presets: [
           [
@@ -47,12 +44,6 @@ function createConfig(target) {
           ],
           "@babel/react",
           "@babel/preset-typescript",
-        ],
-        plugins: [
-          [
-            "@babel/plugin-transform-runtime",
-            { useESModules: target.startsWith("es") },
-          ],
         ],
       }),
 

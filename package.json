@@ -32,9 +32,6 @@
     "build:bundle": "rollup -c rollup.config.js",
     "build:typings": "rimraf typings && tsc --project tsconfig.typings.json"
   },
-  "dependencies": {
-    "@babel/runtime": "^7.3.1"
-  },
   "peerDependencies": {
     "react": "16.8.0-alpha.0",
     "react-dom": "16.8.0-alpha.0"
